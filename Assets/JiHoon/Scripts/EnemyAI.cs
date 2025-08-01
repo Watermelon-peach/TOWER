@@ -55,35 +55,12 @@ public class EnemyAI : MonoBehaviour
 
     public void StopMoving()
     {
-        // 현재 위치 즉시 저장
-        attackPosition = transform.position;
-        isPositionLocked = true;
-
-        // NavMeshAgent 완전 비활성화
-        if (agent != null)
-        {
-            // 먼저 정지시키고
-            if (agent.enabled)
-            {
-                agent.isStopped = true;
-                agent.velocity = Vector3.zero;
-                agent.ResetPath();
-                agent.updatePosition = false;
-                agent.updateRotation = false;
-            }
-
-            // 완전히 비활성화
-            agent.enabled = false;
-        }
-
-        // Rigidbody 완전 고정
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            rb.constraints = RigidbodyConstraints.FreezeAll;
-            rb.isKinematic = true;
-        }
+        // NavMeshAgent 완전 정지
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+        agent.ResetPath();
+        agent.updatePosition = false;
+        agent.updateRotation = false;
 
         // 타겟을 즉시 바라보기
         if (target != null)
@@ -96,136 +73,52 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        // 추가 보안 - 코루틴으로 지속적으로 위치 고정
-        StartCoroutine(EnforcePositionLock());
-    }
+        // 현재 위치 저장하고 고정
+        attackPosition = transform.position;
+        isPositionLocked = true;
 
-    // 위치 고정을 강제하는 코루틴
-    IEnumerator EnforcePositionLock()
-    {
-        while (isPositionLocked)
-        {
-            // 매 프레임마다 위치 강제 고정
-            transform.position = attackPosition;
-
-            // NavMeshAgent가 다시 활성화되었다면 비활성화
-            if (agent != null && agent.enabled)
-            {
-                agent.enabled = false;
-            }
-
-            // Rigidbody 속도도 계속 0으로
-            if (rb != null)
-            {
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
-
-            yield return null;
-        }
+        // 1.5초 후 움직임 허용
+        CancelInvoke(nameof(StartMoving));
+        Invoke(nameof(StartMoving), 1.5f);
     }
 
     public void StartMoving()
     {
-        Debug.Log("StartMoving called!");
-
-        // 일단 완전히 정지 상태 유지
-        if (agent != null && agent.enabled && agent.isOnNavMesh)
-        {
-            agent.isStopped = true;
-            agent.velocity = Vector3.zero;
-            agent.ResetPath(); // 경로 초기화
-        }
-
-        // 3초 후에 실제로 움직이기 시작
-        StartCoroutine(DelayedStartMoving(2f));
-    }
-
-    IEnumerator DelayedStartMoving(float delay)
-    {
-        // 대기 중 위치 고정
-        Vector3 waitPosition = transform.position;
-
-        // Idle 애니메이션
-        if (animator != null)
-        {
-            animator.SetBool("IsMoving", false);
-        }
-
-        float elapsed = 0f;
-        while (elapsed < delay)
-        {
-            // 위치 강제 고정 (미끄러짐 방지)
-            transform.position = waitPosition;
-
-            // NavMeshAgent가 움직이려 하면 다시 정지
-            if (agent != null && agent.enabled && !agent.isStopped)
-            {
-                agent.isStopped = true;
-                agent.velocity = Vector3.zero;
-            }
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        // 이제 실제로 움직이기 시작
-        ActualStartMoving();
-    }
-
-    void ActualStartMoving()
-    {
-        // 1. 위치 고정 해제
+        // 위치 고정 해제
         isPositionLocked = false;
 
-        if (agent != null)
-        {
-            agent.enabled = true;  // 다시 활성화
-            rb.isKinematic = false;  // Rigidbody도 원래대로
-        }
+        // NavMeshAgent를 현재 위치에서 다시 시작하도록 설정
+        agent.Warp(transform.position);
 
-        // 2. Rigidbody 제약 해제
-        if (rb != null)
-        {
-            rb.constraints = RigidbodyConstraints.FreezePositionY |
-                            RigidbodyConstraints.FreezeRotationX |
-                            RigidbodyConstraints.FreezeRotationZ;
-        }
+        // NavMeshAgent 다시 활성화
+        agent.updatePosition = true;
+        agent.updateRotation = true;
+        agent.isStopped = false;
 
-        // 3. 플레이어 향해 회전
+        // 목표 위치 재설정
         if (target != null)
         {
-            Vector3 lookDirection = (target.position - transform.position).normalized;
-            lookDirection.y = 0;
-
-            if (lookDirection != Vector3.zero)
-            {
-                transform.rotation = Quaternion.LookRotation(lookDirection);
-            }
+            agent.SetDestination(target.position);
         }
+    }
 
-        // 4. NavMeshAgent 재활성화
-        if (agent != null && agent.enabled)
+    public void OnAttackStart()
+    {
+        isAttacking = true;
+        StartCoroutine(LookAtTargetDuringAnimation());
+    }
+
+    public void OnAttackEnd()
+    {
+        isAttacking = false;
+    }
+
+    IEnumerator LookAtTargetDuringAnimation()
+    {
+        while (isAttacking)
         {
-            agent.updatePosition = true;
-            agent.updateRotation = true;
-
-            if (agent.isOnNavMesh)
-            {
-                agent.Warp(transform.position);
-                agent.isStopped = false;
-
-                if (target != null)
-                {
-                    agent.SetDestination(target.position);
-                }
-            }
-        }
-
-        // 5. 애니메이션 상태 업데이트
-        if (animator != null)
-        {
-            animator.SetBool("IsMoving", true);
+            LookAtTarget();
+            yield return null;  // 매 프레임 실행
         }
     }
 
