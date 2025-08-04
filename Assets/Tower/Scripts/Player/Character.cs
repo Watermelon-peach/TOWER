@@ -71,7 +71,8 @@ namespace Tower.Player
         public void TakeDamage(float damage)
         {
             if (IsDead) return;
-
+            damage = Mathf.Max(damage * (100f / (100f +characterBase.def)),1f);
+            Debug.Log("방어력 적용 대미지: " + damage);
             currentHP = Mathf.Max(currentHP - damage, 0);
             if (IsDead)
             {

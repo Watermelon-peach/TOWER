@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f73c43a69945186438328accd679caac, type: 3}
   m_Name: SupporterData
   m_EditorClassIdentifier: 
-  atk: 300
-  def: 500
+  atk: 50
+  def: 25
   maxHp: 500
-  maxMp: 150
+  maxMp: 100
   characterType: 2
-  CharacterIcon: {fileID: 0}
+  characterIcon: {fileID: 0}
+  skillIcon: {fileID: 0}
   manaCost: 0
   coolDown: 0
   ultRecoverRate: 0
