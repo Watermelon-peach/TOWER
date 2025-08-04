@@ -39231,7 +39231,7 @@ AnimationClip:
     m_StartTime: 0
     m_StopTime: 2.6666667
     m_OrientationOffsetY: 0
-    m_Level: 0
+    m_Level: 0.08
     m_CycleOffset: 0
     m_HasAdditiveReferencePose: 0
     m_LoopTime: 0
@@ -39240,9 +39240,9 @@ AnimationClip:
     m_LoopBlendPositionY: 1
     m_LoopBlendPositionXZ: 0
     m_KeepOriginalOrientation: 1
-    m_KeepOriginalPositionY: 1
+    m_KeepOriginalPositionY: 0
     m_KeepOriginalPositionXZ: 0
-    m_HeightFromFeet: 0
+    m_HeightFromFeet: 1
     m_Mirror: 0
   m_EditorCurves:
   - serializedVersion: 2
@@ -77285,7 +77285,7 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 0.16666667
-    functionName: LookAtTargetDuringAttack
+    functionName: LookAtTarget
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

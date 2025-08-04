@@ -77,9 +77,8 @@ public class EnemyAI : MonoBehaviour
         attackPosition = transform.position;
         isPositionLocked = true;
 
-        // 1.5초 후 움직임 허용
-        CancelInvoke(nameof(StartMoving));
-        Invoke(nameof(StartMoving), 1.5f);
+        
+        
     }
 
     public void StartMoving()
@@ -124,14 +123,34 @@ public class EnemyAI : MonoBehaviour
 
     public void LookAtTarget()
     {
-        if (target == null) return;
+        StartCoroutine(RotateToTarget());
+    }
 
-        Vector3 lookDirection = (target.position - transform.position).normalized;
-        lookDirection.y = 0;
+    private IEnumerator RotateToTarget()
+    {
+        if (target == null) yield break;
 
-        if (lookDirection != Vector3.zero)
+        float elapsed = 0f;
+        float duration = 2f;
+        float rotationSpeed = 720f; // 초당 720도
+
+        while (elapsed < duration)
         {
-            transform.rotation = Quaternion.LookRotation(lookDirection);
+            Vector3 lookDirection = (target.position - transform.position).normalized;
+            lookDirection.y = 0;
+
+            if (lookDirection != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+                transform.rotation = Quaternion.RotateTowards(
+                    transform.rotation,
+                    targetRotation,
+                    rotationSpeed * Time.deltaTime
+                );
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
         }
     }
 
