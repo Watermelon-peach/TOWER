@@ -27,10 +27,16 @@ namespace Tower.Player
             base.Awake();
             cam = GetComponent<CameraController>();
 
+        
+            //Debug.Log("Awake");
+        }
+
+        private void Start()
+        {
             currentIndex = 0; // 첫 캐릭터 선택
             SelectCharacter(currentIndex);
-            Debug.Log("Awake");
         }
+
         private void Update()
         {
             //스위칭
