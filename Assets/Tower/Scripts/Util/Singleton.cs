@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Sample
+namespace Tower.Util
 {
     //제네릭 싱글톤 클래스
     public class Singleton<T> : MonoBehaviour where T : Singleton<T>
