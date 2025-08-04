@@ -37,9 +37,7 @@ namespace Sample
             Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
             controller.Move(move * moveSpeed * Time.deltaTime);
 
-            // 중력 적용
-            velocity.y += gravity * Time.deltaTime;
-            controller.Move(velocity * Time.deltaTime);
+            
         }
 
         // Input System 콜백 메서드들
