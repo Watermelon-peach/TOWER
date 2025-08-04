@@ -11,7 +11,7 @@ namespace Tower.Game
         bool IsDead { get; }
         #endregion
         #region Custom Method
-        void TakeDamage(float damage, float groggyAmount);
+        void TakeDamage(float damage, int groggyAmount);
         #endregion
     }
 

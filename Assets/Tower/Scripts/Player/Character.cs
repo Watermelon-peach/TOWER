@@ -25,6 +25,8 @@ namespace Tower.Player
 
         #region Property
         public bool IsDead => currentHP <= 0;
+        public float Atk => characterBase.atk;
+        public float AtkBuff { get; set; } = 1f;
         #endregion
 
         #region Unity Event Method
@@ -68,7 +70,7 @@ namespace Tower.Player
         #endregion
 
         #region Custom Method
-        public void TakeDamage(float damage, float groggyAmount = 0)
+        public void TakeDamage(float damage, int groggyAmount = 0)
         {
             if (IsDead) return;
             damage = Mathf.Max(damage * (100f / (100f +characterBase.def)),1f);

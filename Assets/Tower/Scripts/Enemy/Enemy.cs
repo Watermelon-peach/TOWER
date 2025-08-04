@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-
 using Tower.Enemy.Data;
 using Tower.Game;
 using System.Collections;
@@ -20,8 +19,8 @@ namespace Tower.Enemy
 
         private float currentHP;    //현재 체력
         private float maxHP;        //최대 체력 (db 기반)
-        private float currentGP;    //현재 그로기 포인트
-        private float maxGP;        //최대 그로기 포인트 (db 기반)
+        private int currentGP;    //현재 그로기 포인트
+        private int maxGP;        //최대 그로기 포인트 (db 기반)
 
         private bool isGroggy;
         [SerializeField] private float groggyDuration = 10f;
@@ -50,7 +49,7 @@ namespace Tower.Enemy
         {
             //초기화
             currentHP = maxHP;
-            currentGP = 0f;
+            currentGP = 0;
             HideStatBar();
         }
 
@@ -64,22 +63,28 @@ namespace Tower.Enemy
         }
         #endregion
 
+        
         #region Custom Method
-        public void TakeDamage(float damage, float groggyAmount = 0)
+        public void TakeDamage(float damage, int groggyAmount = 0)
         {
             if (IsDead) return; //중첩사망처리 방지
 
             damage = Mathf.Max(damage * (100f / (100f + data.def)), 1f);
             Debug.Log("방어력 적용 대미지: " + damage);
-            currentGP += groggyAmount;
 
-            if (currentGP >= maxGP)
+            //그로기 중복 적용 방지
+            if(!isGroggy)
             {
-                currentGP = maxGP;
-                Debug.Log("그로기 상태 진입!!");
-
-
+                currentGP += groggyAmount;
+                if (currentGP >= maxGP)
+                {
+                    currentGP = maxGP;
+                    isGroggy = true;
+                    StartCoroutine(OnGroggyState());
+                }
             }
+
+            
             Debug.Log("현재 GP: " + currentGP);
             //그로기 약체화 배율 처리
             if (isGroggy)
@@ -95,6 +100,27 @@ namespace Tower.Enemy
             }
         }
 
+        //그로기타임
+        private IEnumerator OnGroggyState()
+        {
+            //그로기 연출
+            //...
+            float groggyCount = groggyDuration;
+
+            while (groggyCount >= 0)
+            {
+                groggyCount -= Time.deltaTime;
+                //타이머 UI 표시
+                //groggyTimerImage.fillamount = groggyCount / groggyDuration;
+                yield return null;
+            }
+            //그로기 끝, 상태 초기화
+            currentGP = 0;
+            isGroggy = false;
+            ShowStatBar();
+        }
+
+
         #region StatBar
         //스탯 바 UI
         private void ShowStatBar()
@@ -104,7 +130,7 @@ namespace Tower.Enemy
 
             //게이지 업데이트
             hpGauge.fillAmount = currentHP / maxHP;
-            gpGauge.fillAmount = currentGP / maxGP;
+            gpGauge.fillAmount = (float)currentGP / maxGP;
 
             // 이미 코루틴이 실행 중이면 중복 실행 방지
             if (hideCoroutine == null)
@@ -115,6 +141,11 @@ namespace Tower.Enemy
         {
             while (true)
             {
+                if (IsDead)
+                {
+                    HideStatBar();
+                    yield break;
+                }
                 // 5초 동안 대미지를 안 받았으면 페이드 아웃 시작
                 if (Time.time - lastDamageTime >= hideDelay)
                 {
@@ -150,7 +181,7 @@ namespace Tower.Enemy
         {
             //사망처리(애니메이션, 이펙트)
             //...
-            Destroy(gameObject, 2f);
+            Destroy(gameObject, 2f);    //죽는 애니메이션 길이에 따라 시간 조절
 
         }
         #endregion

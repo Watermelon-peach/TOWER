@@ -11,7 +11,7 @@ namespace Tower.Enemy.Data
         public float def;
 
         public float maxHp;
-        public float maxGp;
+        public int maxGp;
     }
 
 }
