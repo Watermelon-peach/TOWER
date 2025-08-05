@@ -30,6 +30,7 @@ namespace Tower.Enemy
         [SerializeField] private float fadeDuration = 1f;
         private Coroutine hideCoroutine;
         private float lastDamageTime;
+        private Color startGpColor;
 
         #endregion
 
@@ -51,6 +52,7 @@ namespace Tower.Enemy
             currentHP = maxHP;
             currentGP = 0;
             HideStatBar();
+            startGpColor = gpGauge.color;
         }
 
         private void Update()
@@ -105,6 +107,7 @@ namespace Tower.Enemy
         {
             //그로기 연출
             //...
+            gpGauge.color = Color.red;
             float groggyCount = groggyDuration;
 
             while (groggyCount >= 0)
@@ -116,6 +119,7 @@ namespace Tower.Enemy
             }
             //그로기 끝, 상태 초기화
             currentGP = 0;
+            gpGauge.color = startGpColor;
             isGroggy = false;
             ShowStatBar();
         }

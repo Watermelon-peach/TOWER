@@ -7801,7 +7801,7 @@ MonoBehaviour:
   characterBase: {fileID: 11400000, guid: 70b76c457aa3587428c5ecb935707725, type: 2}
   fairyForm: {fileID: 2385563987282660994, guid: c31b41fdfe9c23b45b5ac8ed84eec6d4, type: 3}
   detector: {fileID: 1067919068}
-  normalGroggyAmount: 3
+  normalGroggyAmount: 20
 --- !u!1001 &992675633096719790
 PrefabInstance:
   m_ObjectHideFlags: 0
