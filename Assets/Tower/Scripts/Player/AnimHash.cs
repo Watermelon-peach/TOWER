@@ -13,6 +13,8 @@ namespace Tower.Player
         public static readonly int dash = Animator.StringToHash("Dash");
         public static readonly int groggy = Animator.StringToHash("Groggy");
         public static readonly int endGroggy = Animator.StringToHash("EndGroggy");
+        public static readonly int hit = Animator.StringToHash("Hit");
+        public static readonly int isDead = Animator.StringToHash("IsDead");
     }
 
 }

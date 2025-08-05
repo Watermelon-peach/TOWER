@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Tower.Game;
 using Tower.Player.Data;
+using System.Collections;
+using Unity.VisualScripting;
+
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,6 +17,8 @@ namespace Tower.Player
         #region Variables
         public CharacterBaseSO characterBase;
         public GameObject fairyForm;
+        public GameObject input;
+
         private GameObject fgo;
         private bool isSceneUnloading = false;
 
@@ -21,8 +27,7 @@ namespace Tower.Player
         private float currentMP;
         private float maxMP;
 
-
-
+        private Animator animator;
         #endregion
 
         #region Property
@@ -34,16 +39,27 @@ namespace Tower.Player
         #region Unity Event Method
         private void Awake()
         {
+            Debug.Log("Awake");
             SceneManager.sceneUnloaded += OnSceneUnloaded;
-            UpdateStats();
+            
         }
 
+        private void Start()
+        {
+            animator = GetComponent<Animator>();
+            UpdateStats(); //Awake 호출 안돼서 옮겼음
+            //초기화
+            currentHP = maxHP;
+            currentMP = maxMP;
+            //Debug.Log("초기화 체력" + maxHP);
+        }
         private void OnEnable()
         {
             if (fgo != null)
             {
                 Destroy(fgo);
             }
+            input.SetActive(true);
         }
 
         private void OnDisable()
@@ -74,11 +90,19 @@ namespace Tower.Player
         #region Custom Method
         public void TakeDamage(float damage, int groggyAmount = 0)
         {
-            //애니메이션연출
+            Debug.Log(currentHP);
 
-            if (IsDead) return;
+            if (IsDead)
+            {
+                //Debug.Log("이미 죽어있는뎁쇼?");
+                return;
+            }
+
+            StartCoroutine(OnHit());
+
             damage = Mathf.Max(damage * (100f / (100f +characterBase.def)),1f);
             Debug.Log("방어력 적용 대미지: " + damage);
+            //Debug.Log("아야");
             currentHP = Mathf.Max(currentHP - damage, 0);
             if (IsDead)
             {
@@ -86,14 +110,27 @@ namespace Tower.Player
             }
         }
 
-        
+        private IEnumerator OnHit()
+        {
 
+            //애니메이션연출
+            animator.SetTrigger(AnimHash.hit);
+            input.SetActive(false);
 
-
+            yield return new WaitForSeconds(1.05f);
+            if (!IsDead)
+            {
+                input.SetActive(true);
+            }
+        }
         private void Die()
         {
+            //사망처리
             Debug.Log("사망");
-            //Destroy(gameObject); 사망처리
+            animator.SetBool(AnimHash.isDead, true);
+            input.SetActive(false);
+            //다음 캐릭터로 넘어가게
+            //...
         }
 
         public int GetHPForUI()
@@ -104,10 +141,8 @@ namespace Tower.Player
         public void UpdateStats()
         {
             maxHP = characterBase.maxHp;
-            currentHP = maxHP;
-
             maxMP = characterBase.maxMp;
-            currentMP = maxMP;
+            //Debug.Log(maxHP);
         }
 
         private void OnSceneUnloaded(Scene scene)

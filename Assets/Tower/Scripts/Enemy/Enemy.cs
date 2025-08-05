@@ -143,15 +143,15 @@ namespace Tower.Enemy
             // 공격 지점 설정 (attackPoint가 없으면 자신의 위치 사용)
             //Vector3 attackPos = attackPoint ? attackPoint.position : transform.position;
 
-            // 범위 내의 모든 적 찾기
-            Collider[] hitEnemies = Physics.OverlapSphere(transform.position, attackRadius, targetLayer);
+            // 범위 내의 히트박스 찾기
+            Collider[] hitBoxes = Physics.OverlapSphere(transform.position, attackRadius, targetLayer);
 
-            foreach (Collider collider in hitEnemies)
+            foreach (Collider hitBox in hitBoxes)
             {
-                //Character에게 데미지 주기
-                if (collider.TryGetComponent<Character>(out Character character))
+                Character character = hitBox.GetComponentInParent<Character>();
+                if (character != null)
                 {
-                    // 데미지 주기 
+                    Debug.Log("Character 문제임!");
                     character.TakeDamage(data.atk);
                 }
             }
