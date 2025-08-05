@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using Tower.Enemy.Data;
 using Tower.Game;
 using System.Collections;
-using Tower.Player.Data;
+using Tower.Player;
 
 namespace Tower.Enemy
 {
@@ -36,8 +36,7 @@ namespace Tower.Enemy
         //Enemy 공격애니메이션 이벤트 메서드
         private Transform attackPoint; // 공격 지점
         private float attackRadius = 2f; // 공격 범위
-        private LayerMask enemyLayer; // 적 레이어
-        public CharacterBaseSO characterBase;
+        private LayerMask targetLayer; // 적 레이어
         public float Atk = 10f;
         #endregion
 
@@ -139,24 +138,16 @@ namespace Tower.Enemy
             Vector3 attackPos = attackPoint ? attackPoint.position : transform.position;
 
             // 범위 내의 모든 적 찾기
-            Collider[] hitEnemies = Physics.OverlapSphere(attackPos, attackRadius, enemyLayer);
+            Collider[] hitEnemies = Physics.OverlapSphere(attackPos, attackRadius, targetLayer);
 
             foreach (Collider enemy in hitEnemies)
             {
-                // IDamageable 인터페이스를 구현한 적에게 데미지 주기
-                Tower.Player.Character damageable = enemy.GetComponent<Tower.Player.Character>();
-                if (damageable != null)
+                //Character에게 데미지 주기
+                Character character = enemy.GetComponent<Character>();
+                if (character != null)
                 {
                     // 데미지 주기 
-                    damageable.TakeDamage(Atk);
-
-                    // 넉백 효과 (선택사항)
-                    Rigidbody rb = enemy.GetComponent<Rigidbody>();
-                    if (rb != null)
-                    {
-                        Vector3 knockbackDir = (enemy.transform.position - transform.position).normalized;
-                        rb.AddForce(knockbackDir * 5f, ForceMode.Impulse);
-                    }
+                    character.TakeDamage(Atk);
                 }
             }
         }
