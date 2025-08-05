@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Tower.Enemy.Data;
 using Tower.Game;
 using System.Collections;
+using Tower.Player;
 
 namespace Tower.Enemy
 {
@@ -23,6 +24,8 @@ namespace Tower.Enemy
         private int maxGP;        //최대 그로기 포인트 (db 기반)
 
         private bool isGroggy;
+        private Animator animator;
+
         [SerializeField] private float groggyDuration = 10f;
 
         //스탯 바 관련 변수들
@@ -41,6 +44,8 @@ namespace Tower.Enemy
         #region Unity Event Method
         private void Awake()
         {
+            //참조
+            animator = GetComponent<Animator>();
             //값 설정
             maxHP = data.maxHp;
             maxGP = data.maxGp;
@@ -106,6 +111,7 @@ namespace Tower.Enemy
         private IEnumerator OnGroggyState()
         {
             //그로기 연출
+            animator.SetTrigger(AnimHash.groggy);
             //...
             gpGauge.color = Color.red;
             float groggyCount = groggyDuration;
@@ -121,6 +127,7 @@ namespace Tower.Enemy
             currentGP = 0;
             gpGauge.color = startGpColor;
             isGroggy = false;
+            animator.SetTrigger(AnimHash.endGroggy);
             ShowStatBar();
         }
 

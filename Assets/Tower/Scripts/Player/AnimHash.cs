@@ -11,6 +11,8 @@ namespace Tower.Player
         public static readonly int moveSpeed = Animator.StringToHash("MoveSpeed");
         public static readonly int isMoving = Animator.StringToHash("IsMoving");
         public static readonly int dash = Animator.StringToHash("Dash");
+        public static readonly int groggy = Animator.StringToHash("Groggy");
+        public static readonly int endGroggy = Animator.StringToHash("EndGroggy");
     }
 
 }
