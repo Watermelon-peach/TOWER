@@ -66,6 +66,7 @@ namespace Tower.Player
             for (int i = 0; i < characters.Length; i++)
             {
                 characters[i].gameObject.SetActive(i==index);
+                characters[i].gameObject.tag = (characters[i].gameObject.activeSelf) ? "Player" : "Fairy";
             }
 
             cam.LookAtCharacter(index);
