@@ -22,10 +22,6 @@ namespace Tower.Player
         private float maxMP;
 
 
-        [Header("Attack Settings")]
-        [SerializeField] private Transform attackPoint; // 공격 지점
-        [SerializeField] private float attackRadius = 2f; // 공격 범위
-        [SerializeField] private LayerMask enemyLayer; // 적 레이어
 
         #endregion
 
@@ -88,33 +84,7 @@ namespace Tower.Player
             }
         }
 
-        public void DealDamage()
-        {
-            // 공격 지점 설정 (attackPoint가 없으면 자신의 위치 사용)
-            Vector3 attackPos = attackPoint ? attackPoint.position : transform.position;
-
-            // 범위 내의 모든 적 찾기
-            Collider[] hitEnemies = Physics.OverlapSphere(attackPos, attackRadius, enemyLayer);
-
-            foreach (Collider enemy in hitEnemies)
-            {
-                // IDamageable 인터페이스를 구현한 적에게 데미지 주기
-                Character damageable = enemy.GetComponent<Character>();
-                if (damageable != null)
-                {
-                    // 데미지 주기 
-                    damageable.TakeDamage(Atk); 
-
-                    // 넉백 효과 (선택사항)
-                    Rigidbody rb = enemy.GetComponent<Rigidbody>();
-                    if (rb != null)
-                    {
-                        Vector3 knockbackDir = (enemy.transform.position - transform.position).normalized;
-                        rb.AddForce(knockbackDir * 5f, ForceMode.Impulse);
-                    }
-                }
-            }
-        }
+        
 
 
 

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Tower.Enemy.Data;
 using Tower.Game;
 using System.Collections;
+using Tower.Player.Data;
 
 namespace Tower.Enemy
 {
@@ -32,10 +33,18 @@ namespace Tower.Enemy
         private float lastDamageTime;
         private Color startGpColor;
 
+        //Enemy 공격애니메이션 이벤트 메서드
+        private Transform attackPoint; // 공격 지점
+        private float attackRadius = 2f; // 공격 범위
+        private LayerMask enemyLayer; // 적 레이어
+        public CharacterBaseSO characterBase;
+        public float Atk = 10f;
         #endregion
 
         #region Property
         public bool IsDead => currentHP <= 0;
+
+        
         #endregion
 
         #region Unity Event Method
@@ -122,6 +131,34 @@ namespace Tower.Enemy
             gpGauge.color = startGpColor;
             isGroggy = false;
             ShowStatBar();
+        }
+
+        public void DealDamage()
+        {
+            // 공격 지점 설정 (attackPoint가 없으면 자신의 위치 사용)
+            Vector3 attackPos = attackPoint ? attackPoint.position : transform.position;
+
+            // 범위 내의 모든 적 찾기
+            Collider[] hitEnemies = Physics.OverlapSphere(attackPos, attackRadius, enemyLayer);
+
+            foreach (Collider enemy in hitEnemies)
+            {
+                // IDamageable 인터페이스를 구현한 적에게 데미지 주기
+                Tower.Player.Character damageable = enemy.GetComponent<Tower.Player.Character>();
+                if (damageable != null)
+                {
+                    // 데미지 주기 
+                    damageable.TakeDamage(Atk);
+
+                    // 넉백 효과 (선택사항)
+                    Rigidbody rb = enemy.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        Vector3 knockbackDir = (enemy.transform.position - transform.position).normalized;
+                        rb.AddForce(knockbackDir * 5f, ForceMode.Impulse);
+                    }
+                }
+            }
         }
 
 
