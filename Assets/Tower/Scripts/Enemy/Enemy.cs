@@ -33,11 +33,12 @@ namespace Tower.Enemy
         private float lastDamageTime;
         private Color startGpColor;
 
+        private Animator animator;
+
         //Enemy 공격애니메이션 이벤트 메서드
-        private Transform attackPoint; // 공격 지점
-        private float attackRadius = 2f; // 공격 범위
-        private LayerMask targetLayer; // 적 레이어
-        public float Atk = 10f;
+        //[SerializeField] private Transform attackPoint; // 공격 지점
+        [SerializeField] private float attackRadius = 2f; // 공격 범위
+        [SerializeField] private LayerMask targetLayer; // 적 레이어
         #endregion
 
         #region Property
@@ -49,6 +50,8 @@ namespace Tower.Enemy
         #region Unity Event Method
         private void Awake()
         {
+            //참조
+            animator = GetComponent<Animator>();
             //값 설정
             maxHP = data.maxHp;
             maxGP = data.maxGp;
@@ -114,6 +117,7 @@ namespace Tower.Enemy
         private IEnumerator OnGroggyState()
         {
             //그로기 연출
+            animator.SetTrigger(AnimHash.groggy);
             //...
             gpGauge.color = Color.red;
             float groggyCount = groggyDuration;
@@ -129,25 +133,26 @@ namespace Tower.Enemy
             currentGP = 0;
             gpGauge.color = startGpColor;
             isGroggy = false;
+            animator.SetTrigger(AnimHash.endGroggy);
             ShowStatBar();
         }
 
         public void DealDamage()
         {
+            Debug.Log("호출 됨");
             // 공격 지점 설정 (attackPoint가 없으면 자신의 위치 사용)
-            Vector3 attackPos = attackPoint ? attackPoint.position : transform.position;
+            //Vector3 attackPos = attackPoint ? attackPoint.position : transform.position;
 
             // 범위 내의 모든 적 찾기
-            Collider[] hitEnemies = Physics.OverlapSphere(attackPos, attackRadius, targetLayer);
+            Collider[] hitEnemies = Physics.OverlapSphere(transform.position, attackRadius, targetLayer);
 
-            foreach (Collider enemy in hitEnemies)
+            foreach (Collider collider in hitEnemies)
             {
                 //Character에게 데미지 주기
-                Character character = enemy.GetComponent<Character>();
-                if (character != null)
+                if (collider.TryGetComponent<Character>(out Character character))
                 {
                     // 데미지 주기 
-                    character.TakeDamage(Atk);
+                    character.TakeDamage(data.atk);
                 }
             }
         }

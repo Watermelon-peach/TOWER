@@ -74,6 +74,8 @@ namespace Tower.Player
         #region Custom Method
         public void TakeDamage(float damage, int groggyAmount = 0)
         {
+            //애니메이션연출
+
             if (IsDead) return;
             damage = Mathf.Max(damage * (100f / (100f +characterBase.def)),1f);
             Debug.Log("방어력 적용 대미지: " + damage);

@@ -31,6 +31,13 @@ namespace Tower.Player
 
         private void Update()
         {
+            // 공격 중인데 적이 아예 없으면 강제로 회전 해제
+            if (isAttacking && detector.detectedEnemies.Count == 0)
+            {
+                EndAttack();
+            }
+
+            // 공격 중일 때만 타겟 방향 갱신
             if (isAttacking)
                 UpdateTargetDirection();
         }
@@ -39,7 +46,7 @@ namespace Tower.Player
         {
             if (animator == null || controller == null) return;
 
-            // 루트 모션 기반 수평 이동
+            // 루트모션 이동 계산
             Vector3 motion = animator.deltaPosition;
 
             // 중력 보정
@@ -50,11 +57,11 @@ namespace Tower.Player
 
             motion.y = verticalVelocity * Time.deltaTime;
 
-            // 캐릭터 이동
+            // 이동 적용
             controller.Move(motion);
 
-            // 회전 처리
-            if (currentTargetDirection.sqrMagnitude > 0.001f)
+            // 공격 중일 때만 회전
+            if (isAttacking && currentTargetDirection.sqrMagnitude > 0.001f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(currentTargetDirection);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
@@ -65,11 +72,20 @@ namespace Tower.Player
         {
             isAttacking = detector.detectedEnemies.Count > 0;
 
-            foreach (var enemy in detector.detectedEnemies)
+            if (isAttacking)
             {
-                if (enemy == null) continue;
-                enemy.TakeDamage(Atk * normalAttackRatio * AtkBuff, normalGroggyAmount);
+                foreach (var enemy in detector.detectedEnemies)
+                {
+                    if (enemy == null) continue;
+                    enemy.TakeDamage(Atk * normalAttackRatio * AtkBuff, normalGroggyAmount);
+                }
             }
+        }
+
+        public void EndAttack()
+        {
+            isAttacking = false; // 공격 끝나면 회전 고정 해제
+            currentTarget = null;
         }
 
         private void UpdateTargetDirection()
