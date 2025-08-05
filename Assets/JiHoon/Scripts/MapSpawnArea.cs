@@ -32,6 +32,10 @@ public class MapSpawnArea : MonoBehaviour
     public Transform[] spawnPoints; // 인스펙터에서 직접 배치하거나
     public bool autoGeneratePoints = true; // 자동으로 생성
 
+    [Header("Fixed Spawn Settings")]
+    public bool useFixedSpawnPositions = false; // 고정 위치 사용 여부
+    public Transform[] fixedSpawnPositions; // 고정 스폰 위치들
+
     [Header("Spawn Parent")]
     public Transform spawnParent; // 스폰된 몬스터들의 부모 오브젝트
 
@@ -54,7 +58,6 @@ public class MapSpawnArea : MonoBehaviour
         // Spawn Parent 설정
         if (spawnParent == null)
         {
-            // SpawnEnemy 오브젝트 찾기 또는 생성
             GameObject spawnEnemyObj = GameObject.Find("SpawnEnemy");
             if (spawnEnemyObj == null)
             {
@@ -63,11 +66,11 @@ public class MapSpawnArea : MonoBehaviour
             spawnParent = spawnEnemyObj.transform;
         }
 
-        if (autoGeneratePoints)
+        if (autoGeneratePoints && !useFixedSpawnPositions)
         {
             GenerateSpawnPoints();
         }
-        else
+        else if (!useFixedSpawnPositions)
         {
             availableSpawnPoints.AddRange(spawnPoints);
         }
@@ -102,7 +105,7 @@ public class MapSpawnArea : MonoBehaviour
         }
 
         spawnPoints = generatedPoints.ToArray();
-        availableSpawnPoints.Clear(); // 기존 리스트 클리어
+        availableSpawnPoints.Clear();
         availableSpawnPoints.AddRange(spawnPoints);
     }
 
@@ -115,23 +118,68 @@ public class MapSpawnArea : MonoBehaviour
         }
 
         Debug.Log($"[Map {mapID}] Starting spawn at position: {transform.position}");
-        Debug.Log($"[Map {mapID}] Spawn points count: {spawnPoints.Length}");
+        Debug.Log($"[Map {mapID}] Use fixed positions: {useFixedSpawnPositions}");
 
         StartCoroutine(InitialSpawn());
     }
 
     IEnumerator InitialSpawn()
     {
-        List<Transform> tempAvailable = new List<Transform>(availableSpawnPoints);
-
-        for (int i = 0; i < spawnConfig.initialSpawnCount && i < tempAvailable.Count; i++)
+        // 고정 위치 스폰 사용하는 경우
+        if (useFixedSpawnPositions && fixedSpawnPositions != null && fixedSpawnPositions.Length > 0)
         {
-            Transform spawnPoint = GetRandomSpawnPoint(tempAvailable);
-            if (spawnPoint != null)
+            Debug.Log($"[Map {mapID}] Using fixed spawn positions");
+
+            // 고정 위치 개수와 몬스터 종류 개수 중 작은 값만큼 스폰
+            int spawnCount = Mathf.Min(spawnConfig.initialSpawnCount,
+                                      fixedSpawnPositions.Length,
+                                      spawnConfig.monsterPrefabs.Length);
+
+            for (int i = 0; i < spawnCount; i++)
             {
-                SpawnMonster(spawnPoint.position);
-                tempAvailable.Remove(spawnPoint);
-                yield return new WaitForSeconds(0.3f);
+                if (fixedSpawnPositions[i] != null && spawnConfig.monsterPrefabs[i] != null)
+                {
+                    // i번째 몬스터를 i번째 위치에 스폰
+                    GameObject monster = Instantiate(spawnConfig.monsterPrefabs[i],
+                                                   fixedSpawnPositions[i].position,
+                                                   fixedSpawnPositions[i].rotation);
+
+                    if (spawnParent != null)
+                    {
+                        monster.transform.SetParent(spawnParent);
+                    }
+
+                    activeMonsters.Add(monster);
+                    currentSpawnedCount++;
+
+                    var enemyAI = monster.GetComponent<EnemyAI>();
+                    if (enemyAI != null)
+                    {
+                        enemyAI.SetSpawnArea(this);
+                    }
+                    else
+                    {
+                        monster.SendMessage("SetSpawnArea", this, SendMessageOptions.DontRequireReceiver);
+                    }
+
+                    yield return new WaitForSeconds(0.3f);
+                }
+            }
+        }
+        else
+        {
+            // 기존 랜덤 스폰 로직
+            List<Transform> tempAvailable = new List<Transform>(availableSpawnPoints);
+
+            for (int i = 0; i < spawnConfig.initialSpawnCount && i < tempAvailable.Count; i++)
+            {
+                Transform spawnPoint = GetRandomSpawnPoint(tempAvailable);
+                if (spawnPoint != null)
+                {
+                    SpawnMonster(spawnPoint.position);
+                    tempAvailable.Remove(spawnPoint);
+                    yield return new WaitForSeconds(0.3f);
+                }
             }
         }
     }
@@ -145,7 +193,6 @@ public class MapSpawnArea : MonoBehaviour
 
         GameObject monster = Instantiate(monsterPrefab, position, Quaternion.identity);
 
-        // 스폰 부모 설정
         if (spawnParent != null)
         {
             monster.transform.SetParent(spawnParent);
@@ -154,8 +201,6 @@ public class MapSpawnArea : MonoBehaviour
         activeMonsters.Add(monster);
         currentSpawnedCount++;
 
-        // 몬스터에 이 스폰 영역 참조 전달
-        // EnemyAI가 있다면 스폰 영역 설정
         var enemyAI = monster.GetComponent<EnemyAI>();
         if (enemyAI != null)
         {
@@ -163,7 +208,6 @@ public class MapSpawnArea : MonoBehaviour
         }
         else
         {
-            // EnemyAI가 없으면 SendMessage로 시도
             monster.SendMessage("SetSpawnArea", this, SendMessageOptions.DontRequireReceiver);
         }
     }
@@ -174,7 +218,6 @@ public class MapSpawnArea : MonoBehaviour
 
         if (spawnConfig.spawnWeights != null && spawnConfig.spawnWeights.Length > 0)
         {
-            // 가중치 기반 랜덤 선택
             float totalWeight = 0f;
             for (int i = 0; i < Mathf.Min(spawnConfig.monsterPrefabs.Length, spawnConfig.spawnWeights.Length); i++)
             {
@@ -194,16 +237,14 @@ public class MapSpawnArea : MonoBehaviour
             }
         }
 
-        // 가중치가 없으면 균등 확률
         return spawnConfig.monsterPrefabs[Random.Range(0, spawnConfig.monsterPrefabs.Length)];
     }
 
     Transform GetRandomSpawnPoint(List<Transform> availableList = null)
     {
         List<Transform> checkList = availableList ?? availableSpawnPoints;
-
-        // 이미 몬스터가 있는 위치 제외
         List<Transform> freePoints = new List<Transform>();
+
         foreach (Transform point in checkList)
         {
             bool occupied = false;
@@ -227,7 +268,6 @@ public class MapSpawnArea : MonoBehaviour
         activeMonsters.Remove(monster);
         killedInCurrentWave++;
 
-        // 리스폰 체크
         if (killedInCurrentWave >= spawnConfig.respawnCount &&
             currentSpawnedCount < spawnConfig.totalMonsterCount)
         {
@@ -235,7 +275,6 @@ public class MapSpawnArea : MonoBehaviour
             StartCoroutine(RespawnWave());
         }
 
-        // 맵 클리어 체크
         if (activeMonsters.Count == 0 && currentSpawnedCount >= spawnConfig.totalMonsterCount)
         {
             OnMapCleared();
@@ -261,13 +300,22 @@ public class MapSpawnArea : MonoBehaviour
     void OnMapCleared()
     {
         Debug.Log($"Map {mapID} cleared!");
-        // 맵 클리어 이벤트 발생
         MapSpawnManager.Instance?.OnMapCleared(mapID);
+    }
+
+    public int GetActiveMonsterCount()
+    {
+        activeMonsters.RemoveAll(monster => monster == null);
+        return activeMonsters.Count;
+    }
+
+    public bool IsAllMonstersSpawned()
+    {
+        return currentSpawnedCount >= spawnConfig.totalMonsterCount;
     }
 
     void OnDrawGizmos()
     {
-        // 이 맵의 영역 표시
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube(transform.position, areaSize);
 
@@ -277,12 +325,11 @@ public class MapSpawnArea : MonoBehaviour
             foreach (Transform point in spawnPoints)
             {
                 if (point != null)
-                    Gizmos.DrawWireSphere(point.position, 0.5f); // 월드 위치 사용
+                    Gizmos.DrawWireSphere(point.position, 0.5f);
             }
         }
         else if (Application.isPlaying == false && autoGeneratePoints)
         {
-            // 에디터에서 미리보기
             Gizmos.color = new Color(1f, 0f, 0f, 0.3f);
             for (int row = 0; row < rows; row++)
             {
@@ -299,18 +346,5 @@ public class MapSpawnArea : MonoBehaviour
                 }
             }
         }
-    }
-    // 활성 몬스터 수 반환
-    public int GetActiveMonsterCount()
-    {
-        // null이거나 파괴된 몬스터 제거
-        activeMonsters.RemoveAll(monster => monster == null);
-        return activeMonsters.Count;
-    }
-
-    // 모든 몬스터가 스폰되었는지 확인
-    public bool IsAllMonstersSpawned()
-    {
-        return currentSpawnedCount >= spawnConfig.totalMonsterCount;
     }
 }

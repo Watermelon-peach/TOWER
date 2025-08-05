@@ -1,18 +1,17 @@
 using UnityEngine;
 using System.Collections;
 
-// 맵 클리어 시 활성화되는 간단한 출구 트리거
-public class SimpleMapExit : MonoBehaviour
+// 맵 클리어 시 활성화되는 출구 트리거 (보상 표시 포함)
+public class MapExit : MonoBehaviour
 {
     [Header("Map Settings")]
-    [SerializeField] private int currentMapID = 0; // 현재 맵 ID
-    [SerializeField] private Vector3 nextMapStartPosition; // 다음 맵 시작 위치
-    [SerializeField] private bool useTransformAsPosition = false; // Transform 사용 여부
-    [SerializeField] private Transform nextMapStartTransform; // 다음 맵 시작 Transform
+    [SerializeField] private int currentMapID = 0;
+    [SerializeField] private Transform nextMapStartTransform;
 
-    private bool isTransitioning = false; // 클래스 변수로 추가
+    private bool isTransitioning = false;
     private bool isActive = false;
     private MapSpawnArea mapArea;
+    private GameObject currentPlayer; // 플레이어 참조 저장
 
     void Start()
     {
@@ -36,6 +35,9 @@ public class SimpleMapExit : MonoBehaviour
         // 맵이 클리어되었는지 체크
         if (!isActive && mapArea != null)
         {
+            // 이미 사용된 출구는 다시 활성화하지 않음
+            if (isTransitioning) return;
+
             if (mapArea.GetActiveMonsterCount() == 0 && mapArea.IsAllMonstersSpawned())
             {
                 SetTriggerActive(true);
@@ -47,7 +49,6 @@ public class SimpleMapExit : MonoBehaviour
     {
         isActive = active;
 
-        // 콜라이더 활성화/비활성화
         Collider col = GetComponent<Collider>();
         if (col != null)
         {
@@ -59,38 +60,108 @@ public class SimpleMapExit : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (!isActive || isTransitioning) return; // isTransitioning 체크 추가
+        if (!isActive || isTransitioning) return;
 
         if (other.CompareTag("Player"))
         {
             Debug.Log($"Player entered exit trigger for map {currentMapID}!");
-            StartCoroutine(HandleMapTransition(other.gameObject));
+            currentPlayer = other.gameObject;
+            StartCoroutine(HandleRewardAndTransition());
         }
     }
 
-    IEnumerator HandleMapTransition(GameObject player)
+    IEnumerator HandleRewardAndTransition()
     {
         // 중복 실행 방지
         isTransitioning = true;
         isActive = false;
         GetComponent<Collider>().enabled = false;
 
-        Debug.Log($"Moving player from map {currentMapID} to map {currentMapID + 1}");
+        // 플레이어 이동 정지
+        var playerMovement = currentPlayer.GetComponent<Sample.PlayerMovement>();
+        if (playerMovement != null)
+            playerMovement.enabled = false;
 
-        // 딜레이 줄이기 (0.5초 → 0.1초)
-        yield return new WaitForSeconds(0.1f);
+        // 보상 UI 표시
+        bool rewardCompleted = false;
 
-        // Transform이 있으면 무조건 Transform 사용
-        if (nextMapStartTransform != null)
+        if (CardRewardUI.Instance != null)
         {
-            player.transform.position = nextMapStartTransform.position;
-            player.transform.rotation = nextMapStartTransform.rotation;
+            Debug.Log("Showing stage reward UI");
+            // 맵 ID를 전달하여 맵별로 다른 보상 가능
+            CardRewardUI.Instance.ShowReward(currentMapID, () => {
+                rewardCompleted = true;
+            });
+        }
+        else
+        {
+            Debug.LogWarning("No reward UI found! Skipping reward.");
+            rewardCompleted = true;
+        }
+
+        // 보상 UI가 닫힐 때까지 대기
+        while (!rewardCompleted)
+        {
+            yield return null;
+        }
+
+        Debug.Log("Reward UI closed!");
+
+        // 잠시 대기
+        yield return new WaitForSeconds(0.5f);
+
+        // 플레이어 이동 및 다음 맵 시작
+        MovePlayerToNextMap();
+
+        // 전환 완료
+        isTransitioning = false;
+    }
+
+    void MovePlayerToNextMap()
+    {
+        Debug.Log($"MovePlayerToNextMap - Current MapID: {currentMapID}, Moving to next map");
+
+        if (nextMapStartTransform != null && currentPlayer != null)
+        {
+            // CharacterController 처리
+            CharacterController controller = currentPlayer.GetComponent<CharacterController>();
+            if (controller != null)
+            {
+                controller.enabled = false;
+            }
+
+            // 위치 이동
+            currentPlayer.transform.position = nextMapStartTransform.position;
+            currentPlayer.transform.rotation = nextMapStartTransform.rotation;
+
+            // 컴포넌트 재활성화
+            if (controller != null)
+            {
+                controller.enabled = true;
+            }
+
+            var playerMovement = currentPlayer.GetComponent<Sample.PlayerMovement>();
+            if (playerMovement != null)
+            {
+                playerMovement.enabled = true;
+            }
+
+            Debug.Log($"Moved player to: {currentPlayer.transform.position}");
+        }
+        else
+        {
+            Debug.LogError($"Missing references - nextMapStartTransform: {nextMapStartTransform}, currentPlayer: {currentPlayer}");
         }
 
         // 다음 맵 몬스터 스폰 시작
         if (MapSpawnManager.Instance != null)
         {
+            Debug.Log($"Starting next map (index: {currentMapID + 1})");
             MapSpawnManager.Instance.StartMap(currentMapID + 1);
+        }
+        else
+        {
+            Debug.LogError("MapSpawnManager.Instance is null!");
         }
     }
 }

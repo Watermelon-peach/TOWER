@@ -431,6 +431,7 @@ GameObject:
   - component: {fileID: 2518698863132666394}
   - component: {fileID: 4482190596180651440}
   - component: {fileID: -5388618654584845418}
+  - component: {fileID: 407964257546220223}
   m_Layer: 7
   m_Name: Skeleton
   m_TagString: Enemy
@@ -616,6 +617,25 @@ MonoBehaviour:
   maxGroggyGauge: 100
   groggyDuration: 5
   groggyDamageMultiplier: 1.5
+--- !u!114 &407964257546220223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1119424025508267185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 878fdbf31e7aa7a4ba57244f167c5644, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterBase: {fileID: 11400000, guid: 3de5c17c89a9f644ab3415b62647edd1, type: 2}
+  fairyForm: {fileID: 0}
+  attackPoint: {fileID: 0}
+  attackRadius: 2
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &1180591079304596846
 GameObject:
   m_ObjectHideFlags: 0
