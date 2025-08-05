@@ -53,6 +53,23 @@ namespace Sample
                 velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
             }
         }
+        void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Enemy") || other.GetComponent<EnemyAI>() != null)
+            {
+                // 현재 맵의 MapSpawnArea만 찾기
+                int currentMapIndex = MapSpawnManager.Instance.GetCurrentMapIndex();
+                MapSpawnArea currentMapArea = MapSpawnManager.Instance.mapSpawnAreas[currentMapIndex];
+
+                if (currentMapArea != null)
+                {
+                    currentMapArea.NotifyMonsterKilled(other.gameObject);
+                }
+
+                Destroy(other.gameObject);
+            }
+        }
 
     }
+
 }
