@@ -34,9 +34,8 @@ Material:
   stringTagMap:
     RenderType: Transparent
   disabledShaderPasses:
-  - DepthOnly
-  - SHADOWCASTER
   - MOTIONVECTORS
+  - SHADOWCASTER
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -58,20 +57,22 @@ Material:
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 0
+    - _BottomColor_Height: 0.797
     - _CastShadows: 0
     - _Cull: 0
     - _DisoltionScale: 12.22
     - _Distortion: 0.349
     - _DstBlend: 10
-    - _Height: 1
+    - _Height: 1.01
     - _QueueControl: 0
     - _QueueOffset: 0
     - _SrcBlend: 5
     - _Surface: 1
     - _ZTest: 4
-    - _ZWrite: 0
-    - _ZWriteControl: 0
+    - _ZWrite: 1
+    - _ZWriteControl: 1
     m_Colors:
+    - _BottomColor: {r: 1, g: 0.3098039, b: 0.3098039, a: 0}
     - _Color: {r: 4.594794, g: 1.2613161, b: 0, a: 0}
     - _Duration_Speed: {r: 0, g: -0.5, b: 0, a: 0}
     - _Duration_Tiling: {r: -14, g: 0.14, b: 0, a: 0}
