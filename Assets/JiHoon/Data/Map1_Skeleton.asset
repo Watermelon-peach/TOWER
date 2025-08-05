@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Map1_Skeleton
   m_EditorClassIdentifier: Assembly-CSharp::MapSpawnConfig
   mapName: 
-  mapID: 1
+  mapID: 0
   monsterPrefabs:
   - {fileID: 1119424025508267185, guid: af30fd265e7ece94ebb2a5cb0259ab8d, type: 3}
   totalMonsterCount: 21

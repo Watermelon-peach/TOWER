@@ -77,14 +77,40 @@ public class SimpleMapExit : MonoBehaviour
 
         Debug.Log($"Moving player from map {currentMapID} to map {currentMapID + 1}");
 
-        // 딜레이 줄이기 (0.5초 → 0.1초)
         yield return new WaitForSeconds(0.1f);
 
         // Transform이 있으면 무조건 Transform 사용
         if (nextMapStartTransform != null)
         {
-            player.transform.position = nextMapStartTransform.position;
-            player.transform.rotation = nextMapStartTransform.rotation;
+            // PlayerMovement 스크립트도 잠시 비활성화
+            var playerMovement = player.GetComponent<Sample.PlayerMovement>();
+            if (playerMovement != null)
+                playerMovement.enabled = false;
+
+            // CharacterController가 있는 경우 처리
+            CharacterController controller = player.GetComponent<CharacterController>();
+            if (controller != null)
+            {
+                controller.enabled = false;
+                yield return null;
+
+                player.transform.position = nextMapStartTransform.position;
+                player.transform.rotation = nextMapStartTransform.rotation;
+
+                yield return null;
+                controller.enabled = true;
+            }
+            else
+            {
+                player.transform.position = nextMapStartTransform.position;
+                player.transform.rotation = nextMapStartTransform.rotation;
+            }
+
+            // PlayerMovement 다시 활성화
+            if (playerMovement != null)
+                playerMovement.enabled = true;
+
+            Debug.Log($"Moved player to: {player.transform.position}");
         }
 
         // 다음 맵 몬스터 스폰 시작

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Map4_Wizard
   m_EditorClassIdentifier: Assembly-CSharp::MapSpawnConfig
   mapName: 
-  mapID: 4
+  mapID: 3
   monsterPrefabs:
   - {fileID: 5628472914500077343, guid: 21171d67ebc73c74f991990a8ff543d0, type: 3}
   totalMonsterCount: 1

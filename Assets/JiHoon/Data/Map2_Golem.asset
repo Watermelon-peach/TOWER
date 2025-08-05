@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Map2_Golem
   m_EditorClassIdentifier: Assembly-CSharp::MapSpawnConfig
   mapName: 
-  mapID: 2
+  mapID: 1
   monsterPrefabs:
   - {fileID: 8254165185041215798, guid: 9d700115a9d2f9344a0c2bcebba03478, type: 3}
   totalMonsterCount: 12
