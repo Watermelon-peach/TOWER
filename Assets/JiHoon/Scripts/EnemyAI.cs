@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-
+using Unity.Behavior;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -11,7 +11,6 @@ public class EnemyAI : MonoBehaviour
     private Transform target;
     private Rigidbody rb;
     private SphereCollider detectionTrigger;
-
 
     [Header("Settings")]
     public float attackRange = 2f;
@@ -24,17 +23,32 @@ public class EnemyAI : MonoBehaviour
     private Vector3 attackPosition;
     private bool isPositionLocked = false;
 
+    // 스폰 시스템 참조
+    private MapSpawnArea spawnArea;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
 
-        // Behavior Graph에서 설정한 Target을 찾거나, 태그로 찾기
+        // 플레이어 찾기
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
+        {
             target = player.transform;
+
+            // Behaviour Graph의 Blackboard에 Target 설정
+            SetTargetInBehaviourGraph(player);
+        }
+        else
+        {
+            Debug.LogError($"태그 못찾음");
+        }
     }
+
+   
+
 
     void Update()
     {
@@ -50,8 +64,6 @@ public class EnemyAI : MonoBehaviour
         // 애니메이션만 업데이트
         UpdateAnimations();
     }
-
-
 
     public void StopMoving()
     {
@@ -76,9 +88,6 @@ public class EnemyAI : MonoBehaviour
         // 현재 위치 저장하고 고정
         attackPosition = transform.position;
         isPositionLocked = true;
-
-        
-        
     }
 
     public void StartMoving()
@@ -154,13 +163,29 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-
     // 공격 상태 확인 메서드 추가
     public bool IsAttacking()
     {
         return isAttacking;
     }
 
+    // Behaviour Graph의 Blackboard에 타겟 설정
+    void SetTargetInBehaviourGraph(GameObject playerObject)
+    {
+        var behaviorAgent = GetComponent<BehaviorGraphAgent>();
+        if (behaviorAgent != null && behaviorAgent.BlackboardReference != null)
+        {
+            // Blackboard의 "Target" 변수에 플레이어 GameObject 설정
+            bool success = behaviorAgent.BlackboardReference.SetVariableValue("Target", playerObject);
+
+        }
+    }
+
+    // MapSpawnArea에서 호출
+    public void SetSpawnArea(MapSpawnArea area)
+    {
+        spawnArea = area;
+    }
 
     void UpdateAnimations()
     {
@@ -181,9 +206,6 @@ public class EnemyAI : MonoBehaviour
         animator.SetBool("IsMoving", speed > 0.1f);
     }
 
-    
-
-    
     public void LookAtTargetDuringAttack()
     {
         if (target == null || !isPositionLocked) return;
@@ -198,7 +220,6 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-
     // 디버그용 - Scene 뷰에서 범위 표시
     void OnDrawGizmosSelected()
     {
@@ -209,5 +230,7 @@ public class EnemyAI : MonoBehaviour
         // 감지 범위
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
+
+
     }
 }

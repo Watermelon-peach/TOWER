@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Map3_Knight
+  m_EditorClassIdentifier: Assembly-CSharp::MapSpawnConfig
+  mapName: 
+  mapID: 3
+  monsterPrefabs:
+  - {fileID: 7064588541486432289, guid: dd3bb7cef711fa344bd6e9464b36b833, type: 3}
+  - {fileID: 3688673548518358920, guid: d5fdb6625b1293e42aaf9589d77165e2, type: 3}
+  - {fileID: 3900363653994270788, guid: 544e6a867c44dfb49b47be9d9ec1ac03, type: 3}
+  totalMonsterCount: 3
+  initialSpawnCount: 3
+  respawnCount: 0
+  respawnAmount: 0
+  spawnWeights: []
