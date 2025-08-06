@@ -12,13 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 979b369539246794d816d40fda326968, type: 3}
   m_Name: D
   m_EditorClassIdentifier: 
-  grade: 0
   gradeName: D
-  gradeDescription: 
-  gradeIcon: {fileID: 0}
+  gradeDescription: D
+  gradeIcon: {fileID: 21300000, guid: e9de352e4651ca74daffec0184c89814, type: 3}
   gradeColor: {r: 1, g: 1, b: 1, a: 1}
-  baseGoldReward: 100
-  goldMultiplier: 1
-  timeThreshold: 300
-  bonusExp: 0
-  bonusGems: 0
+  goldReward: 200
+  timeThreshold: 9999

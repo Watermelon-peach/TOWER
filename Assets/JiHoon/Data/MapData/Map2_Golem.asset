@@ -11,12 +11,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
   m_Name: Map2_Golem
-  m_EditorClassIdentifier: Assembly-CSharp::MapSpawnConfig
-  mapName: 
+  m_EditorClassIdentifier: Assembly-CSharp:Tower.Game:MapSpawnConfig
+  mapName: 1
   mapID: 1
   monsterPrefabs:
   - {fileID: 8254165185041215798, guid: 9d700115a9d2f9344a0c2bcebba03478, type: 3}
-  totalMonsterCount: 12
+  totalMonsterCount: 14
   initialSpawnCount: 4
   respawnCount: 2
   respawnAmount: 2

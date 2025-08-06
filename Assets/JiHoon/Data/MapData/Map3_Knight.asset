@@ -11,9 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
   m_Name: Map3_Knight
-  m_EditorClassIdentifier: Assembly-CSharp::MapSpawnConfig
-  mapName: 
-  mapID: 2
+  m_EditorClassIdentifier: Assembly-CSharp:Tower.Game:MapSpawnConfig
+  mapName: 3
+  mapID: 3
   monsterPrefabs:
   - {fileID: 7064588541486432289, guid: dd3bb7cef711fa344bd6e9464b36b833, type: 3}
   - {fileID: 3688673548518358920, guid: d5fdb6625b1293e42aaf9589d77165e2, type: 3}
@@ -22,4 +22,5 @@ MonoBehaviour:
   initialSpawnCount: 3
   respawnCount: 0
   respawnAmount: 0
-  spawnWeights: []
+  spawnWeights:
+  - 0

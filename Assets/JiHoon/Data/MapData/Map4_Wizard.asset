@@ -11,8 +11,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
   m_Name: Map4_Wizard
-  m_EditorClassIdentifier: Assembly-CSharp::MapSpawnConfig
-  mapName: 
+  m_EditorClassIdentifier: Assembly-CSharp:Tower.Game:MapSpawnConfig
+  mapName: 3
   mapID: 3
   monsterPrefabs:
   - {fileID: 5628472914500077343, guid: 21171d67ebc73c74f991990a8ff543d0, type: 3}

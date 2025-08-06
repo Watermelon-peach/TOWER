@@ -624,7 +624,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1119424025508267185}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0ffd14f6370f20f4eb06813f620a5fa1, type: 3}
   m_Name: 
@@ -635,7 +635,10 @@ MonoBehaviour:
   gpGauge: {fileID: 0}
   groggyDuration: 10
   fadeDuration: 1
-  characterBase: {fileID: 11400000, guid: 3de5c17c89a9f644ab3415b62647edd1, type: 2}
+  attackRadius: 2
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &1180591079304596846
 GameObject:
   m_ObjectHideFlags: 0
