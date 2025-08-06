@@ -27,7 +27,7 @@ namespace Tower.Player
         private float currentMP;
         private float maxMP;
 
-        private Animator animator;
+        protected Animator animator;
         #endregion
 
         #region Property
@@ -37,7 +37,7 @@ namespace Tower.Player
         #endregion
 
         #region Unity Event Method
-        private void Awake()
+        protected virtual void Awake()
         {
             Debug.Log("Awake");
             SceneManager.sceneUnloaded += OnSceneUnloaded;

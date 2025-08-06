@@ -17,15 +17,15 @@ namespace Tower.Player
         private EnemyClass currentTarget;
         private Vector3 currentTargetDirection = Vector3.forward;
 
-        private Animator animator;
+
         private CharacterController controller;
         private float verticalVelocity;
 
         public float SkillCoolRemain => skillCoolRemain;
 
-        private void Awake()
+        protected override void Awake()
         {
-            animator = GetComponent<Animator>();
+            base.Awake();
             controller = GetComponent<CharacterController>();
         }
 
