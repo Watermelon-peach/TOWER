@@ -2864,6 +2864,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterBase: {fileID: 11400000, guid: 70b76c457aa3587428c5ecb935707725, type: 2}
   fairyForm: {fileID: 2385563987282660994, guid: c31b41fdfe9c23b45b5ac8ed84eec6d4, type: 3}
+  input: {fileID: 4656683052073887960}
   detector: {fileID: 8271208843755548477}
   normalGroggyAmount: 3
   rotationSpeed: 10
@@ -6922,6 +6923,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &4338492761265250138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7956587598240459463}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c453e0ac1bcfa46b0dca7e57a964f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxGroggyGauge: 100
+  groggyDuration: 5
+  groggyDamageMultiplier: 1.5
 --- !u!4 &4359007866192152523
 Transform:
   m_ObjectHideFlags: 0
@@ -9133,6 +9149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterBase: {fileID: 11400000, guid: 70b76c457aa3587428c5ecb935707725, type: 2}
   fairyForm: {fileID: 2385563987282660994, guid: c31b41fdfe9c23b45b5ac8ed84eec6d4, type: 3}
+  input: {fileID: 4656683052073887960}
   detector: {fileID: 8978945186936844919}
   normalGroggyAmount: 3
   rotationSpeed: 10
@@ -9900,6 +9917,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterBase: {fileID: 11400000, guid: 70b76c457aa3587428c5ecb935707725, type: 2}
   fairyForm: {fileID: 2385563987282660994, guid: c31b41fdfe9c23b45b5ac8ed84eec6d4, type: 3}
+  input: {fileID: 4656683052073887960}
   detector: {fileID: 7029829293179745876}
   normalGroggyAmount: 20
   rotationSpeed: 10
@@ -12238,6 +12256,7 @@ GameObject:
   - component: {fileID: 4149982143233202283}
   - component: {fileID: 7282047372959493140}
   - component: {fileID: 2991542683329881673}
+  - component: {fileID: 4338492761265250138}
   - component: {fileID: 5029871974012921821}
   m_Layer: 7
   m_Name: EnemyDemo

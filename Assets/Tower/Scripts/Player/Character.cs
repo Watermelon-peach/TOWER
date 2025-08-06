@@ -17,6 +17,7 @@ namespace Tower.Player
         #region Variables
         public CharacterBaseSO characterBase;
         public GameObject fairyForm;
+        public GameObject input;
 
         private GameObject fgo;
         private bool isSceneUnloading = false;
@@ -26,7 +27,6 @@ namespace Tower.Player
         private float currentMP;
         private float maxMP;
 
-        private PlayerController p_controller;
         protected Animator animator;
         #endregion
 
@@ -39,14 +39,15 @@ namespace Tower.Player
         #region Unity Event Method
         protected virtual void Awake()
         {
+            Debug.Log("Awake");
             SceneManager.sceneUnloaded += OnSceneUnloaded;
-            animator = GetComponent<Animator>();
-            p_controller = GetComponent<PlayerController>();
-            UpdateStats();
+            
         }
 
         private void Start()
         {
+            animator = GetComponent<Animator>();
+            UpdateStats(); //Awake 호출 안돼서 옮겼음
             //초기화
             currentHP = maxHP;
             currentMP = maxMP;
@@ -58,7 +59,7 @@ namespace Tower.Player
             {
                 Destroy(fgo);
             }
-            p_controller.enabled = true;
+            input.SetActive(true);
         }
 
         private void OnDisable()
@@ -97,8 +98,7 @@ namespace Tower.Player
                 return;
             }
 
-            //애니메이션연출
-            animator.SetTrigger(AnimHash.hit);
+            StartCoroutine(OnHit());
 
             damage = Mathf.Max(damage * (100f / (100f +characterBase.def)),1f);
             Debug.Log("방어력 적용 대미지: " + damage);
@@ -110,12 +110,25 @@ namespace Tower.Player
             }
         }
 
+        private IEnumerator OnHit()
+        {
+
+            //애니메이션연출
+            animator.SetTrigger(AnimHash.hit);
+            input.SetActive(false);
+
+            yield return new WaitForSeconds(1.05f);
+            if (!IsDead)
+            {
+                input.SetActive(true);
+            }
+        }
         private void Die()
         {
             //사망처리
-            p_controller.enabled = false;
             Debug.Log("사망");
             animator.SetBool(AnimHash.isDead, true);
+            input.SetActive(false);
             //다음 캐릭터로 넘어가게
             //...
         }

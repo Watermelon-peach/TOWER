@@ -26,6 +26,7 @@ namespace Tower.Player
         protected override void Awake()
         {
             base.Awake();
+            controller = GetComponent<CharacterController>();
         }
 
         private void Update()
