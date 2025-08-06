@@ -95,6 +95,7 @@ namespace Tower.Player
             isDashing = false;
 
             //회피 처리 구현
+            //주변 일정 범위만큼 캐스팅 해서 CanParry가 true인 적이 있을 시 Parrymode에 진입한다.
             //...
         }
         #endregion

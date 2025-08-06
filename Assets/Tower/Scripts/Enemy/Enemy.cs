@@ -39,11 +39,15 @@ namespace Tower.Enemy
         //[SerializeField] private Transform attackPoint; // 공격 지점
         [SerializeField] private float attackRadius = 2f; // 공격 범위
         [SerializeField] private LayerMask targetLayer; // 적 레이어
+
+        [Header("패링")]
+        [SerializeField] private float parryingTime = 0.5f;  //패링허용 시간(임시0.5s)
+        //[SerializeField] private GameObject jigumiya;
         #endregion
 
         #region Property
         public bool IsDead => currentHP <= 0;
-
+        public bool CanParry { get; private set; }
         
         #endregion
 
@@ -81,7 +85,7 @@ namespace Tower.Enemy
         public void TakeDamage(float damage, int groggyAmount = 0)
         {
             if (IsDead) return; //중첩사망처리 방지
-
+            
             damage = Mathf.Max(damage * (100f / (100f + data.def)), 1f);
             Debug.Log("방어력 적용 대미지: " + damage);
 
@@ -96,8 +100,9 @@ namespace Tower.Enemy
                     StartCoroutine(OnGroggyState());
                 }
             }
+            if (!isGroggy)
+                animator.SetTrigger(AnimHash.hit);
 
-            
             Debug.Log("현재 GP: " + currentGP);
             //그로기 약체화 배율 처리
             if (isGroggy)
@@ -137,9 +142,25 @@ namespace Tower.Enemy
             ShowStatBar();
         }
 
+        //패링
+        public void Jigumini()
+        {
+            CanParry = true;
+            //vfx 활성화
+            //jigumiya.SetActive(true);
+            StartCoroutine(ParryingCount());
+        }
+
+        private IEnumerator ParryingCount()
+        {
+            yield return new WaitForSeconds(parryingTime);
+            //jigumiya.SetActive(false);
+            CanParry = false;
+        }
+
         public void DealDamage()
         {
-            Debug.Log("호출 됨");
+            //Debug.Log("호출 됨");
             // 공격 지점 설정 (attackPoint가 없으면 자신의 위치 사용)
             //Vector3 attackPos = attackPoint ? attackPoint.position : transform.position;
 
