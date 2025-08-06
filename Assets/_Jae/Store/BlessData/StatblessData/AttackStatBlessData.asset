@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7a53c1e32549b8438ae7263e8bec0f8, type: 3}
+  m_Name: AttackStatBlessData
+  m_EditorClassIdentifier: 
+  blessName: AttackBless
+  blessEffect: {fileID: 147034310708643191, guid: 15e9998128eea5b43915ac47b660fded, type: 3}
+  nowTier: 0
+  maxblessTier: 7
+  TargetStatus: Attack
+  StatusIncreaserate: 1.3

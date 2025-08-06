@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e468bea84d2a0664dae7628c81104d2d, type: 3}
+  m_Name: CoolTimeAbilityBlessData
+  m_EditorClassIdentifier: 
+  blessName: CoolTimeBless
+  blessEffect: {fileID: 2393593232471866748, guid: 5ccd86367944a9c47969428086907d0a, type: 3}
+  Price: 1
+  nowTier: 0
+  maxTier: 3
+  TargetStatus: CoolTime
+  StatusIncreaserate: 1.1
