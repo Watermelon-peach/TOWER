@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Tower.Enemy.Data;
 using Tower.Game;
 using System.Collections;
+using Tower.Player;
 
 namespace Tower.Enemy
 {
@@ -32,15 +33,25 @@ namespace Tower.Enemy
         private float lastDamageTime;
         private Color startGpColor;
 
+        private Animator animator;
+
+        //Enemy 공격애니메이션 이벤트 메서드
+        //[SerializeField] private Transform attackPoint; // 공격 지점
+        [SerializeField] private float attackRadius = 2f; // 공격 범위
+        [SerializeField] private LayerMask targetLayer; // 적 레이어
         #endregion
 
         #region Property
         public bool IsDead => currentHP <= 0;
+
+        
         #endregion
 
         #region Unity Event Method
         private void Awake()
         {
+            //참조
+            animator = GetComponent<Animator>();
             //값 설정
             maxHP = data.maxHp;
             maxGP = data.maxGp;
@@ -106,6 +117,7 @@ namespace Tower.Enemy
         private IEnumerator OnGroggyState()
         {
             //그로기 연출
+            animator.SetTrigger(AnimHash.groggy);
             //...
             gpGauge.color = Color.red;
             float groggyCount = groggyDuration;
@@ -121,7 +133,28 @@ namespace Tower.Enemy
             currentGP = 0;
             gpGauge.color = startGpColor;
             isGroggy = false;
+            animator.SetTrigger(AnimHash.endGroggy);
             ShowStatBar();
+        }
+
+        public void DealDamage()
+        {
+            Debug.Log("호출 됨");
+            // 공격 지점 설정 (attackPoint가 없으면 자신의 위치 사용)
+            //Vector3 attackPos = attackPoint ? attackPoint.position : transform.position;
+
+            // 범위 내의 히트박스 찾기
+            Collider[] hitBoxes = Physics.OverlapSphere(transform.position, attackRadius, targetLayer);
+
+            foreach (Collider hitBox in hitBoxes)
+            {
+                Character character = hitBox.GetComponentInParent<Character>();
+                if (character != null)
+                {
+                    Debug.Log("Character 문제임!");
+                    character.TakeDamage(data.atk);
+                }
+            }
         }
 
 

@@ -12,6 +12,12 @@ namespace Tower.Player
         #endregion
 
         #region Unity Event Method
+        private void Update()
+        {
+            // missing(=null) 적 제거
+            detectedEnemies.RemoveAll(e => !e);
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if (other.TryGetComponent(out EnemyClass enemy))
