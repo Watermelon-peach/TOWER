@@ -42,7 +42,7 @@ namespace Tower.Enemy
 
         [Header("패링")]
         [SerializeField] private float parryingTime = 0.5f;  //패링허용 시간(임시0.5s)
-        //[SerializeField] private GameObject jigumiya;
+        [SerializeField] private GameObject jigumiya;
         #endregion
 
         #region Property
@@ -72,11 +72,11 @@ namespace Tower.Enemy
 
         private void Update()
         {
-            //TODO : UI 테스트
+/*            //TODO : UI 테스트
             if (Input.GetKeyDown(KeyCode.M))
             {
                 TakeDamage(10, 10);
-            }
+            }*/
         }
         #endregion
 
@@ -147,14 +147,14 @@ namespace Tower.Enemy
         {
             CanParry = true;
             //vfx 활성화
-            //jigumiya.SetActive(true);
+            jigumiya.SetActive(true);
             StartCoroutine(ParryingCount());
         }
 
         private IEnumerator ParryingCount()
         {
             yield return new WaitForSeconds(parryingTime);
-            //jigumiya.SetActive(false);
+            jigumiya.SetActive(false);
             CanParry = false;
         }
 

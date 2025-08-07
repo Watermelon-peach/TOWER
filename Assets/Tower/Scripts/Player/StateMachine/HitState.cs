@@ -1,19 +1,21 @@
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 namespace Tower.Player
 {
     public class HitState : StateMachineBehaviour
     {
         #region Variables
-        private InputManager input;
+        private PlayerController controller;
         #endregion
         // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
         override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            //맞을 때 인풋 막기
-            if (input==null)
-                input = FindAnyObjectByType<InputManager>();
-            input.enabled = false;
+            //맞을 때 컨트롤러, 인풋 끄기
+            InputManager.Instance.enabled = false;
+            if(controller == null)
+                controller = animator.GetComponent<PlayerController>();
+            controller.enabled = false;
         }
 
         // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -25,7 +27,8 @@ namespace Tower.Player
         // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
         override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            input.enabled = true;
+            InputManager.Instance.enabled = true;
+            controller.enabled = true;
         }
 
         // OnStateMove is called right after Animator.OnAnimatorMove()

@@ -26,6 +26,8 @@ namespace Tower.Player
 
         private PlayerController p_controller;
         protected Animator animator;
+
+        private Parrying parrying;
         #endregion
 
         #region Property
@@ -38,8 +40,10 @@ namespace Tower.Player
         protected virtual void Awake()
         {
             SceneManager.sceneUnloaded += OnSceneUnloaded;
+            //참조
             animator = GetComponent<Animator>();
             p_controller = GetComponent<PlayerController>();
+            parrying = GetComponent<Parrying>();
             UpdateStats();
         }
 
@@ -90,6 +94,10 @@ namespace Tower.Player
         #region HP
         public void TakeDamage(float damage, int groggyAmount = 0)
         {
+            //패링중 무적
+            if (parrying.IsParrying)
+                return;
+
             Debug.Log(currentHP);
 
             if (IsDead)

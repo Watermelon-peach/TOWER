@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Tower.Gmae.Bless
+namespace Tower.Game.Bless
 {
     public class ShopInteraction : MonoBehaviour 
     {
-        public GameObject shopUI;           // »óÁ¡ UI ¿ÀºêÁ§Æ®
-        public Transform player;            // ÇÃ·¹ÀÌ¾î Æ®·£½ºÆû
-        public float interactDistance = 3f; // »óÈ£ÀÛ¿ë °Å¸®
+        public GameObject shopUI;           // ìƒì  UI ì˜¤ë¸Œì íŠ¸
+        public Transform player;            // í”Œë ˆì´ì–´ íŠ¸ëœìŠ¤í¼
+        public float interactDistance = 3f; // ìƒí˜¸ì‘ìš© ê±°ë¦¬
 
         private bool isShopOpen = false;
         private bool isPlayerInRange = false;
@@ -16,7 +16,7 @@ namespace Tower.Gmae.Bless
         {
             float distance = Vector3.Distance(player.position, transform.position);
         
-            //ÇÃ·¹ÀÌ¾î¿Í NPC »óÈ£ÀÛ¿ë ¿©ºÎ °Ë»ç
+            //í”Œë ˆì´ì–´ì™€ NPC ìƒí˜¸ì‘ìš© ì—¬ë¶€ ê²€ì‚¬
             isPlayerInRange = distance <= interactDistance;
 
             if (isPlayerInRange && Input.GetKeyDown(KeyCode.F)) 
@@ -24,7 +24,7 @@ namespace Tower.Gmae.Bless
                 ShopOpen();
             }
 
-            if (isShopOpen && (Input.GetKeyDown(KeyCode.Escape) /* »óÁ¡À» ´İÀ» ´Ù¸¥ Á¶°Ç ¹öÆ° Å¬¸¯ */)) 
+            if (isShopOpen && (Input.GetKeyDown(KeyCode.Escape) /* ìƒì ì„ ë‹«ì„ ë‹¤ë¥¸ ì¡°ê±´ ë²„íŠ¼ í´ë¦­ */)) 
             {
                 ShopClose();
             }
