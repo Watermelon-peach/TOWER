@@ -85,6 +85,9 @@ namespace Tower.Player
         #endregion
 
         #region Custom Method
+
+        //HP 관련 외부 호출 메서드
+        #region HP
         public void TakeDamage(float damage, int groggyAmount = 0)
         {
             Debug.Log(currentHP);
@@ -114,6 +117,24 @@ namespace Tower.Player
             //...
             currentHP = Mathf.Min(currentHP + amount, maxHP);
         }
+        #endregion
+
+        //MP 관련 외부 호출 메서드
+        #region MP
+        public bool UseMana(float amount)
+        {
+            if (currentMP < amount)
+                return false;
+
+            currentMP -= amount;
+            return true;
+        }
+
+        public void ManaRecover(float amount)
+        {
+            currentMP = Mathf.Min(currentMP + amount, maxMP);
+        }
+        #endregion
 
         private void Die()
         {
@@ -121,6 +142,8 @@ namespace Tower.Player
             p_controller.enabled = false;
             Debug.Log("사망");
             animator.SetBool(AnimHash.isDead, true);
+            //마나도 0
+            currentMP = 0f;
             //다음 캐릭터로 넘어가게
             //...
         }
@@ -130,6 +153,7 @@ namespace Tower.Player
             //TODO: 캐릭터 활성화
             //...
             Heal(maxHP);
+            ManaRecover(maxMP);
         }
 
         public int GetHPForUI()

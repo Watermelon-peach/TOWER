@@ -19,6 +19,7 @@ namespace Tower.Player
         [SerializeField] private float dashCoolDown = 3f;
         private float dashCount = 0f;
         private bool isDashing = false;
+
         #endregion
 
         #region Unity Event Method
