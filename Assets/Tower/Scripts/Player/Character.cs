@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Tower.Game;
 using Tower.Player.Data;
-using System.Collections;
-using Unity.VisualScripting;
 
 
 #if UNITY_EDITOR
@@ -110,6 +108,13 @@ namespace Tower.Player
             }
         }
 
+        public void Heal(float amount)
+        {
+            //TODO: 이펙트 추가
+            //...
+            currentHP = Mathf.Min(currentHP + amount, maxHP);
+        }
+
         private void Die()
         {
             //사망처리
@@ -118,6 +123,13 @@ namespace Tower.Player
             animator.SetBool(AnimHash.isDead, true);
             //다음 캐릭터로 넘어가게
             //...
+        }
+
+        public void Revibe()
+        {
+            //TODO: 캐릭터 활성화
+            //...
+            Heal(maxHP);
         }
 
         public int GetHPForUI()
