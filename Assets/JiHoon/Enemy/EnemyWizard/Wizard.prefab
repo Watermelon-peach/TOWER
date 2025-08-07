@@ -1044,7 +1044,6 @@ GameObject:
   - component: {fileID: 1055818816171134076}
   - component: {fileID: 2780100806736465245}
   - component: {fileID: 8606584630075582369}
-  - component: {fileID: -1377775666402587618}
   m_Layer: 0
   m_Name: Wizard
   m_TagString: Untagged
@@ -1215,21 +1214,6 @@ CapsuleCollider:
   m_Height: 0.017
   m_Direction: 1
   m_Center: {x: 0, y: 0.01, z: 0}
---- !u!114 &-1377775666402587618
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5628472914500077343}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85c453e0ac1bcfa46b0dca7e57a964f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxGroggyGauge: 100
-  groggyDuration: 5
-  groggyDamageMultiplier: 1.5
 --- !u!1 &5756613487442080923
 GameObject:
   m_ObjectHideFlags: 0

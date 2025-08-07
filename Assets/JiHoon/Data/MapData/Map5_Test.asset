@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: Map1_Skeleton
+  m_Name: Map5_Test
   m_EditorClassIdentifier: Assembly-CSharp:Tower.Game:MapSpawnConfig
-  mapName: 0
+  mapName: 
   mapID: 0
   monsterPrefabs:
-  - {fileID: 1119424025508267185, guid: af30fd265e7ece94ebb2a5cb0259ab8d, type: 3}
+  - {fileID: 5628472914500077343, guid: 21171d67ebc73c74f991990a8ff543d0, type: 3}
   totalMonsterCount: 1
   initialSpawnCount: 1
   respawnCount: 0

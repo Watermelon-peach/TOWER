@@ -312,14 +312,77 @@ namespace Tower.Game
 
         public int GetActiveMonsterCount()
         {
+            // null 체크 추가
+            if (spawnConfig == null) return 1;  // 0이 아니라 1 (아직 준비 안 됨)
             activeMonsters.RemoveAll(monster => monster == null);
             return activeMonsters.Count;
         }
 
         public bool IsAllMonstersSpawned()
         {
+            // null 체크 추가
+            if (spawnConfig == null) return false;  // true가 아니라 false!
             return currentSpawnedCount >= spawnConfig.totalMonsterCount;
         }
+
+        public void ResetMonsters()
+        {
+            Debug.Log($"[Map {mapID}] Resetting all monsters");
+
+            // 현재 활성화된 모든 몬스터 제거
+            ClearAllMonsters();
+
+            // 카운터 리셋
+            currentSpawnedCount = 0;
+            killedInCurrentWave = 0;
+            activeMonsters.Clear();
+
+            // 다시 스폰 시작
+            StartSpawning();
+        }
+
+        public void ClearAllMonsters()
+        {
+            // 이 맵의 모든 활성 몬스터 제거
+            foreach (var monster in activeMonsters)
+            {
+                if (monster != null)
+                {
+                    Destroy(monster);
+                }
+            }
+
+            activeMonsters.Clear();
+            Debug.Log($"[Map {mapID}] Cleared {activeMonsters.Count} monsters");
+        }
+
+        // 스테이지 진입 시 호출 (선택사항)
+        public void OnStageEnter()
+        {
+            Debug.Log($"[Map {mapID}] Stage entered");
+
+            // 몬스터가 없으면 스폰 시작
+            if (activeMonsters.Count == 0 && currentSpawnedCount == 0)
+            {
+                StartSpawning();
+            }
+        }
+
+        // 스테이지 퇴장 시 호출 (선택사항)
+        public void OnStageExit()
+        {
+            Debug.Log($"[Map {mapID}] Stage exited");
+            // 필요시 몬스터 정리
+            // ClearAllMonsters();
+        }
+
+        // 현재 맵 상태 확인용
+        public bool IsMapActive()
+        {
+            return activeMonsters.Count > 0 ||
+                   currentSpawnedCount < spawnConfig.totalMonsterCount;
+        }
+
 
         void OnDrawGizmos()
         {

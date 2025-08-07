@@ -16,5 +16,5 @@ MonoBehaviour:
   gradeDescription: A
   gradeIcon: {fileID: 21300000, guid: 9bea98523bd4b734f928de1e009f2f50, type: 3}
   gradeColor: {r: 1, g: 1, b: 1, a: 1}
-  goldReward: 500
-  timeThreshold: 90
+  Score: 500
+  timeThreshold: 1

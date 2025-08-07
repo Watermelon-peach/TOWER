@@ -8274,7 +8274,6 @@ GameObject:
   - component: {fileID: 2597589116464847900}
   - component: {fileID: 868072452736427205}
   - component: {fileID: 3427217793118403517}
-  - component: {fileID: -7176337941183324093}
   m_Layer: 0
   m_Name: Knight1
   m_TagString: Untagged
@@ -8485,21 +8484,6 @@ MonoBehaviour:
           m_Value1: 526716383861405720
         Name: Target
         m_Value: {fileID: 0}
---- !u!114 &-7176337941183324093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7064588541486432289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85c453e0ac1bcfa46b0dca7e57a964f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxGroggyGauge: 100
-  groggyDuration: 5
-  groggyDamageMultiplier: 1.5
 --- !u!1 &7080507209267132648
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,197 +1,238 @@
-using UnityEngine;
-using System.Collections;
 using Tower.Game;
 using Tower.UI;
+using UnityEngine;
+using System.Collections;
 
-namespace Tower.Game
+public class MapExit : MonoBehaviour
 {
-    // 맵 클리어 시 활성화되는 출구 트리거 (보상 표시 포함)
-    public class MapExit : MonoBehaviour
+    [Header("Map Settings")]
+    [SerializeField] private int currentMapID = 0;
+    [SerializeField] private Transform nextMapStartTransform;
+
+    private bool isTransitioning = false;
+    private bool isActive = false;
+    private MapSpawnArea mapArea;
+    private GameObject currentPlayer;
+    private bool canCheck = false; // 체크 가능 여부
+
+    private void Awake()
     {
-        [Header("Map Settings")]
-        [SerializeField] private int currentMapID = 0;
-        [SerializeField] private Transform nextMapStartTransform;
-
-        private bool isTransitioning = false;
-        private bool isActive = false;
-        private MapSpawnArea mapArea;
-        private GameObject currentPlayer; // 플레이어 참조 저장
-
-
-        private void Awake()
+        // 첫 번째 맵인 경우 타이머 시작
+        if (currentMapID == 0)
         {
-            // 첫 번째 맵인 경우 즉시 시간 기록
-            if (currentMapID == 0 && CardRewardUI.Instance != null)
+            if (CardRewardUI.Instance != null)
             {
                 CardRewardUI.Instance.OnMapStart(0);
                 Debug.Log($"[MapExit] First map (ID: 0) timer started in Awake");
             }
 
-            // 초기에는 트리거 비활성화
-            SetTriggerActive(false);
-        }
-
-        void Start()
-        {
-            // 이 맵의 시작 시간 즉시 기록 (MapSpawnManager를 기다리지 않음)
-            if (CardRewardUI.Instance != null)
+            if (StageTimer.Instance != null)
             {
-                CardRewardUI.Instance.OnMapStart(currentMapID);
-                Debug.Log($"[MapExit] Map {currentMapID} timer started directly in Start()");
-            }
-
-            // 이 맵의 MapSpawnArea 찾기
-            MapSpawnArea[] areas = FindObjectsOfType<MapSpawnArea>();
-            foreach (var area in areas)
-            {
-                if (area.mapID == currentMapID)
-                {
-                    mapArea = area;
-                    break;
-                }
+                StageTimer.Instance.StartStageTimer(0);
+                Debug.Log($"[MapExit] Stage timer started for first map");
             }
         }
 
-        void Update()
-        {
-            // 맵이 클리어되었는지 체크
-            if (!isActive && mapArea != null)
-            {
-                // 이미 사용된 출구는 다시 활성화하지 않음
-                if (isTransitioning) return;
+        // 모든 Exit는 초기에 비활성화
+        SetTriggerActive(false);
+    }
 
-                if (mapArea.GetActiveMonsterCount() == 0 && mapArea.IsAllMonstersSpawned())
-                {
-                    SetTriggerActive(true);
-                }
+    void Start()
+    {
+        // 이 맵의 MapSpawnArea 찾기
+        MapSpawnArea[] areas = FindObjectsOfType<MapSpawnArea>();
+        foreach (var area in areas)
+        {
+            if (area.mapID == currentMapID)
+            {
+                mapArea = area;
+                Debug.Log($"[MapExit] Found MapSpawnArea for map {currentMapID}");
+                break;
             }
         }
 
-        void SetTriggerActive(bool active)
+        // mapArea를 못 찾은 경우 경고
+        if (mapArea == null)
         {
-            isActive = active;
-
-            Collider col = GetComponent<Collider>();
-            if (col != null)
-            {
-                col.enabled = active;
-            }
-
-            Debug.Log($"Map {currentMapID} exit trigger is now {(active ? "ACTIVE" : "INACTIVE")}!");
+            Debug.LogWarning($"[MapExit] No MapSpawnArea found for map {currentMapID}!");
         }
 
-        void OnTriggerEnter(Collider other)
-        {
-            if (!isActive || isTransitioning) return;
+        // 첫 프레임에 체크하지 않도록 딜레이 추가
+        StartCoroutine(DelayedStart());
+    }
 
-            if (other.CompareTag("Player"))
+    IEnumerator DelayedStart()
+    {
+        // 2초 대기 (몬스터 스폰 시간 확보)
+        yield return new WaitForSeconds(2f);
+        canCheck = true;
+        Debug.Log($"[MapExit] Map {currentMapID} exit check enabled");
+    }
+
+    void Update()
+    {
+        if (!isActive && mapArea != null)
+        {
+            if (isTransitioning) return;
+
+            
+            if (Time.time < 1f) return;
+
+            if (mapArea.GetActiveMonsterCount() == 0 && mapArea.IsAllMonstersSpawned())
             {
-                Debug.Log($"Player entered exit trigger for map {currentMapID}!");
-                currentPlayer = other.gameObject;
+                SetTriggerActive(true);
+            }
+        }
+    }
+
+    void SetTriggerActive(bool active)
+    {
+        isActive = active;
+
+        Collider col = GetComponent<Collider>();
+        if (col != null)
+        {
+            col.enabled = active;
+        }
+
+        Debug.Log($"Map {currentMapID} exit trigger is now {(active ? "ACTIVE" : "INACTIVE")}!");
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (!isActive || isTransitioning) return;
+
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log($"Player entered exit trigger for map {currentMapID}!");
+            currentPlayer = other.gameObject;
+
+            // Config이 없는 맵은 보상 없이 바로 이동
+            if (mapArea != null && mapArea.spawnConfig == null)
+            {
+                HandleDirectTransition();
+            }
+            else
+            {
+                // 일반 맵은 보상 후 이동
                 StartCoroutine(HandleRewardAndTransition());
             }
         }
+    }
 
-        IEnumerator HandleRewardAndTransition()
+    // 보상 없이 바로 이동 (SafetyZone 등)
+    void HandleDirectTransition()
+    {
+        if (isTransitioning) return;
+
+        isTransitioning = true;
+        isActive = false;
+
+        Debug.Log($"[MapExit] Direct transition from map {currentMapID} to {currentMapID + 1}");
+
+        // 다음 맵으로 이동
+        MovePlayerToNextMap();
+
+        isTransitioning = false;
+    }
+
+    // 일반 맵 전환 처리 (보상 포함)
+    IEnumerator HandleRewardAndTransition()
+    {
+        isTransitioning = true;
+        isActive = false;
+        GetComponent<Collider>().enabled = false;
+
+        // 타이머 정지
+        if (StageTimer.Instance != null)
         {
-            // 중복 실행 방지
-            isTransitioning = true;
-            isActive = false;
-            GetComponent<Collider>().enabled = false;
-
-            // 플레이어 이동 정지
-            var playerMovement = currentPlayer.GetComponent<Sample.PlayerMovement>();
-            if (playerMovement != null)
-                playerMovement.enabled = false;
-
-            // 보상 UI 표시
-            bool rewardCompleted = false;
-
-            if (CardRewardUI.Instance != null)
-            {
-                Debug.Log("Showing stage reward UI");
-                // 맵 ID를 전달하여 맵별로 다른 보상 가능
-                CardRewardUI.Instance.ShowReward(currentMapID, () =>
-                {
-                    rewardCompleted = true;
-                });
-            }
-            else
-            {
-                Debug.LogWarning("No reward UI found! Skipping reward.");
-                rewardCompleted = true;
-            }
-
-            // 보상 UI가 닫힐 때까지 대기
-            while (!rewardCompleted)
-            {
-                yield return null;
-            }
-
-            Debug.Log("Reward UI closed!");
-
-            // 잠시 대기
-            yield return new WaitForSeconds(0.5f);
-
-            // 플레이어 이동 및 다음 맵 시작
-            MovePlayerToNextMap();
-
-            // 전환 완료
-            isTransitioning = false;
+            StageTimer.Instance.StopTimer();
+            Debug.Log($"[MapExit] Timer stopped for map {currentMapID}");
         }
 
-        void MovePlayerToNextMap()
+        // 플레이어 이동 정지
+        var playerMovement = currentPlayer.GetComponent<Sample.PlayerMovement>();
+        if (playerMovement != null)
+            playerMovement.enabled = false;
+
+        // 보상 UI 표시
+        bool rewardCompleted = false;
+
+        if (CardRewardUI.Instance != null)
         {
-            Debug.Log($"MovePlayerToNextMap - Current MapID: {currentMapID}, Moving to next map");
-
-            if (nextMapStartTransform != null && currentPlayer != null)
+            Debug.Log("Showing stage reward UI");
+            CardRewardUI.Instance.ShowReward(currentMapID, () =>
             {
-                // CharacterController 처리
-                CharacterController controller = currentPlayer.GetComponent<CharacterController>();
-                if (controller != null)
-                {
-                    controller.enabled = false;
-                }
+                rewardCompleted = true;
+            });
+        }
+        else
+        {
+            Debug.LogWarning("No reward UI found! Skipping reward.");
+            rewardCompleted = true;
+        }
 
-                // 위치 이동
-                currentPlayer.transform.position = nextMapStartTransform.position;
-                currentPlayer.transform.rotation = nextMapStartTransform.rotation;
+        // 보상 UI가 닫힐 때까지 대기
+        while (!rewardCompleted)
+        {
+            yield return null;
+        }
 
-                // 컴포넌트 재활성화
-                if (controller != null)
-                {
-                    controller.enabled = true;
-                }
+        Debug.Log("Reward UI closed!");
+        yield return new WaitForSeconds(0.5f);
 
-                var playerMovement = currentPlayer.GetComponent<Sample.PlayerMovement>();
-                if (playerMovement != null)
-                {
-                    playerMovement.enabled = true;
-                }
+        // 플레이어 이동 및 다음 맵 시작
+        MovePlayerToNextMap();
+        isTransitioning = false;
+    }
 
-                Debug.Log($"Moved player to: {currentPlayer.transform.position}");
-            }
-            else
+    void MovePlayerToNextMap()
+    {
+        Debug.Log($"MovePlayerToNextMap - Current MapID: {currentMapID}, Moving to next map");
+
+        if (nextMapStartTransform != null && currentPlayer != null)
+        {
+            CharacterController controller = currentPlayer.GetComponent<CharacterController>();
+            if (controller != null)
             {
-                Debug.LogError($"Missing references - nextMapStartTransform: {nextMapStartTransform}, currentPlayer: {currentPlayer}");
-            }
-
-            // 다음 맵 시작 시간 기록
-            if (CardRewardUI.Instance != null)
-            {
-                CardRewardUI.Instance.OnMapStart(currentMapID + 1);
+                controller.enabled = false;
             }
 
-            // 다음 맵 몬스터 스폰 시작
-            if (MapSpawnManager.Instance != null)
+            currentPlayer.transform.position = nextMapStartTransform.position;
+            currentPlayer.transform.rotation = nextMapStartTransform.rotation;
+
+            if (controller != null)
             {
-                Debug.Log($"Starting next map (index: {currentMapID + 1})");
-                MapSpawnManager.Instance.StartMap(currentMapID + 1);
+                controller.enabled = true;
             }
-            else
+
+            var playerMovement = currentPlayer.GetComponent<Sample.PlayerMovement>();
+            if (playerMovement != null)
             {
-                Debug.LogError("MapSpawnManager.Instance is null!");
+                playerMovement.enabled = true;
             }
+
+            Debug.Log($"Moved player to: {currentPlayer.transform.position}");
+        }
+
+        // 다음 맵 타이머 시작
+        if (StageTimer.Instance != null)
+        {
+            StageTimer.Instance.OnNextMap(currentMapID + 1);
+            Debug.Log($"[MapExit] Timer started for next map {currentMapID + 1}");
+        }
+
+        // 다음 맵 시작 시간 기록
+        if (CardRewardUI.Instance != null)
+        {
+            CardRewardUI.Instance.OnMapStart(currentMapID + 1);
+        }
+
+        // 다음 맵 몬스터 스폰 시작
+        if (MapSpawnManager.Instance != null)
+        {
+            Debug.Log($"Starting next map (index: {currentMapID + 1})");
+            MapSpawnManager.Instance.StartMap(currentMapID + 1);
         }
     }
 }

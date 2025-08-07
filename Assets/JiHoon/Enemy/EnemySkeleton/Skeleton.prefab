@@ -430,7 +430,6 @@ GameObject:
   - component: {fileID: 4616447968005943861}
   - component: {fileID: 2518698863132666394}
   - component: {fileID: 4482190596180651440}
-  - component: {fileID: -5388618654584845418}
   - component: {fileID: 2885012486383461823}
   m_Layer: 7
   m_Name: Skeleton
@@ -602,21 +601,6 @@ MonoBehaviour:
   attackRange: 1.5
   detectionRange: 0
   attackCooldown: 2
---- !u!114 &-5388618654584845418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1119424025508267185}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85c453e0ac1bcfa46b0dca7e57a964f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxGroggyGauge: 100
-  groggyDuration: 5
-  groggyDamageMultiplier: 1.5
 --- !u!114 &2885012486383461823
 MonoBehaviour:
   m_ObjectHideFlags: 0

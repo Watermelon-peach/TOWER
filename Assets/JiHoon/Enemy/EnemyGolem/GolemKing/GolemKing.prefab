@@ -1718,8 +1718,6 @@ GameObject:
   - component: {fileID: 3577851974455223009}
   - component: {fileID: 5493438343813608191}
   - component: {fileID: 9187471886059393659}
-  - component: {fileID: -6660107404535504247}
-  - component: {fileID: 5938912902214359105}
   m_Layer: 7
   m_Name: GolemKing
   m_TagString: Enemy
@@ -1890,43 +1888,6 @@ MonoBehaviour:
   attackRange: 2
   detectionRange: 0
   attackCooldown: 2
---- !u!114 &-6660107404535504247
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8254165185041215798}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85c453e0ac1bcfa46b0dca7e57a964f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxGroggyGauge: 100
-  groggyDuration: 5
-  groggyDamageMultiplier: 1.5
---- !u!114 &5938912902214359105
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8254165185041215798}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ffd14f6370f20f4eb06813f620a5fa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: ca97e9e8d520f8f4192115388aee5766, type: 2}
-  statBar: {fileID: 0}
-  hpGauge: {fileID: 0}
-  gpGauge: {fileID: 0}
-  groggyDuration: 10
-  fadeDuration: 1
-  attackRadius: 2
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!1 &8296655651139172670
 GameObject:
   m_ObjectHideFlags: 0
