@@ -63,22 +63,35 @@ namespace Tower.Game
                 retryButton.onClick.AddListener(OnRetryClicked);
         }
 
-        // 스테이지 시작 시 타이머 시작
         public void StartStageTimer(int mapID)
         {
             if (isGameOver) return;
 
             currentMapID = mapID;
-            currentTime = timeLimit;
-            isTimerActive = true;
+            currentTime = timeLimit;  // 항상 리셋
 
-            Debug.Log($"[StageTimer] Stage {mapID} timer started - Time limit: {timeLimit} seconds");
+            // SafetyZone 체크 (MapSpawnManager로 확인)
+            bool isSafetyZone = false;
+            if (MapSpawnManager.Instance != null &&
+                mapID < MapSpawnManager.Instance.mapSpawnAreas.Length)
+            {
+                var area = MapSpawnManager.Instance.mapSpawnAreas[mapID];
+                if (area != null && area.spawnConfig == null)
+                {
+                    isSafetyZone = true;
+                }
+            }
 
-            // UI 활성화
+            // SafetyZone이면 타이머 정지, 아니면 시작
+            isTimerActive = !isSafetyZone;
+
+            Debug.Log($"[StageTimer] Stage {mapID} timer - Time reset to {timeLimit}s, Active: {isTimerActive}");
+
+            // UI는 항상 활성화 (시간은 보이되 안 감)
             if (timerPanel != null)
                 timerPanel.SetActive(true);
 
-            // 기존 코루틴 중지
+            // 기존 코루틴 중지하고 재시작
             if (timerCoroutine != null)
                 StopCoroutine(timerCoroutine);
 

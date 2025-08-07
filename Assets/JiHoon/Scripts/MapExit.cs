@@ -74,13 +74,24 @@ public class MapExit : MonoBehaviour
         if (!isActive && mapArea != null)
         {
             if (isTransitioning) return;
-
-            
             if (Time.time < 1f) return;
 
-            if (mapArea.GetActiveMonsterCount() == 0 && mapArea.IsAllMonstersSpawned())
+            // canCheck 추가!
+            if (!canCheck) return;  // ← 이것만 추가하면 됨
+
+            // SafetyZone 체크 (spawnConfig이 없으면 SafetyZone)
+            if (mapArea.spawnConfig == null)
             {
-                SetTriggerActive(true);
+                Debug.Log($"[MapExit] SafetyZone exit activated after delay");
+            }
+            
+            else
+            {
+                // 일반 맵은 몬스터 체크
+                if (mapArea.GetActiveMonsterCount() == 0 && mapArea.IsAllMonstersSpawned())
+                {
+                    SetTriggerActive(true);
+                }
             }
         }
     }
@@ -190,6 +201,7 @@ public class MapExit : MonoBehaviour
     {
         Debug.Log($"MovePlayerToNextMap - Current MapID: {currentMapID}, Moving to next map");
 
+        // 플레이어 이동 (이건 항상 실행)
         if (nextMapStartTransform != null && currentPlayer != null)
         {
             CharacterController controller = currentPlayer.GetComponent<CharacterController>();
@@ -197,23 +209,36 @@ public class MapExit : MonoBehaviour
             {
                 controller.enabled = false;
             }
-
             currentPlayer.transform.position = nextMapStartTransform.position;
             currentPlayer.transform.rotation = nextMapStartTransform.rotation;
-
             if (controller != null)
             {
                 controller.enabled = true;
             }
-
             var playerMovement = currentPlayer.GetComponent<Sample.PlayerMovement>();
             if (playerMovement != null)
             {
                 playerMovement.enabled = true;
             }
-
             Debug.Log($"Moved player to: {currentPlayer.transform.position}");
         }
+
+        // SafetyZone 체크
+        var nextIndex = currentMapID + 1;
+        if (MapSpawnManager.Instance != null &&
+            nextIndex < MapSpawnManager.Instance.mapSpawnAreas.Length)
+        {
+            var nextArea = MapSpawnManager.Instance.mapSpawnAreas[nextIndex];
+
+            // SafetyZone이면 타이머, 스폰 등 스킵
+            if (nextArea != null && nextArea.spawnConfig == null)
+            {
+                Debug.Log($"[MapExit] Entering SafetyZone - skipping map initialization");
+                return; // 여기서 종료
+            }
+        }
+
+        // === 아래는 일반 맵일 때만 실행 ===
 
         // 다음 맵 타이머 시작
         if (StageTimer.Instance != null)

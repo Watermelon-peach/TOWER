@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Map5_Test
   m_EditorClassIdentifier: Assembly-CSharp:Tower.Game:MapSpawnConfig
-  mapName: 
-  mapID: 0
+  mapName: 5
+  mapID: 5
   monsterPrefabs:
   - {fileID: 5628472914500077343, guid: 21171d67ebc73c74f991990a8ff543d0, type: 3}
   totalMonsterCount: 1

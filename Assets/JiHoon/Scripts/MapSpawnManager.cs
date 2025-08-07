@@ -61,8 +61,14 @@ namespace Tower.Game
             // 첫 번째 맵만 자동 시작
             if (autoStartFirstMap && !isGameStarted)
             {
-                StartFirstMap();
+                StartCoroutine(DelayedFirstMapStart());
             }
+        }
+
+        IEnumerator DelayedFirstMapStart()
+        {
+            yield return new WaitForSeconds(0.1f); // 모든 오브젝트가 준비될 때까지 대기
+            StartFirstMap();
         }
 
         // 첫 번째 맵만 시작
@@ -72,11 +78,22 @@ namespace Tower.Game
             isGameStarted = true;
             currentMapIndex = 0;
 
-            // 첫 번째 맵 시작 시간 기록 추가!
+            // StageTimer 시작 (추가!)
+            if (StageTimer.Instance != null)
+            {
+                StageTimer.Instance.StartStageTimer(0);
+                Debug.Log("[MapSpawnManager] Stage timer started for first map");
+            }
+            else
+            {
+                Debug.LogWarning("[MapSpawnManager] StageTimer Instance not found!");
+            }
+
+            // 첫 번째 맵 시작 시간 기록
             if (CardRewardUI.Instance != null)
             {
                 CardRewardUI.Instance.OnMapStart(0);
-                Debug.Log("[MapSpawnManager] First map timer started");
+                Debug.Log("[MapSpawnManager] First map time record started");
             }
 
             if (mapSpawnAreas.Length > 0 && mapSpawnAreas[0] != null)
@@ -114,6 +131,13 @@ namespace Tower.Game
 
             if (mapIndex >= 0 && mapIndex < mapSpawnAreas.Length && mapSpawnAreas[mapIndex] != null)
             {
+                // SafetyZone 체크 추가
+                if (mapSpawnAreas[mapIndex].spawnConfig == null)
+                {
+                    Debug.Log($"Map {mapIndex} is SafetyZone, skipping spawn");
+                    return;
+                }
+
                 if (!clearedMaps.Contains(mapSpawnAreas[mapIndex].mapID))
                 {
                     Debug.Log($"Starting map at index {mapIndex}");
