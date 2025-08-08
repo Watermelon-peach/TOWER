@@ -5,12 +5,17 @@ using UnityEngine.Events;
 using Tower.Game;
 using Tower.UI;
 
-
 namespace Tower.Game
 {
     // 전체 맵들의 스폰을 관리하는 중앙 매니저
     public class MapSpawnManager : MonoBehaviour
     {
+
+        // 초기 위치 저장용 Dictionary 추가
+        private Dictionary<GameObject, Vector3> initialPositions = new Dictionary<GameObject, Vector3>();
+        private Dictionary<GameObject, Quaternion> initialRotations = new Dictionary<GameObject, Quaternion>();
+
+
         private static MapSpawnManager instance;
         public static MapSpawnManager Instance => instance;
 
@@ -42,6 +47,9 @@ namespace Tower.Game
 
         void Start()
         {
+            // 게임 시작 시 모든 플레이어의 초기 위치 저장
+            SaveInitialPlayerPositions();
+
             // 각 맵 영역 자동 찾기 (선택사항)
             if (mapSpawnAreas == null || mapSpawnAreas.Length == 0)
             {
@@ -61,11 +69,12 @@ namespace Tower.Game
             // 첫 번째 맵만 자동 시작
             if (autoStartFirstMap && !isGameStarted)
             {
-                StartCoroutine(DelayedFirstMapStart());
+                StartCoroutine(DelayedStart());
             }
         }
 
-        IEnumerator DelayedFirstMapStart()
+        // 게임 시작 딜레이 (초기화용)
+        IEnumerator DelayedStart()
         {
             yield return new WaitForSeconds(0.1f); // 모든 오브젝트가 준비될 때까지 대기
             StartFirstMap();
@@ -78,7 +87,7 @@ namespace Tower.Game
             isGameStarted = true;
             currentMapIndex = 0;
 
-            // StageTimer 시작 (추가!)
+            // StageTimer 시작
             if (StageTimer.Instance != null)
             {
                 StageTimer.Instance.StartStageTimer(0);
@@ -151,6 +160,7 @@ namespace Tower.Game
             }
         }
 
+        // 맵 클리어 처리
         public void OnMapCleared(int mapID)
         {
             if (!clearedMaps.Contains(mapID))
@@ -179,6 +189,7 @@ namespace Tower.Game
             // 예: 아이템 드롭, 경험치 획득, UI 표시 등
         }
 
+        // 모든 맵 클리어 시
         void OnAllMapsCleared()
         {
             Debug.Log("All maps cleared! Game Complete!");
@@ -197,27 +208,89 @@ namespace Tower.Game
             return clearedMaps.Contains(mapID);
         }
 
+        // 클리어한 맵 개수 반환
         public int GetClearedMapCount()
         {
             return clearedMaps.Count;
         }
 
+        void SaveInitialPlayerPositions()
+        {
+            Sample.PlayerMovement[] allPlayers = FindObjectsOfType<Sample.PlayerMovement>(true);
+
+            foreach (var player in allPlayers)
+            {
+                GameObject playerObj = player.gameObject;
+                initialPositions[playerObj] = playerObj.transform.position;
+                initialRotations[playerObj] = playerObj.transform.rotation;
+
+                Debug.Log($"[MapSpawnManager] Saved initial position for {playerObj.name}: {playerObj.transform.position}");
+            }
+        }
+
         // 전체 게임 리셋
         public void ResetGame()
         {
+            Debug.Log("[MapSpawnManager] Full game reset initiated");
+
+            // 1. 게임 상태 초기화
             clearedMaps.Clear();
             isGameStarted = false;
             currentMapIndex = 0;
 
-            // 모든 활성 몬스터 제거
-            GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
+            // 2. 모든 활성 몬스터 제거
+            GameObject[] monsters = GameObject.FindGameObjectsWithTag("Enemy");
             foreach (GameObject monster in monsters)
             {
                 Destroy(monster);
             }
 
-            // 다시 시작
+            // 3. 모든 맵 영역 리셋
+            foreach (var area in mapSpawnAreas)
+            {
+                if (area != null)
+                {
+                    area.ResetArea();  // 각 영역의 스폰 상태 초기화
+                }
+            }
+
+            // 4. 플레이어들을 초기 위치로 리셋
+            Tower.Player.PlayerMovement[] allPlayers = FindObjectsOfType<Tower.Player.PlayerMovement>(true);
+
+            foreach (var player in allPlayers)
+            {
+                // 오브젝트 활성화
+                player.gameObject.SetActive(true);
+
+                //TODO: 각 플레이어의 리셋 메서드 호출
+
+                Debug.Log($"[MapSpawnManager] {player.name} reset to initial position");
+            }
+
+            // 5. UI 리셋
+            if (Tower.UI.CardRewardUI.Instance != null)
+            {
+                Tower.UI.CardRewardUI.Instance.ResetTotalScore();
+                Tower.UI.CardRewardUI.Instance.OnMapStart(0);  // 첫 맵 시작 기록
+            }
+
+            // 6. 첫 번째 맵 시작 (딜레이 후)
+            StartCoroutine(DelayedResetStart());
+        }
+
+        // 리셋 후 첫 맵 시작 딜레이
+        IEnumerator DelayedResetStart()
+        {
+            yield return new WaitForSeconds(0.5f);
+
+            Debug.Log("[MapSpawnManager] Starting first map after reset");
             StartFirstMap();
+
+            // 타이머도 재시작
+            if (StageTimer.Instance != null)
+            {
+                StageTimer.Instance.StartStageTimer(0);
+            }
         }
 
         // 특정 맵만 다시 시작

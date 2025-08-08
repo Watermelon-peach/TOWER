@@ -26,6 +26,8 @@ namespace Tower.Enemy
         private Vector3 attackPosition;
         private bool isPositionLocked = false;
 
+        private bool canAct = true;  // 행동 가능 여부
+
         // 스폰 시스템 참조
         private MapSpawnArea spawnArea;
 
@@ -209,6 +211,23 @@ namespace Tower.Enemy
             animator.SetBool("IsMoving", speed > 0.1f);
         }
 
+        public void FindPlayerTag()
+        {
+            // 플레이어 찾기
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                target = player.transform;
+
+                // Behaviour Graph의 Blackboard에 Target 설정
+                SetTargetInBehaviourGraph(player);
+            }
+            else
+            {
+                Debug.LogError($"태그 못찾음");
+            }
+        }
+
         public void LookAtTargetDuringAttack()
         {
             if (target == null || !isPositionLocked) return;
@@ -223,6 +242,59 @@ namespace Tower.Enemy
             }
         }
 
+        public void OnStunnedAnimationStart()
+        {
+            // 모든 입력 무시
+            canAct = false;
+            agent.isStopped = true;
+
+            // Behavior Graph 일시 정지
+            var behaviorAgent = GetComponent<BehaviorGraphAgent>();
+            behaviorAgent.enabled = false;
+        }
+
+        public void OnStunnedAnimationEnd()
+        {
+            // 입력 재개
+            canAct = true;
+            agent.isStopped = false;
+
+            // Behavior Graph 재개
+            var behaviorAgent = GetComponent<BehaviorGraphAgent>();
+            behaviorAgent.enabled = true;
+        }
+
+        public void StartGroggyState()
+        {
+            StartCoroutine(DisableInputForSeconds());
+            
+        }
+
+        private IEnumerator DisableInputForSeconds()
+        {
+            // 입력 차단
+            canAct = false;
+
+            // Behavior Graph 비활성화
+            var behaviorAgent = GetComponent<BehaviorGraphAgent>();
+            if (behaviorAgent != null)
+            {
+                behaviorAgent.enabled = false;
+            }
+            
+
+            // 10초 대기
+            yield return new WaitForSeconds(10f);
+
+            // 입력 재개
+            canAct = true;
+
+            // Behavior Graph 재활성화
+            if (behaviorAgent != null)
+            {
+                behaviorAgent.enabled = true;
+            }
+        }
         // 디버그용 - Scene 뷰에서 범위 표시
         void OnDrawGizmosSelected()
         {
@@ -235,6 +307,15 @@ namespace Tower.Enemy
             Gizmos.DrawWireSphere(transform.position, detectionRange);
 
 
+        }
+        public void StageClearCheck()
+        {
+            MapExit mapExit = FindObjectOfType<MapExit>();
+
+            if (mapExit != null)
+            {
+                mapExit.ActivateExit();
+            }
         }
     }
 }
