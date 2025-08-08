@@ -2,7 +2,7 @@ using UnityEngine;
 using Tower.Util;
 using EnemyClass = Tower.Enemy.Enemy;
 using System.Collections;
-using System.Runtime.CompilerServices;
+
 
 namespace Tower.Player
 {
@@ -98,12 +98,15 @@ namespace Tower.Player
         {
             Effects(false);
             //테스트용 대미지
-            enemy.TakeDamage(character.Atk * character.AtkBuff * strAtkMultiplier, strAtkGP);
-
+            enemy.TakeDamage(character.Atk * character.AtkBuff * strAtkMultiplier, strAtkGP); //Animator쪽으로 옮겨야 할듯
+            Vector3 direction = (enemy.transform.position - transform.position).normalized;
+            transform.forward = direction;
             //이펙트는 그로기로
-            enemy.animator.SetTrigger(AnimHash.groggy);
+            //enemy.animator.SetTrigger(AnimHash.groggy); 버그많아서 취소
             float count = strAtkDuration;
-            Vector3 targetPos = new Vector3(enemy.transform.position.x, jumpHeight, enemy.transform.position.z);
+
+
+            Vector3 targetPos = enemy.transform.position;
             Vector3 totalDisplacement = targetPos - transform.position;
             Vector3 velocity = totalDisplacement / strAtkDuration;
 
@@ -112,13 +115,13 @@ namespace Tower.Player
                 //Debug.Log("응아");
                 //캐릭터가 strAtkDuration 동안 지정된 transform.position (offset) 쪽으로 돌진
                 Vector3 deltaMove = velocity * Time.deltaTime;
+                
                 controller.Move(deltaMove);
                 //transform.Translate(deltaMove);
-
                 count -= Time.deltaTime;
                 yield return null;
             }
-            enemy.animator.SetTrigger(AnimHash.endGroggy);
+            //enemy.animator.SetTrigger(AnimHash.endGroggy);
         }
 
         //연출
