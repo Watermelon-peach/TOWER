@@ -23,10 +23,21 @@ namespace Tower.Player
         
         [Header("이펙트")]
         [SerializeField] private GrayscaleEffect grayEffect;
+
+        [Header("강공")]
+        private Character character;
+        [SerializeField] private float strAtkMultiplier = 3f;
         #endregion
 
         #region Property
         public bool IsParrying { get; private set; }
+        #endregion
+
+        #region Unity Event Method
+        private void Awake()
+        {
+            character = GetComponent<Character>();
+        }
         #endregion
 
         #region Custom Method
@@ -77,7 +88,7 @@ namespace Tower.Player
         {
             Effects(false);
             //테스트용 대미지
-            enemy.TakeDamage(10f, 100);
+            enemy.TakeDamage(character.Atk * character.AtkBuff * strAtkMultiplier, 100);
         }
 
         //연출
