@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blessName: AttackBless
   blessEffect: {fileID: 147034310708643191, guid: 15e9998128eea5b43915ac47b660fded, type: 3}
-  nowTier: 0
-  maxblessTier: 7
+  nowTier: 2
+  maxblessTier: 999
   TargetStatus: Attack
   StatusIncreaserate: 1.3

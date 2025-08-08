@@ -1,45 +1,99 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Tower.Player;
+using Unity.Cinemachine;
+using Tower.Game.Bless;
 
 namespace Tower.Game.Bless
 {
-    public class ShopInteraction : MonoBehaviour 
+    public class ShopInteraction : MonoBehaviour
     {
-        public GameObject shopUI;           // 상점 UI 오브젝트
-        public Transform player;            // 플레이어 트랜스폼
-        public float interactDistance = 3f; // 상호작용 거리
+        #region Variables
+        public GameObject shopUI;
+        public float interactDistance = 3f;
 
         private bool isShopOpen = false;
-        private bool isPlayerInRange = false;
 
-        void Update() 
+        private Character activeCharacter;
+        [SerializeField] private GameObject inputManager;
+        [SerializeField] private CinemachineCamera cameraController;
+        [SerializeField] private StoreAreaCheck storeAreaCheck;
+        [SerializeField] private GameObject mainCam;
+        [SerializeField] private GameObject storeCam;
+        [SerializeField] private BlessManager blessManager;
+
+        #endregion
+
+        #region Unity Event Method
+        private void Start()
         {
-            float distance = Vector3.Distance(player.position, transform.position);
-        
-            //플레이어와 NPC 상호작용 여부 검사
-            isPlayerInRange = distance <= interactDistance;
+            storeAreaCheck = GetComponentInChildren<StoreAreaCheck>();
+        }
 
-            if (isPlayerInRange && Input.GetKeyDown(KeyCode.F)) 
+        void Update()
+        {
+            activeCharacter = TeamManager.Instance.characters[TeamManager.Instance.CurrentIndex];
+
+            // float distance = Vector3.Distance(activeCharacter.transform.position, transform.position);
+
+            // //플레이어와 God 사이의 거리
+            // isPlayerInRange = distance <= interactDistance;
+
+            if (storeAreaCheck.IsPlayerInRange && Input.GetKeyDown(KeyCode.F))
             {
                 ShopOpen();
             }
 
-            if (isShopOpen && (Input.GetKeyDown(KeyCode.Escape) /* 상점을 닫을 다른 조건 버튼 클릭 */)) 
+            if (isShopOpen && (Input.GetKeyDown(KeyCode.T) /*   */))
             {
                 ShopClose();
             }
         }
+        #endregion
 
+        #region Custom Method
         public void ShopOpen()
         {
-                isShopOpen = true;
-                shopUI.SetActive(true);
+            PlayerController pc = activeCharacter.gameObject.GetComponent<PlayerController>();
+            Animator anim = activeCharacter.gameObject.GetComponent<Animator>();
+            anim.SetBool(AnimHash.isMoving, false);
+            pc.enabled = false;
+            isShopOpen = true;
+            shopUI.SetActive(true);
+            inputManager.SetActive(false);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            mainCam.SetActive(false);
+            storeCam.SetActive(true);
+
+            Vector3 targetPos = storeCam.transform.position;
+            // 높이(Y) 값은 캐릭터의 현재 높이로 고정
+            targetPos.y = activeCharacter.transform.position.y;
+            // 바라보게 회전
+            activeCharacter.transform.LookAt(targetPos);
+
+            var axisController = cameraController.GetComponent<CinemachineInputAxisController>();
+            axisController.enabled = false;
         }
 
-        public void ShopClose() 
+        public void ShopClose()
         {
-            isShopOpen = false;
-            shopUI.SetActive(false);
+            if (blessManager.NowBlessing == false)
+            {
+                PlayerController pc = activeCharacter.gameObject.GetComponent<PlayerController>();
+                pc.enabled = true;
+                isShopOpen = false;
+                shopUI.SetActive(false);
+                inputManager.SetActive(true);
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                mainCam.SetActive(true);
+                storeCam.SetActive(false);
+
+                var axisController = cameraController.GetComponent<CinemachineInputAxisController>();
+                axisController.enabled = true;
+            }
         }
+        #endregion
     }
 }

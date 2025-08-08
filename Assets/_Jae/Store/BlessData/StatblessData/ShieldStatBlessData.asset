@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blessName: ShieldBless
   blessEffect: {fileID: 8451619427190162791, guid: 054bc058c1e81ef4b875bce094c30649, type: 3}
-  nowTier: 0
-  maxblessTier: 7
+  nowTier: 2
+  maxblessTier: 999
   TargetStatus: Shield
   StatusIncreaserate: 1.3

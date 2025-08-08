@@ -15,7 +15,7 @@ MonoBehaviour:
   blessName: CoolTimeBless
   blessEffect: {fileID: 2393593232471866748, guid: 5ccd86367944a9c47969428086907d0a, type: 3}
   Price: 1
-  nowTier: 0
-  maxTier: 3
+  nowTier: 2
+  maxTier: 999
   TargetStatus: CoolTime
   StatusIncreaserate: 1.1

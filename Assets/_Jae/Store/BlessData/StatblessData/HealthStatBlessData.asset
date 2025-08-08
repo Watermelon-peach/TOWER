@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blessName: HealthBless
   blessEffect: {fileID: 4665435792462972618, guid: aa1f1f02afaf42440b5917041b5cf5ac, type: 3}
-  nowTier: 0
-  maxblessTier: 7
+  nowTier: 2
+  maxblessTier: 999
   TargetStatus: Health
   StatusIncreaserate: 1.3

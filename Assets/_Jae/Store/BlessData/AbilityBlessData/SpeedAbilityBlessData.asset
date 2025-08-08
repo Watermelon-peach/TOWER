@@ -15,7 +15,7 @@ MonoBehaviour:
   blessName: SpeedBless
   blessEffect: {fileID: 3235490041010240844, guid: 48b67ccaa3e331141b37041c2f476d3e, type: 3}
   Price: 1
-  nowTier: 0
-  maxTier: 3
+  nowTier: 1
+  maxTier: 999
   TargetStatus: Speed
   StatusIncreaserate: 1.1

@@ -15,7 +15,7 @@ MonoBehaviour:
   blessName: ManaBless
   blessEffect: {fileID: 7662994089563007930, guid: 9082616453cb62d45bc995be086b2f4a, type: 3}
   Price: 1
-  nowTier: 0
-  maxTier: 3
+  nowTier: 1
+  maxTier: 999
   TargetStatus: Mana
   StatusIncreaserate: 1.05
