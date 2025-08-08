@@ -63,14 +63,8 @@ namespace Tower.Game.Bless
             inputManager.SetActive(false);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            mainCam.SetActive(false);
-            storeCam.SetActive(true);
 
-            Vector3 targetPos = storeCam.transform.position;
-            // 높이(Y) 값은 캐릭터의 현재 높이로 고정
-            targetPos.y = activeCharacter.transform.position.y;
-            // 바라보게 회전
-            activeCharacter.transform.LookAt(targetPos);
+
 
             var axisController = cameraController.GetComponent<CinemachineInputAxisController>();
             axisController.enabled = false;
@@ -87,8 +81,8 @@ namespace Tower.Game.Bless
                 inputManager.SetActive(true);
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                mainCam.SetActive(true);
-                storeCam.SetActive(false);
+
+                
 
                 var axisController = cameraController.GetComponent<CinemachineInputAxisController>();
                 axisController.enabled = true;

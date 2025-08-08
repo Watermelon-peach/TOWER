@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6922824507860619507}
   - component: {fileID: 3449079589163356391}
   - component: {fileID: 3766201112135259270}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Rising Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4844,7 +4844,7 @@ GameObject:
   - component: {fileID: 7366378702856691731}
   - component: {fileID: 3063158318733752882}
   - component: {fileID: 5040336240990828942}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Flash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9753,7 +9753,7 @@ GameObject:
   - component: {fileID: 7587186763204101790}
   - component: {fileID: 502574433898755382}
   - component: {fileID: 6634260725343955600}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BlessEffect_CoolTime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14591,7 +14591,7 @@ GameObject:
   - component: {fileID: 3131513693551795651}
   - component: {fileID: 456241274848516154}
   - component: {fileID: 3331466904357387390}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CoolTime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19491,7 +19491,7 @@ GameObject:
   - component: {fileID: 812512402329652915}
   - component: {fileID: 6382116652219339496}
   - component: {fileID: 4442658450418286467}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Rising Twinkles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24324,7 +24324,7 @@ GameObject:
   - component: {fileID: 2559057525618462185}
   - component: {fileID: 7483376854633111533}
   - component: {fileID: 8916995042019357988}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

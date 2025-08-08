@@ -17,7 +17,6 @@ namespace Tower.Game.Bless
         [SerializeField] private AbilityBlessData coolTimeData; 
 
         public GameObject maxTierPopup;
-        [SerializeField] private GameObject storeCam;
 
         private bool nowBlessing = false;
         
@@ -38,8 +37,6 @@ namespace Tower.Game.Bless
         #region Custom Method
         public void IncreceAttack() 
         {
-            Debug.Log("213");
-            
             if (nowBlessing == false)
             {
                 if (attackData.nowTier < attackData.maxblessTier)
@@ -143,14 +140,19 @@ namespace Tower.Game.Bless
             //bless.SetActive(true);
 
             activeCharacter = TeamManager.Instance.characters[TeamManager.Instance.CurrentIndex];
-            Vector3 targetPos = storeCam.transform.position;
-            // 높이 무시 (Y값을 activeCharacter 위치와 동일하게)
-            targetPos.y = activeCharacter.transform.position.y;
+            // Vector3 targetPos = storeCam.transform.position;
+            // // 높이 무시 (Y값을 activeCharacter 위치와 동일하게)
+            // targetPos.y = activeCharacter.transform.position.y;
+
+            Vector3 BlessPos = new Vector3(activeCharacter.transform.position.x, 0.03f, activeCharacter.transform.position.z);
 
             //이펙트 생성
-            GameObject gotBless = Instantiate(bless, activeCharacter.transform.position, Quaternion.identity);
+            GameObject gotBless = Instantiate(bless, BlessPos, Quaternion.identity);
+            
+            // Debug.Log(gotBless.transform.position);
+            // Debug.Log(activeCharacter.transform.position);
             //이펙트 방향 맞추기
-            gotBless.transform.LookAt(targetPos);
+            // gotBless.transform.LookAt(targetPos);
 
             yield return new WaitForSeconds(2f);
             //이펙트 제거

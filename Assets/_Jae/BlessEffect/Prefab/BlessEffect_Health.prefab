@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1124201823569502946}
   - component: {fileID: 366188980682999388}
   - component: {fileID: 5953977138020978157}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Rising Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4844,7 +4844,7 @@ GameObject:
   - component: {fileID: 1795314378901799113}
   - component: {fileID: 803289685764688003}
   - component: {fileID: 6555336093471881580}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9677,7 +9677,7 @@ GameObject:
   - component: {fileID: 5610506423489572435}
   - component: {fileID: 311909332716426110}
   - component: {fileID: 2011590165232351616}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Health
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14577,7 +14577,7 @@ GameObject:
   - component: {fileID: 8435992515567914841}
   - component: {fileID: 8495888787157233142}
   - component: {fileID: 6420490313019250897}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BlessEffect_Health
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19415,7 +19415,7 @@ GameObject:
   - component: {fileID: 2430230188138536756}
   - component: {fileID: 8698767436869662219}
   - component: {fileID: 4378966701913643920}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Flash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24324,7 +24324,7 @@ GameObject:
   - component: {fileID: 1297633377573146598}
   - component: {fileID: 4493202378596299854}
   - component: {fileID: 7086890700894113049}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Rising Twinkles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
