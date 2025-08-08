@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
-using UnityEngine.SceneManagement;
 
 namespace Tower.Game
 {
@@ -10,34 +9,35 @@ namespace Tower.Game
     {
         [Header("Timer Settings")]
         [SerializeField] private float timeLimit = 180f; // 3분 (180초)
-        [SerializeField] private bool isTimerActive = false;
 
         [Header("UI References")]
         [SerializeField] private GameObject timerPanel;
         [SerializeField] private TextMeshProUGUI timerText;
         [SerializeField] private Image timerFillBar; // 시간 바 (옵션)
-        [SerializeField] private GameObject warningEffect; // 시간 부족 경고 효과
 
         [Header("Game Over UI")]
         [SerializeField] private GameObject gameOverPanel;
         [SerializeField] private TextMeshProUGUI gameOverText;
         [SerializeField] private Button retryButton;
+        [SerializeField] private Button mainMenuButton; // 메인 메뉴로
 
-        [Header("Warning Settings")]
-        [SerializeField] private float warningTime = 30f; // 30초 남으면 경고
+        [Header("Visual Settings")]
         [SerializeField] private Color normalColor = Color.white;
         [SerializeField] private Color warningColor = Color.yellow;
         [SerializeField] private Color dangerColor = Color.red;
+        [SerializeField] private float warningTime = 30f; // 30초 남으면 경고
 
-        [Header("Checkpoint Settings")]
-        [SerializeField] private int floorsPerMast = 4; // 한 마스트당 층 수
-        [SerializeField] private Transform[] safetyZoneSpawnPoints; // 세이프티존 스폰 위치들
-
-        private float currentTime;
-        private int currentMapID;
-        private bool isGameOver = false;
         private Coroutine timerCoroutine;
-        private int lastCheckpointMap = 0; // 마지막 체크포인트 (세이프티존) 맵 ID
+
+        // 상태 변수
+        private float currentTime;
+        private int currentStageID;
+        private bool isTimerActive = false;
+        private bool isGameOver = false;
+
+        // 기록용
+        private float bestTime = 0f;
+        private int bestStage = 0;
 
         // 싱글톤
         private static StageTimer instance;
@@ -48,6 +48,7 @@ namespace Tower.Game
             if (instance == null)
             {
                 instance = this;
+                DontDestroyOnLoad(gameObject);
             }
             else
             {
@@ -55,87 +56,44 @@ namespace Tower.Game
                 return;
             }
 
-            // 초기 설정
+            // UI 초기 설정
             if (gameOverPanel != null)
                 gameOverPanel.SetActive(false);
 
             if (retryButton != null)
                 retryButton.onClick.AddListener(OnRetryClicked);
+
+            if (mainMenuButton != null)
+                mainMenuButton.onClick.AddListener(OnMainMenuClicked);
+
+            // 저장된 기록 불러오기
+            LoadBestRecord();
         }
 
-        public void StartStageTimer(int mapID)
+        // 타이머 시작 (메인 메서드)
+        public void StartStageTimer(int stageID)
         {
             if (isGameOver) return;
 
-            currentMapID = mapID;
-            currentTime = timeLimit;  // 항상 리셋
+            currentStageID = stageID;
+            currentTime = timeLimit;
+            isTimerActive = true;
 
-            // SafetyZone 체크 (MapSpawnManager로 확인)
-            bool isSafetyZone = false;
-            if (MapSpawnManager.Instance != null &&
-                mapID < MapSpawnManager.Instance.mapSpawnAreas.Length)
-            {
-                var area = MapSpawnManager.Instance.mapSpawnAreas[mapID];
-                if (area != null && area.spawnConfig == null)
-                {
-                    isSafetyZone = true;
-                }
-            }
+            Debug.Log($"[Timer] Stage {stageID} started - Timer: {timeLimit}s");
 
-            // SafetyZone이면 타이머 정지, 아니면 시작
-            isTimerActive = !isSafetyZone;
+            // 기존 코루틴 중지
+            if (timerCoroutine != null)
+                StopCoroutine(timerCoroutine);
 
-            Debug.Log($"[StageTimer] Stage {mapID} timer - Time reset to {timeLimit}s, Active: {isTimerActive}");
+            // 새 코루틴 시작
+            timerCoroutine = StartCoroutine(TimerCountdown());
 
-            // UI는 항상 활성화 (시간은 보이되 안 감)
+            // UI 활성화
             if (timerPanel != null)
                 timerPanel.SetActive(true);
-
-            // 기존 코루틴 중지하고 재시작
-            if (timerCoroutine != null)
-                StopCoroutine(timerCoroutine);
-
-            timerCoroutine = StartCoroutine(TimerCountdown());
         }
 
-        // 세이프티존 도달 시 체크포인트 저장
-        public void SetCheckpoint(int mapID)
-        {
-            lastCheckpointMap = mapID;
-            Debug.Log($"[StageTimer] Checkpoint saved at map {mapID}");
-
-            // 세이프티존에서는 타이머 정지 (선택사항)
-            // PauseTimer();
-        }
-
-        // 타이머 일시정지
-        public void PauseTimer()
-        {
-            isTimerActive = false;
-        }
-
-        // 타이머 재개
-        public void ResumeTimer()
-        {
-            if (!isGameOver)
-                isTimerActive = true;
-        }
-
-        // 스테이지 클리어 시 타이머 정지
-        public void StopTimer()
-        {
-            isTimerActive = false;
-
-            if (timerCoroutine != null)
-            {
-                StopCoroutine(timerCoroutine);
-                timerCoroutine = null;
-            }
-
-            Debug.Log($"[StageTimer] Stage {currentMapID} timer stopped");
-        }
-
-        // 타이머 카운트다운
+        // 타이머 카운트다운 코루틴
         IEnumerator TimerCountdown()
         {
             while (currentTime > 0 && !isGameOver)
@@ -145,21 +103,54 @@ namespace Tower.Game
                     currentTime -= Time.deltaTime;
                     UpdateTimerUI();
 
-                    // 경고 체크
-                    CheckWarning();
-
                     if (currentTime <= 0)
                     {
                         currentTime = 0;
-                        TimeUp();
+                        OnTimeOver();
                     }
                 }
 
-                yield return null;
+                yield return null; // 다음 프레임까지 대기
             }
         }
 
-        // 타이머 UI 업데이트
+        // 타이머 정지 (스테이지 클리어 시)
+        public void StopTimer()
+        {
+            isTimerActive = false;
+
+            // 코루틴 중지
+            if (timerCoroutine != null)
+            {
+                StopCoroutine(timerCoroutine);
+                timerCoroutine = null;
+            }
+
+            // 기록 갱신 체크
+            float clearTime = timeLimit - currentTime;
+            UpdateBestRecord(currentStageID, clearTime);
+
+            Debug.Log($"[Timer] Stage {currentStageID} cleared in {clearTime:F1}s");
+        }
+
+        // 타이머 일시정지 (SafetyZone 등)
+        public void PauseTimer()
+        {
+            isTimerActive = false;
+            Debug.Log($"[Timer] Paused at Stage {currentStageID}");
+        }
+
+        // 타이머 재개
+        public void ResumeTimer()
+        {
+            if (!isGameOver)
+            {
+                isTimerActive = true;
+                Debug.Log($"[Timer] Resumed at Stage {currentStageID}");
+            }
+        }
+
+        // UI 업데이트
         void UpdateTimerUI()
         {
             if (timerText != null)
@@ -171,9 +162,9 @@ namespace Tower.Game
                 // 색상 변경
                 if (currentTime <= 10f)
                 {
-                    timerText.color = dangerColor;
-                    // 깜빡임 효과
-                    timerText.color = Color.Lerp(dangerColor, Color.white, Mathf.PingPong(Time.time * 2, 1));
+                    // 10초 이하 - 빨간색 깜빡임
+                    timerText.color = Color.Lerp(dangerColor, Color.white,
+                        Mathf.PingPong(Time.time * 3, 1));
                 }
                 else if (currentTime <= warningTime)
                 {
@@ -185,12 +176,12 @@ namespace Tower.Game
                 }
             }
 
-            // 타이머 바 업데이트 (있는 경우)
+            // 타이머 바 업데이트
             if (timerFillBar != null)
             {
                 timerFillBar.fillAmount = currentTime / timeLimit;
 
-                // 바 색상도 변경
+                // 바 색상
                 if (currentTime <= 10f)
                     timerFillBar.color = dangerColor;
                 else if (currentTime <= warningTime)
@@ -200,35 +191,19 @@ namespace Tower.Game
             }
         }
 
-        // 경고 체크
-        void CheckWarning()
-        {
-            if (warningEffect != null)
-            {
-                if (currentTime <= warningTime && currentTime > 10f)
-                {
-                    if (!warningEffect.activeSelf)
-                        warningEffect.SetActive(true);
-                }
-                else if (currentTime <= 10f)
-                {
-                    // 10초 이하일 때 더 강한 경고
-                    warningEffect.SetActive(true);
-                    // 깜빡임 효과 등 추가 가능
-                }
-            }
-        }
-
         // 시간 초과
-        void TimeUp()
+        void OnTimeOver()
         {
             isGameOver = true;
             isTimerActive = false;
 
-            Debug.Log($"[StageTimer] TIME UP! Game Over at stage {currentMapID}");
+            Debug.Log($"[Timer] TIME OVER at Stage {currentStageID}!");
 
             // 게임 정지
             Time.timeScale = 0f;
+
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
 
             // 게임오버 UI 표시
             ShowGameOverUI();
@@ -241,198 +216,102 @@ namespace Tower.Game
             {
                 gameOverPanel.SetActive(true);
 
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+
                 if (gameOverText != null)
                 {
-                    // 체크포인트 계산
-                    int checkpointMap = GetCheckpointForMap(currentMapID);
-                    string respawnLocation = checkpointMap == 0 ? "1층" : $"세이프티존 (마스트 {checkpointMap / floorsPerMast} 클리어 후)";
-
-                    gameOverText.text = $"시간 초과!\n{currentMapID + 1}층에서 실패\n\n{respawnLocation}으로 돌아갑니다";
+                    gameOverText.text = $"시간 초과!\n\n" +
+                                       $"도달 스테이지: {currentStageID + 1}층\n" +
+                                       $"최고 기록: {bestStage + 1}층";
                 }
             }
-
-            // 5초 후 자동으로 리셋 (또는 버튼 클릭)
-            StartCoroutine(AutoResetGame());
         }
 
-        // 자동 리셋
-        IEnumerator AutoResetGame()
-        {
-            yield return new WaitForSecondsRealtime(5f);
-            ResetToCheckpoint();
-        }
-
-        // 재시도 버튼 클릭
+        // 재시도 버튼
         void OnRetryClicked()
         {
-            StopAllCoroutines();
-            ResetToCheckpoint();
-        }
-
-        // 현재 맵에 대한 체크포인트 계산
-        int GetCheckpointForMap(int mapID)
-        {
-            // mapID가 0-3이면 체크포인트는 0 (1층으로)
-            // mapID가 4-7이면 체크포인트는 4 (첫 번째 세이프티존)
-            // mapID가 8-11이면 체크포인트는 8 (두 번째 세이프티존)
-
-            if (mapID < floorsPerMast)
-            {
-                return 0; // 첫 마스트는 1층으로
-            }
-            else
-            {
-                // 이전 마스트의 끝 (세이프티존)
-                return ((mapID / floorsPerMast) * floorsPerMast);
-            }
-        }
-
-        // 체크포인트로 리셋
-        public void ResetToCheckpoint()
-        {
-            Debug.Log("[StageTimer] Resetting to checkpoint...");
-
-            // 시간 복구
             Time.timeScale = 1f;
-
-            // 체크포인트 계산
-            int checkpointMap = GetCheckpointForMap(currentMapID);
-
-            // 게임 상태 초기화
             isGameOver = false;
-            currentTime = timeLimit;
 
-            // UI 초기화
             if (gameOverPanel != null)
                 gameOverPanel.SetActive(false);
 
-            // 첫 마스트에서 실패한 경우 점수 초기화
-            if (checkpointMap == 0)
-            {
-                // 점수 초기화
-                if (Tower.UI.CardRewardUI.Instance != null)
-                {
-                    Tower.UI.CardRewardUI.Instance.ResetTotalScore();
-                }
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
 
-                ResetToFirstMap();
-            }
-            else
-            {
-                // 세이프티존으로 이동
-                ResetToSafetyZone(checkpointMap);
-            }
-        }
-
-        // 1층으로 맵 리셋
-        void ResetToFirstMap()
-        {
-            Debug.Log("[StageTimer] Resetting to floor 1...");
-
-            // MapSpawnManager 리셋
+            // 게임 리셋 (MapSpawnManager가 처리)
             if (MapSpawnManager.Instance != null)
             {
                 MapSpawnManager.Instance.ResetGame();
             }
 
-            // 플레이어 위치 리셋 (1층 시작 위치로)
-            GameObject player = GameObject.FindWithTag("Player");
-            if (player != null)
-            {
-                // 1층 시작 위치 찾기
-                GameObject startPoint = GameObject.Find("StartPoint00");
-                if (startPoint != null)
-                {
-                    MovePlayerToPosition(player, startPoint.transform);
-                }
-            }
-
-            // 1층 타이머 재시작
+            // 1층부터 다시 시작
             StartStageTimer(0);
         }
 
-        // 세이프티존으로 리셋
-        void ResetToSafetyZone(int checkpointMap)
+        // 메인 메뉴로
+        void OnMainMenuClicked()
         {
-            Debug.Log($"[StageTimer] Resetting to safety zone after map {checkpointMap - 1}...");
 
-            GameObject player = GameObject.FindWithTag("Player");
-            if (player != null)
-            {
-                // 세이프티존 스폰 포인트 찾기
-                int safetyZoneIndex = (checkpointMap / floorsPerMast) - 1;
-
-                // 배열에서 세이프티존 스폰 포인트 사용
-                if (safetyZoneSpawnPoints != null && safetyZoneIndex < safetyZoneSpawnPoints.Length)
-                {
-                    MovePlayerToPosition(player, safetyZoneSpawnPoints[safetyZoneIndex]);
-                }
-                else
-                {
-                    // 대체: 이름으로 찾기
-                    GameObject safetyZonePoint = GameObject.Find($"SafetyZone_{safetyZoneIndex}_Spawn");
-                    if (safetyZonePoint != null)
-                    {
-                        MovePlayerToPosition(player, safetyZonePoint.transform);
-                    }
-                }
-
-                
-            }
-
-            
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            Time.timeScale = 1f;
+            // 메인 메뉴 씬으로 이동
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
         }
 
-        // 플레이어 위치 이동 헬퍼 메소드
-        void MovePlayerToPosition(GameObject player, Transform targetTransform)
-        {
-            CharacterController controller = player.GetComponent<CharacterController>();
-            if (controller != null)
-                controller.enabled = false;
-
-            player.transform.position = targetTransform.position;
-            player.transform.rotation = targetTransform.rotation;
-
-            if (controller != null)
-                controller.enabled = true;
-
-            // 플레이어 이동 컴포넌트 재활성화
-            var playerMovement = player.GetComponent<Sample.PlayerMovement>();
-            if (playerMovement != null)
-            {
-                playerMovement.enabled = true;
-            }
-
-            Debug.Log($"[StageTimer] Player moved to position: {targetTransform.position}");
-        }
-
-        // 다음 맵으로 이동 시 타이머 리셋
-        public void OnNextMap(int newMapID)
+        // 다음 맵으로 이동 시
+        public void OnNextMap(int newStageID)
         {
             StopTimer();
-
-            // 세이프티존 체크 (4의 배수 = 세이프티존)
-            if (newMapID % floorsPerMast == 0 && newMapID > 0)
-            {
-                SetCheckpoint(newMapID);
-                // 세이프티존에서는 타이머를 시작하지 않음 (선택사항)
-                // return;
-            }
-
-            StartStageTimer(newMapID);
+            StartStageTimer(newStageID);
         }
 
-        // 남은 시간 반환
+        // 기록 갱신
+        void UpdateBestRecord(int stage, float clearTime)
+        {
+            if (stage > bestStage)
+            {
+                bestStage = stage;
+                bestTime = clearTime;
+                SaveBestRecord();
+
+                Debug.Log($"[Timer] New best record! Stage: {bestStage + 1}, Time: {bestTime:F1}s");
+            }
+        }
+
+        // 기록 저장
+        void SaveBestRecord()
+        {
+            PlayerPrefs.SetInt("BestStage", bestStage);
+            PlayerPrefs.SetFloat("BestTime", bestTime);
+            PlayerPrefs.Save();
+        }
+
+        // 기록 불러오기
+        void LoadBestRecord()
+        {
+            bestStage = PlayerPrefs.GetInt("BestStage", 0);
+            bestTime = PlayerPrefs.GetFloat("BestTime", 0f);
+        }
+
+        // 현재 남은 시간 반환
         public float GetRemainingTime()
         {
             return currentTime;
         }
 
-        // 시간 추가 (아이템 등으로)
-        public void AddTime(float bonusTime)
+        // 현재 스테이지 반환
+        public int GetCurrentStage()
         {
-            currentTime = Mathf.Min(currentTime + bonusTime, timeLimit);
-            Debug.Log($"[StageTimer] Added {bonusTime} seconds. New time: {currentTime}");
+            return currentStageID;
+        }
+
+        // 게임오버 상태 확인
+        public bool IsGameOver()
+        {
+            return isGameOver;
         }
     }
 }

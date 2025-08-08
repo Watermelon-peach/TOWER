@@ -20,6 +20,7 @@ namespace Tower.Player
         private float dashCount = 0f;
         private bool isDashing = false;
 
+
         #endregion
 
         #region Unity Event Method

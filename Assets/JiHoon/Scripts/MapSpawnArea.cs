@@ -23,10 +23,6 @@ namespace Tower.Game
         [Header("Spawn Weights")]
         public float[] spawnWeights; // 각 몬스터의 스폰 확률 가중치
     }
-}
-
-namespace Tower.Game
-{
 
     // 개별 맵의 스폰 포인트를 관리하는 컴포넌트
     public class MapSpawnArea : MonoBehaviour
@@ -52,12 +48,21 @@ namespace Tower.Game
         public int columns = 3;
         public float waveStrength = 2f;
 
+        // 스폰 관련 변수들
         private List<Transform> availableSpawnPoints = new List<Transform>();
         private List<GameObject> activeMonsters = new List<GameObject>();
         private int currentSpawnedCount = 0;
         private int killedInCurrentWave = 0;
+        private bool hasSpawned = false; // 스폰 시작 여부
+        private bool isSpawning = false; // 현재 스폰 중인지
 
         void Start()
+        {
+            Initialize();
+        }
+
+        // 초기화 메서드
+        void Initialize()
         {
             // 기존 스폰 포인트 클리어
             availableSpawnPoints.Clear();
@@ -83,6 +88,7 @@ namespace Tower.Game
             }
         }
 
+        // 스폰 포인트 자동 생성
         void GenerateSpawnPoints()
         {
             GameObject spawnPointsParent = new GameObject($"SpawnPoints_Map{mapID}");
@@ -116,6 +122,7 @@ namespace Tower.Game
             availableSpawnPoints.AddRange(spawnPoints);
         }
 
+        // 스폰 시작
         public void StartSpawning()
         {
             if (spawnConfig == null)
@@ -124,12 +131,21 @@ namespace Tower.Game
                 return;
             }
 
+            if (hasSpawned || isSpawning)
+            {
+                Debug.Log($"[Map {mapID}] Already spawned or spawning");
+                return;
+            }
+
             Debug.Log($"[Map {mapID}] Starting spawn at position: {transform.position}");
             Debug.Log($"[Map {mapID}] Use fixed positions: {useFixedSpawnPositions}");
 
+            hasSpawned = true;
+            isSpawning = true;
             StartCoroutine(InitialSpawn());
         }
 
+        // 초기 스폰
         IEnumerator InitialSpawn()
         {
             // 고정 위치 스폰 사용하는 경우
@@ -137,7 +153,6 @@ namespace Tower.Game
             {
                 Debug.Log($"[Map {mapID}] Using fixed spawn positions");
 
-                // 고정 위치 개수와 몬스터 종류 개수 중 작은 값만큼 스폰
                 int spawnCount = Mathf.Min(spawnConfig.initialSpawnCount,
                                           fixedSpawnPositions.Length,
                                           spawnConfig.monsterPrefabs.Length);
@@ -146,7 +161,6 @@ namespace Tower.Game
                 {
                     if (fixedSpawnPositions[i] != null && spawnConfig.monsterPrefabs[i] != null)
                     {
-                        // i번째 몬스터를 i번째 위치에 스폰
                         GameObject monster = Instantiate(spawnConfig.monsterPrefabs[i],
                                                        fixedSpawnPositions[i].position,
                                                        fixedSpawnPositions[i].rotation);
@@ -164,10 +178,6 @@ namespace Tower.Game
                         {
                             enemyAI.SetSpawnArea(this);
                         }
-                        else
-                        {
-                            monster.SendMessage("SetSpawnArea", this, SendMessageOptions.DontRequireReceiver);
-                        }
 
                         yield return new WaitForSeconds(0.3f);
                     }
@@ -175,7 +185,7 @@ namespace Tower.Game
             }
             else
             {
-                // 기존 랜덤 스폰 로직
+                // 랜덤 스폰 로직
                 List<Transform> tempAvailable = new List<Transform>(availableSpawnPoints);
 
                 for (int i = 0; i < spawnConfig.initialSpawnCount && i < tempAvailable.Count; i++)
@@ -189,8 +199,11 @@ namespace Tower.Game
                     }
                 }
             }
+
+            isSpawning = false;
         }
 
+        // 몬스터 스폰
         void SpawnMonster(Vector3 position)
         {
             if (currentSpawnedCount >= spawnConfig.totalMonsterCount) return;
@@ -213,12 +226,9 @@ namespace Tower.Game
             {
                 enemyAI.SetSpawnArea(this);
             }
-            else
-            {
-                monster.SendMessage("SetSpawnArea", this, SendMessageOptions.DontRequireReceiver);
-            }
         }
 
+        // 랜덤 몬스터 선택
         GameObject GetRandomMonsterPrefab()
         {
             if (spawnConfig.monsterPrefabs.Length == 0) return null;
@@ -247,6 +257,7 @@ namespace Tower.Game
             return spawnConfig.monsterPrefabs[Random.Range(0, spawnConfig.monsterPrefabs.Length)];
         }
 
+        // 랜덤 스폰 포인트 선택
         Transform GetRandomSpawnPoint(List<Transform> availableList = null)
         {
             List<Transform> checkList = availableList ?? availableSpawnPoints;
@@ -270,6 +281,7 @@ namespace Tower.Game
             return freePoints[Random.Range(0, freePoints.Count)];
         }
 
+        // 몬스터 사망 알림
         public void NotifyMonsterKilled(GameObject monster)
         {
             activeMonsters.Remove(monster);
@@ -288,6 +300,30 @@ namespace Tower.Game
             }
         }
 
+        // EnemyAI에서 호출할 메서드 추가
+        public void OnMonsterDeath(GameObject monster)
+        {
+            NotifyMonsterKilled(monster);
+
+            // MapExit 활성화 체크
+            if (GetActiveMonsterCount() == 0 && IsAllMonstersSpawned())
+            {
+                Debug.Log($"[MapSpawnArea] All monsters defeated in map {mapID}!");
+
+                // MapExit 찾아서 활성화
+                MapExit[] exits = FindObjectsOfType<MapExit>();
+                foreach (var exit in exits)
+                {
+                    if (exit.CurrentMapID == mapID)
+                    {
+                        exit.ActivateExit();
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 리스폰 웨이브
         IEnumerator RespawnWave()
         {
             int toSpawn = Mathf.Min(spawnConfig.respawnAmount,
@@ -304,46 +340,58 @@ namespace Tower.Game
             }
         }
 
+        // 맵 클리어
         void OnMapCleared()
         {
             Debug.Log($"Map {mapID} cleared!");
             MapSpawnManager.Instance?.OnMapCleared(mapID);
         }
 
+        // 활성 몬스터 수 반환
         public int GetActiveMonsterCount()
         {
-            // null 체크 추가
-            if (spawnConfig == null) return 1;  // 0이 아니라 1 (아직 준비 안 됨)
+            if (spawnConfig == null) return 1;
             activeMonsters.RemoveAll(monster => monster == null);
             return activeMonsters.Count;
         }
 
+        // 모든 몬스터 스폰 완료 여부
         public bool IsAllMonstersSpawned()
         {
-            // null 체크 추가
-            if (spawnConfig == null) return false;  // true가 아니라 false!
+            if (spawnConfig == null) return false;
             return currentSpawnedCount >= spawnConfig.totalMonsterCount;
         }
 
-        public void ResetMonsters()
+        // ★★★ MapSpawnManager의 ResetGame()에서 호출하는 메서드 추가 ★★★
+        public void ResetArea()
         {
-            Debug.Log($"[Map {mapID}] Resetting all monsters");
+            Debug.Log($"[MapSpawnArea] Resetting map {mapID}");
 
-            // 현재 활성화된 모든 몬스터 제거
+            // 모든 활성 몬스터 제거
             ClearAllMonsters();
 
-            // 카운터 리셋
+            // 상태 초기화
             currentSpawnedCount = 0;
             killedInCurrentWave = 0;
+            hasSpawned = false;
+            isSpawning = false;
             activeMonsters.Clear();
 
-            // 다시 스폰 시작
-            StartSpawning();
+            // Exit 비활성화 (MapExit가 있는 경우)
+            MapExit exitComponent = GetComponentInChildren<MapExit>();
+            if (exitComponent != null)
+            {
+                Collider exitCollider = exitComponent.GetComponent<Collider>();
+                if (exitCollider != null)
+                {
+                    exitCollider.enabled = false;
+                }
+            }
         }
 
+        // 모든 몬스터 제거
         public void ClearAllMonsters()
         {
-            // 이 맵의 모든 활성 몬스터 제거
             foreach (var monster in activeMonsters)
             {
                 if (monster != null)
@@ -351,39 +399,18 @@ namespace Tower.Game
                     Destroy(monster);
                 }
             }
-
             activeMonsters.Clear();
-            Debug.Log($"[Map {mapID}] Cleared {activeMonsters.Count} monsters");
+            Debug.Log($"[Map {mapID}] Cleared all monsters");
         }
 
-        // 스테이지 진입 시 호출 (선택사항)
-        public void OnStageEnter()
-        {
-            Debug.Log($"[Map {mapID}] Stage entered");
-
-            // 몬스터가 없으면 스폰 시작
-            if (activeMonsters.Count == 0 && currentSpawnedCount == 0)
-            {
-                StartSpawning();
-            }
-        }
-
-        // 스테이지 퇴장 시 호출 (선택사항)
-        public void OnStageExit()
-        {
-            Debug.Log($"[Map {mapID}] Stage exited");
-            // 필요시 몬스터 정리
-            // ClearAllMonsters();
-        }
-
-        // 현재 맵 상태 확인용
+        // 맵 활성 상태 확인
         public bool IsMapActive()
         {
             return activeMonsters.Count > 0 ||
                    currentSpawnedCount < spawnConfig.totalMonsterCount;
         }
 
-
+        // 기즈모 그리기
         void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;

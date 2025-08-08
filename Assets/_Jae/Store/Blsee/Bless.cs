@@ -2,12 +2,13 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using Tower.Game.Data.Bless;
+using Tower.Player;
 
 namespace Tower.Game.Bless
 { 
-    public class Bless : MonoBehaviour
+    public class BlessManager : MonoBehaviour
     {
-        #region
+        #region Variables
         [SerializeField] private StatblessData attackData;
         [SerializeField] private StatblessData healthData;
         [SerializeField] private StatblessData shieldData;
@@ -15,26 +16,33 @@ namespace Tower.Game.Bless
         [SerializeField] private AbilityBlessData speedData;
         [SerializeField] private AbilityBlessData coolTimeData; 
 
-        public Transform BlessEffectPos;
-
         public GameObject maxTierPopup;
+        [SerializeField] private GameObject storeCam;
 
-        private bool blessing = false;
+        private bool nowBlessing = false;
+        
+        private Character activeCharacter;
+        #endregion
+
+        #region Property
+        public bool NowBlessing => nowBlessing;
         #endregion
 
         #region Unity Event Method
-        private void Start() 
+        private void Start()
         {
-            blessing = false;
+            nowBlessing = false;
         }
         #endregion
 
         #region Custom Method
         public void IncreceAttack() 
         {
-            if (blessing == false) 
+            Debug.Log("213");
+            
+            if (nowBlessing == false)
             {
-                if (attackData.nowTier < attackData.maxblessTier) 
+                if (attackData.nowTier < attackData.maxblessTier)
                 {
                     StartCoroutine(Blessing(attackData.blessEffect));
                     attackData.nowTier += 1;
@@ -48,14 +56,15 @@ namespace Tower.Game.Bless
 
         public void IncreceHealth() 
         {
-            if (blessing == false) 
+            Debug.Log("123");
+            if (nowBlessing == false)
             {
-                if (healthData.nowTier < healthData.maxblessTier) 
+                if (healthData.nowTier < healthData.maxblessTier)
                 {
                     StartCoroutine(Blessing(healthData.blessEffect));
                     healthData.nowTier += 1;
-                } 
-                else 
+                }
+                else
                 {
                     StartCoroutine(maxTierPopUp());
                 }
@@ -64,7 +73,7 @@ namespace Tower.Game.Bless
 
         public void IncreceShield() 
         {
-            if (blessing == false) 
+            if (nowBlessing == false) 
             {
                 if (shieldData.nowTier < shieldData.maxblessTier) 
                 {
@@ -80,7 +89,7 @@ namespace Tower.Game.Bless
 
         public void IncreceMana() 
         {
-            if (blessing == false) 
+            if (nowBlessing == false) 
             {
                 if (manaData.nowTier < manaData.maxTier) 
                 {
@@ -96,7 +105,7 @@ namespace Tower.Game.Bless
 
         public void IncreceSpeed() 
         {
-            if (blessing == false) 
+            if (nowBlessing == false) 
             {
                 if (speedData.nowTier < speedData.maxTier) 
                 {
@@ -112,7 +121,7 @@ namespace Tower.Game.Bless
 
         public void IncreceCoolTime() 
         {
-            if (blessing == false) 
+            if (nowBlessing == false) 
             {
                 if (coolTimeData.nowTier < coolTimeData.maxTier) 
                 {
@@ -130,17 +139,25 @@ namespace Tower.Game.Bless
 
         IEnumerator Blessing(GameObject bless) 
         {
-            blessing = true;
+            nowBlessing = true;
             //bless.SetActive(true);
 
-            GameObject gotBless = Instantiate(bless, BlessEffectPos.position, Quaternion.identity);
+            activeCharacter = TeamManager.Instance.characters[TeamManager.Instance.CurrentIndex];
+            Vector3 targetPos = storeCam.transform.position;
+            // 높이 무시 (Y값을 activeCharacter 위치와 동일하게)
+            targetPos.y = activeCharacter.transform.position.y;
+
+            //이펙트 생성
+            GameObject gotBless = Instantiate(bless, activeCharacter.transform.position, Quaternion.identity);
+            //이펙트 방향 맞추기
+            gotBless.transform.LookAt(targetPos);
 
             yield return new WaitForSeconds(2f);
-
+            //이펙트 제거
             Destroy(gotBless);
 
             //bless.SetActive(false);
-            blessing = false;
+            nowBlessing = false;
         }
 
         IEnumerator maxTierPopUp() 

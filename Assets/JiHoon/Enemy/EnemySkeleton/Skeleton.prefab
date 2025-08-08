@@ -430,7 +430,7 @@ GameObject:
   - component: {fileID: 4616447968005943861}
   - component: {fileID: 2518698863132666394}
   - component: {fileID: 4482190596180651440}
-  - component: {fileID: 2885012486383461823}
+  - component: {fileID: 6822703428844580444}
   m_Layer: 7
   m_Name: Skeleton
   m_TagString: Enemy
@@ -601,7 +601,7 @@ MonoBehaviour:
   attackRange: 1.5
   detectionRange: 0
   attackCooldown: 2
---- !u!114 &2885012486383461823
+--- !u!114 &6822703428844580444
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -613,16 +613,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ffd14f6370f20f4eb06813f620a5fa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: ca97e9e8d520f8f4192115388aee5766, type: 2}
+  data: {fileID: 11400000, guid: 8794f63e1c1f570498f2d39aa6dd60fc, type: 2}
   statBar: {fileID: 0}
   hpGauge: {fileID: 0}
   gpGauge: {fileID: 0}
   groggyDuration: 10
   fadeDuration: 1
-  attackRadius: 2
+  attackRadius: 3
   targetLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
+  parryingTime: 0.5
+  jigumiya: {fileID: 0}
 --- !u!1 &1180591079304596846
 GameObject:
   m_ObjectHideFlags: 0

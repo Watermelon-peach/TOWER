@@ -9,12 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 979b369539246794d816d40fda326968, type: 3}
-  m_Name: A
+  m_Script: {fileID: 11500000, guid: 41eb2d5436dd1534b811a96f0877f9be, type: 3}
+  m_Name: TestData1
   m_EditorClassIdentifier: 
-  gradeName: A
-  gradeDescription: A
-  gradeIcon: {fileID: 21300000, guid: 9bea98523bd4b734f928de1e009f2f50, type: 3}
-  gradeColor: {r: 1, g: 1, b: 1, a: 1}
-  Score: 500
-  timeThreshold: 90
+  enemyName: 
+  atk: 10
+  def: 10
+  maxHp: 150
+  maxGp: 10

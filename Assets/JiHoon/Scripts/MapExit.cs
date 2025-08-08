@@ -15,6 +15,8 @@ public class MapExit : MonoBehaviour
     private GameObject currentPlayer;
     private bool canCheck = false; // 체크 가능 여부
 
+
+    public int CurrentMapID => currentMapID;
     private void Awake()
     {
         // 첫 번째 맵인 경우 타이머 시작
@@ -71,20 +73,25 @@ public class MapExit : MonoBehaviour
 
     void Update()
     {
+        
+    }
+
+    public void ActivateExit()
+    {
         if (!isActive && mapArea != null)
         {
             if (isTransitioning) return;
             if (Time.time < 1f) return;
 
             // canCheck 추가!
-            if (!canCheck) return;  // ← 이것만 추가하면 됨
+            if (!canCheck) return;  
 
             // SafetyZone 체크 (spawnConfig이 없으면 SafetyZone)
             if (mapArea.spawnConfig == null)
             {
                 Debug.Log($"[MapExit] SafetyZone exit activated after delay");
             }
-            
+
             else
             {
                 // 일반 맵은 몬스터 체크
