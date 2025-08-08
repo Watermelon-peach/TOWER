@@ -26,7 +26,13 @@ namespace Tower.Player
 
         [Header("강공")]
         private Character character;
+        private Animator animator;
+        private CharacterController controller;
+
         [SerializeField] private float strAtkMultiplier = 3f;
+        [SerializeField] private int strAtkGP = 30;
+        [SerializeField] private float strAtkDuration;
+        [SerializeField] private float jumpHeight = 2f;
         #endregion
 
         #region Property
@@ -37,6 +43,8 @@ namespace Tower.Player
         private void Awake()
         {
             character = GetComponent<Character>();
+            animator = GetComponent<Animator>();
+            controller = GetComponent<CharacterController>();
         }
         #endregion
 
@@ -69,26 +77,48 @@ namespace Tower.Player
 
             //슬로우모션, 흑백 연출
             Effects(true);
+            animator.SetBool(AnimHash.isParrying, true);
 
             while (timeLeft > 0)
             {
                 timeLeft -= Time.unscaledDeltaTime;
                 if (InputManager.Instance.AttackPressed)
-                    StrongAttack(enemy);
+                    StartCoroutine(StrongAttack(enemy));
                 yield return null;
             }
 
             Effects(false);
 
             IsParrying = false;
+            animator.SetBool(AnimHash.isParrying, false);
             Debug.Log("패리 끝!");
         }
 
-        private void StrongAttack(EnemyClass enemy)
+        private IEnumerator StrongAttack(EnemyClass enemy)
         {
             Effects(false);
             //테스트용 대미지
-            enemy.TakeDamage(character.Atk * character.AtkBuff * strAtkMultiplier, 100);
+            enemy.TakeDamage(character.Atk * character.AtkBuff * strAtkMultiplier, strAtkGP);
+
+            //이펙트는 그로기로
+            enemy.animator.SetTrigger(AnimHash.groggy);
+            float count = strAtkDuration;
+            Vector3 targetPos = new Vector3(enemy.transform.position.x, jumpHeight, enemy.transform.position.z);
+            Vector3 totalDisplacement = targetPos - transform.position;
+            Vector3 velocity = totalDisplacement / strAtkDuration;
+
+            while (count >= 0)
+            {
+                //Debug.Log("응아");
+                //캐릭터가 strAtkDuration 동안 지정된 transform.position (offset) 쪽으로 돌진
+                Vector3 deltaMove = velocity * Time.deltaTime;
+                controller.Move(deltaMove);
+                //transform.Translate(deltaMove);
+
+                count -= Time.deltaTime;
+                yield return null;
+            }
+            enemy.animator.SetTrigger(AnimHash.endGroggy);
         }
 
         //연출

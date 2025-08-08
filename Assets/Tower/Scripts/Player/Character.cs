@@ -147,7 +147,7 @@ namespace Tower.Player
         private void Die()
         {
             //사망처리
-            p_controller.enabled = false;
+            //p_controller.enabled = false; 애니메이터로 옮김
             Debug.Log("사망");
             animator.SetBool(AnimHash.isDead, true);
             //마나도 0

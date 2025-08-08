@@ -33,7 +33,7 @@ namespace Tower.Enemy
         private float lastDamageTime;
         private Color startGpColor;
 
-        private Animator animator;
+        public Animator animator;
 
         //Enemy 공격애니메이션 이벤트 메서드
         //[SerializeField] private Transform attackPoint; // 공격 지점
@@ -172,7 +172,6 @@ namespace Tower.Enemy
                 Character character = hitBox.GetComponentInParent<Character>();
                 if (character != null)
                 {
-                    Debug.Log("Character 문제임!");
                     character.TakeDamage(data.atk);
                 }
             }
@@ -239,6 +238,7 @@ namespace Tower.Enemy
         {
             //사망처리(애니메이션, 이펙트)
             //...
+            animator.SetTrigger(AnimHash.enemyDeath);
             Destroy(gameObject, 2f);    //죽는 애니메이션 길이에 따라 시간 조절
 
         }
