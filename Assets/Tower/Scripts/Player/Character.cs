@@ -45,13 +45,14 @@ namespace Tower.Player
             p_controller = GetComponent<PlayerController>();
             parrying = GetComponent<Parrying>();
             UpdateStats();
+            //초기화
+            currentHP = maxHP;
+            currentMP = maxMP;
         }
 
         private void Start()
         {
-            //초기화
-            currentHP = maxHP;
-            currentMP = maxMP;
+            
             //Debug.Log("초기화 체력" + maxHP);
         }
         private void OnEnable()
@@ -74,7 +75,9 @@ namespace Tower.Player
             if (!EditorApplication.isPlaying || !EditorApplication.isPlayingOrWillChangePlaymode)
                 return;
 #endif
-            fgo = Instantiate(fairyForm, new Vector3(transform.position.x, 2f, transform.position.z), Quaternion.identity);
+            
+            if(!IsDead)
+                fgo = Instantiate(fairyForm, new Vector3(transform.position.x, 2f, transform.position.z), Quaternion.identity);
         }
 
         private void OnDestroy()
@@ -121,6 +124,8 @@ namespace Tower.Player
 
         public void Heal(float amount)
         {
+            if (IsDead) return;
+
             //TODO: 이펙트 추가
             //...
             currentHP = Mathf.Min(currentHP + amount, maxHP);

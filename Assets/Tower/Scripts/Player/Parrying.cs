@@ -33,6 +33,7 @@ namespace Tower.Player
         [SerializeField] private int strAtkGP = 30;
         [SerializeField] private float strAtkDuration;
         [SerializeField] private float jumpHeight = 2f;
+        [SerializeField] private float distance = 5f;
         #endregion
 
         #region Property
@@ -72,7 +73,7 @@ namespace Tower.Player
         {
             IsParrying = true;
             
-            Debug.Log("패리중!");
+            //Debug.Log("패리중!");    
             float timeLeft = parryDuration;
 
             //슬로우모션, 흑백 연출
@@ -91,7 +92,7 @@ namespace Tower.Player
 
             IsParrying = false;
             animator.SetBool(AnimHash.isParrying, false);
-            Debug.Log("패리 끝!");
+            //Debug.Log("패리 끝!");
         }
 
         private IEnumerator StrongAttack(EnemyClass enemy)
@@ -106,7 +107,7 @@ namespace Tower.Player
             float count = strAtkDuration;
 
 
-            Vector3 targetPos = enemy.transform.position;
+            Vector3 targetPos = enemy.transform.position + enemy.transform.forward * distance;
             Vector3 totalDisplacement = targetPos - transform.position;
             Vector3 velocity = totalDisplacement / strAtkDuration;
 
