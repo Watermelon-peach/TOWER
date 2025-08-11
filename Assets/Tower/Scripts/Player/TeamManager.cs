@@ -152,6 +152,7 @@ namespace Tower.Player
                 controllers[i].enabled = true;
             }
 
+            SelectCharacter(currentIndex);
             Debug.Log("포메이션 이동");
         }
         #endregion
