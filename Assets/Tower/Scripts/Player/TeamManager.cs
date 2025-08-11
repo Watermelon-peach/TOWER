@@ -12,6 +12,8 @@ namespace Tower.Player
         #region Variables
         public Character[] characters = new Character[3];
 
+        private CharacterController[] controllers = new CharacterController[3];
+
         private CameraController cam;
 
         private int currentIndex;
@@ -30,6 +32,10 @@ namespace Tower.Player
         {
             base.Awake();
             cam = GetComponent<CameraController>();
+            for (int i = 0; i < controllers.Length; i++)
+            {
+                controllers[i] = characters[i].gameObject.GetComponent<CharacterController>();
+            }
         }
 
         private void Start()
@@ -140,8 +146,10 @@ namespace Tower.Player
                 Vector3 worldPos = newLeaderPos + (newLeaderRot * positionOffsets[i]);
                 Quaternion worldRot = newLeaderRot * rotationOffsets[i];
 
+                controllers[i].enabled = false;
                 characters[i].transform.position = worldPos;
                 characters[i].transform.rotation = worldRot;
+                controllers[i].enabled = true;
             }
 
             Debug.Log("포메이션 이동");
