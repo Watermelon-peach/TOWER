@@ -15,5 +15,5 @@ MonoBehaviour:
   enemyName: Dummy
   atk: 50
   def: 50
-  maxHp: 5000
+  maxHp: 100
   maxGp: 100

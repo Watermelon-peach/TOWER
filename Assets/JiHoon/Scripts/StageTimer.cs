@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using Tower.Player;
 
 namespace Tower.Game
 {
@@ -26,6 +27,8 @@ namespace Tower.Game
         [SerializeField] private Color warningColor = Color.yellow;
         [SerializeField] private Color dangerColor = Color.red;
         [SerializeField] private float warningTime = 30f; // 30초 남으면 경고
+
+        [SerializeField] private Transform spawnPoint;// 스폰 위치
 
         private Coroutine timerCoroutine;
 
@@ -248,6 +251,7 @@ namespace Tower.Game
 
             // 1층부터 다시 시작
             StartStageTimer(0);
+            TeamManager.Instance.MoveFormation(spawnPoint.position, spawnPoint.rotation);
         }
 
         // 메인 메뉴로

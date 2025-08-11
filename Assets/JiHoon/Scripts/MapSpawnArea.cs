@@ -410,6 +410,11 @@ namespace Tower.Game
                    currentSpawnedCount < spawnConfig.totalMonsterCount;
         }
 
+        public bool ContainsMonster(GameObject monster)
+        {
+            return activeMonsters.Contains(monster);
+        }
+
         // 기즈모 그리기
         void OnDrawGizmos()
         {

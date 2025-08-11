@@ -1,4 +1,5 @@
 using Tower.Game;
+using Tower.Player;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -82,6 +83,8 @@ public class SafetyZoneManager : MonoBehaviour
     {
         if (menuUI != null)
         {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
             menuUI.SetActive(!menuUI.activeSelf);
             Time.timeScale = menuUI.activeSelf ? 0f : 1f;
         }
@@ -91,14 +94,7 @@ public class SafetyZoneManager : MonoBehaviour
     {
         Debug.Log("Exiting SafetyZone to next stage");
 
-        // 플레이어 찾기
-        var player = GameObject.FindWithTag("Player");
-        if (player == null)
-        {
-            Debug.LogError("Player not found!");
-            return;
-        }
-
+        // 타이머 시작
         if (StageTimer.Instance != null)
         {
             StageTimer.Instance.StartStageTimer(nextMapIndex);
@@ -111,29 +107,45 @@ public class SafetyZoneManager : MonoBehaviour
             return;
         }
 
-        // CharacterController 처리 (중요!)
-        CharacterController controller = player.GetComponent<CharacterController>();
-        if (controller != null)
+        // ⭐ TeamManager로 3명 모두 이동
+        if (TeamManager.Instance != null)
         {
-            controller.enabled = false;  // 비활성화
+            TeamManager.Instance.MoveFormation(exitPoint.position, exitPoint.rotation);
+            Debug.Log("Moved all 3 characters using TeamManager");
         }
-
-        // 플레이어 이동
-        player.transform.position = exitPoint.position;
-        player.transform.rotation = exitPoint.rotation;
-        Debug.Log($"Moved player to: {exitPoint.position}");
-
-        // CharacterController 다시 활성화
-        if (controller != null)
+        else
         {
-            controller.enabled = true;
-        }
+            // TeamManager 없으면 모든 플레이어 개별 이동
+            GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
 
-        // PlayerMovement 활성화
-        var playerMovement = player.GetComponent<Sample.PlayerMovement>();
-        if (playerMovement != null)
-        {
-            playerMovement.enabled = true;
+            foreach (var player in allPlayers)
+            {
+                CharacterController controller = player.GetComponent<CharacterController>();
+                if (controller != null)
+                {
+                    controller.enabled = false;
+                }
+
+                player.transform.position = exitPoint.position;
+                player.transform.rotation = exitPoint.rotation;
+
+                if (controller != null)
+                {
+                    controller.enabled = true;
+                }
+
+                Debug.Log($"Moved {player.name} to exit point");
+            }
+
+            // 첫 번째 플레이어의 Movement만 활성화
+            if (allPlayers.Length > 0)
+            {
+                var playerMovement = allPlayers[0].GetComponent<Sample.PlayerMovement>();
+                if (playerMovement != null)
+                {
+                    playerMovement.enabled = true;
+                }
+            }
         }
 
         // 다음 맵 시작
@@ -155,7 +167,10 @@ public class SafetyZoneManager : MonoBehaviour
             Time.timeScale = 1f;
         }
 
-        // SafetyZone 나간 것으로 처리
-        isPlayerInZone = false;
+        // ⭐ 마우스 커서 숨기기
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        this.enabled = false;
+
     }
 }

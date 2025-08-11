@@ -310,11 +310,28 @@ namespace Tower.Enemy
         }
         public void StageClearCheck()
         {
-            MapExit mapExit = FindObjectOfType<MapExit>();
 
-            if (mapExit != null)
+            // 먼저 MapSpawnArea에 죽음 알림 (리스트에서 제거)
+            if (spawnArea != null)  // 이미 SetSpawnArea로 설정되어 있음
             {
-                mapExit.ActivateExit();
+                Debug.Log($"SpawnArea에 죽음 알림");
+                spawnArea.OnMonsterDeath(gameObject);
+                // OnMonsterDeath 내부에서 자동으로 MapExit.ActivateExit() 호출됨!
+            }
+            else
+            {
+                Debug.LogWarning("SpawnArea가 null입니다!");
+
+                // Fallback: spawnArea가 없으면 직접 찾기
+                MapSpawnArea[] areas = FindObjectsOfType<MapSpawnArea>();
+                foreach (var area in areas)
+                {
+                    if (area.ContainsMonster(gameObject))
+                    {
+                        area.OnMonsterDeath(gameObject);
+                        break;
+                    }
+                }
             }
         }
     }

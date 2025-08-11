@@ -2,6 +2,7 @@ using Tower.Game;
 using Tower.UI;
 using UnityEngine;
 using System.Collections;
+using Tower.Player;
 
 public class MapExit : MonoBehaviour
 {
@@ -173,6 +174,10 @@ public class MapExit : MonoBehaviour
         if (playerMovement != null)
             playerMovement.enabled = false;
 
+        //  마우스 커서 활성화 추가!
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
         // 보상 UI 표시
         bool rewardCompleted = false;
 
@@ -197,7 +202,10 @@ public class MapExit : MonoBehaviour
         }
 
         Debug.Log("Reward UI closed!");
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(2.5f);
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
 
         // 플레이어 이동 및 다음 맵 시작
         MovePlayerToNextMap();
@@ -208,26 +216,26 @@ public class MapExit : MonoBehaviour
     {
         Debug.Log($"MovePlayerToNextMap - Current MapID: {currentMapID}, Moving to next map");
 
-        // 플레이어 이동 (이건 항상 실행)
-        if (nextMapStartTransform != null && currentPlayer != null)
+        // ⭐ TeamManager의 MoveFormation 사용하여 모든 캐릭터 이동!
+        if (nextMapStartTransform != null && TeamManager.Instance != null)
         {
-            CharacterController controller = currentPlayer.GetComponent<CharacterController>();
-            if (controller != null)
+            // TeamManager를 통해 모든 캐릭터를 다음 맵 시작 위치로 이동
+            TeamManager.Instance.MoveFormation(
+                nextMapStartTransform.position,
+                nextMapStartTransform.rotation
+            );
+
+            Debug.Log($"Moved all team members to: {nextMapStartTransform.position}");
+
+            // 플레이어 이동 재활성화 (현재 활성 캐릭터만)
+            if (currentPlayer != null)
             {
-                controller.enabled = false;
+                var playerMovement = currentPlayer.GetComponent<Sample.PlayerMovement>();
+                if (playerMovement != null)
+                {
+                    playerMovement.enabled = true;
+                }
             }
-            currentPlayer.transform.position = nextMapStartTransform.position;
-            currentPlayer.transform.rotation = nextMapStartTransform.rotation;
-            if (controller != null)
-            {
-                controller.enabled = true;
-            }
-            var playerMovement = currentPlayer.GetComponent<Sample.PlayerMovement>();
-            if (playerMovement != null)
-            {
-                playerMovement.enabled = true;
-            }
-            Debug.Log($"Moved player to: {currentPlayer.transform.position}");
         }
 
         // SafetyZone 체크

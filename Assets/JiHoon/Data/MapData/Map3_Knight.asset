@@ -22,5 +22,4 @@ MonoBehaviour:
   initialSpawnCount: 3
   respawnCount: 0
   respawnAmount: 0
-  spawnWeights:
-  - 0
+  spawnWeights: []
