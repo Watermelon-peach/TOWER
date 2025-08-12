@@ -12,11 +12,13 @@ namespace Tower.Util
 
         private void Start()
         {
-            if (globalVolume.profile.TryGet(out colorAdjustments))
+            /*if (globalVolume.profile.TryGet(out colorAdjustments))
             {
                 // 기본적으로 꺼놓고 시작
                 colorAdjustments.active = false;
-            }
+            }*/
+
+            globalVolume.enabled = false;
         }
 
         private void Update()
@@ -35,8 +37,7 @@ namespace Tower.Util
 
         public void SetGrayscale(bool enable)
         {
-            if (colorAdjustments != null)
-                colorAdjustments.active = enable;
+            globalVolume.enabled = enable;
         }
     }
 
