@@ -97,8 +97,8 @@ namespace Tower.Player
         #region HP
         public void TakeDamage(float damage, int groggyAmount = 0)
         {
-            //패링중 무적
-            if (parrying.IsParrying)
+            //패링중 무적, 비활성화 상태시 무적
+            if (parrying.IsParrying || !gameObject.activeSelf)
                 return;
 
             Debug.Log(currentHP);

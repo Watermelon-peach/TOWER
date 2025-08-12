@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 using EnemyClass = Tower.Enemy.Enemy;
@@ -13,8 +14,15 @@ namespace Tower.Player
         [SerializeField] private float rotationSpeed = 10f;
         [SerializeField] private float gravity = -9.81f;
 
+        [Header("원거리 공격")]
+        [SerializeField] private Transform pool;
+        [SerializeField] private int poolCount;
+        [SerializeField] private GameObject[] projectiles;
+        [SerializeField] private Transform firePoint;
+        [SerializeField] private float normalAttackRatio = 1f;
+        [SerializeField] private float projectileSpeed = 1f;
+
         private float skillCoolRemain;
-        private float normalAttackRatio = 1f;
         private bool isAttacking = false;
 
         private EnemyClass currentTarget;
@@ -32,6 +40,20 @@ namespace Tower.Player
         {
             base.Awake();
             controller = GetComponent<CharacterController>();
+
+            poolCount = pool.childCount;
+            projectiles = new GameObject[poolCount];
+            // 투사체 배열에 각 오브젝트 할당
+            for (int i = 0; i < poolCount; i++)
+            {
+                projectiles[i] = pool.GetChild(i).gameObject;
+            }
+
+            //초기 셋팅 (비활성화)
+            foreach (GameObject go in projectiles)
+            {
+                go.SetActive(false);
+            }
         }
 
         private void Update()
@@ -81,11 +103,52 @@ namespace Tower.Player
 
             if (isAttacking)
             {
-                foreach (var enemy in detector.detectedEnemies)
+                //제일 가까운 적 타겟팅
+                EnemyClass target = currentTarget;
+
+                if (target == null || target.IsDead) return;
+
+                //꺼져 있는 투사체 하나 갖고오기
+                foreach (GameObject go in projectiles)
                 {
-                    if (enemy == null) continue;
-                    enemy.TakeDamage(Atk * normalAttackRatio * AtkBuff, normalGroggyAmount);
+                    if (!go.activeSelf)
+                    {
+                        //투사체 클래스 갖고오기
+                        Projectile projectile = go.GetComponent<Projectile>();
+                        if (projectile == null) continue;
+
+                        StartCoroutine(LaunchProjectile(projectile, target));
+                        break;
+                    }
                 }
+            }
+        }
+
+        private IEnumerator LaunchProjectile(Projectile projectile, EnemyClass target)
+        {
+            //투사체 파이어포인트로 불러오기
+            projectile.transform.position = firePoint.position;
+            projectile.gameObject.SetActive(true);
+
+            //투사체 셋팅
+            projectile.SetTarget(target, normalAttackRatio * Atk * AtkBuff, normalGroggyAmount);
+
+            //투사체 이동
+            while(projectile.gameObject.activeSelf)
+            {
+                //날아가는 도중에 타겟이 죽으면 즉시 오브젝트 비활성화 후 반복문 종료
+                if (target == null || target.IsDead)
+                {
+                    projectile.gameObject.SetActive(false);
+                    yield break;
+                }
+
+                //타격 부위 보정
+                Vector3 targetPosition = new Vector3(target.transform.position.x, 1f, target.transform.position.z);
+                Vector3 dir = (targetPosition - projectile.transform.position).normalized;
+                projectile.transform.Translate(dir * projectileSpeed * Time.deltaTime);
+                
+                yield return null;
             }
         }
 

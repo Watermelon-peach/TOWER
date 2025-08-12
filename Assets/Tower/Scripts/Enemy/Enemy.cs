@@ -4,6 +4,7 @@ using Tower.Enemy.Data;
 using Tower.Game;
 using System.Collections;
 using Tower.Player;
+using Unity.VisualScripting;
 
 namespace Tower.Enemy
 {
@@ -169,7 +170,7 @@ namespace Tower.Enemy
 
             foreach (Collider hitBox in hitBoxes)
             {
-                Character character = hitBox.GetComponentInParent<Character>();
+                Character character = hitBox.transform.parent.GetComponent<Character>();
                 if (character != null)
                 {
                     character.TakeDamage(data.atk);
