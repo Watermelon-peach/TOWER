@@ -1219,7 +1219,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -7074,7 +7074,7 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 20.1
+  m_Height: 19
   m_Radius: 6.7
   m_SlopeLimit: 45
   m_StepOffset: 0.3
@@ -7146,8 +7146,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentSpeed: 0
-  walkSpeed: 3
-  runSpeed: 10
+  walkSpeed: 1.8
+  runSpeed: 6
   acceleration: 10
   dashSpeed: 12
   dashDuration: 0.5
