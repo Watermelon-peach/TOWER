@@ -171,6 +171,7 @@ namespace Tower.Enemy
             foreach (Collider hitBox in hitBoxes)
             {
                 Character character = hitBox.transform.parent.GetComponent<Character>();
+                Debug.Log($"검출된 히트박스: {hitBox.name} / 부모: {hitBox.transform.parent.name}");
                 if (character != null)
                 {
                     character.TakeDamage(data.atk);
