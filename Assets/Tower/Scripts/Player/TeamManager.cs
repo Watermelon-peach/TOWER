@@ -82,7 +82,7 @@ namespace Tower.Player
                     if (currentIndex >= characters.Length)
                         currentIndex = 0;
 
-                    Debug.Log("ㅂㅂㅁ");
+                    //Debug.Log("ㅂㅂㅁ");
                 } while (characters[currentIndex].IsDead);
 
                 SelectCharacter(currentIndex);

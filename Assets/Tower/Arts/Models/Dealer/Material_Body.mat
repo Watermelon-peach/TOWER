@@ -30,6 +30,7 @@ Material:
   - _OVERLAYMODE_NONE
   - _RIMSPLITCOLOR_NOSPLIT
   - _USEADDITIONALLIGHTSDIFFUSE_ON
+  - _USEBACKLIGHT_ON
   - _USEHATCHINGCONSTANTSCALE_ON
   - _USELIGHTRAMP_STEP
   - _USEOUTLINE_ON
@@ -144,7 +145,7 @@ Material:
     - _AlphaClip: 0
     - _AlphaCutoff: 0.5
     - _AlphaToMask: 0
-    - _BacklightAmount: 0.5
+    - _BacklightAmount: 0.325
     - _BacklightHardness: 0
     - _BacklightIntensity: 1
     - _Blend: 0
@@ -166,7 +167,7 @@ Material:
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 1
-    - _Glossiness: 0.100000024
+    - _Glossiness: 0.208
     - _GlossyReflections: 1
     - _HalftoneEdgeOffset: 0.1
     - _HalftoneSmoothness: 0.3
@@ -204,7 +205,7 @@ Material:
     - _RimSplitColor: 0
     - _RimThickness: 1
     - _ShapeSmoothness: 0.2
-    - _SideShineAmount: 0.2717647
+    - _SideShineAmount: 0.18
     - _SideShineHardness: 0
     - _SideShineIntensity: 1
     - _Smoothness: 0.100000024
@@ -238,7 +239,7 @@ Material:
     - _UseAdaptiveScreenUvsWarp: 0
     - _UseAdaptiveUvsSpecular: 0
     - _UseAdditionalLightsDiffuse: 1
-    - _UseBacklight: 0
+    - _UseBacklight: 1
     - _UseDiffuseWarp: 0
     - _UseDiffuseWarpAsOverlay: 0
     - _UseDynamicOutline: 0

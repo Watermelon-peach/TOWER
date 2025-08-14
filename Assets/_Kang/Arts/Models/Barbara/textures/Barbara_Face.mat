@@ -17,6 +17,7 @@ Material:
   - _OVERLAYMODE_NONE
   - _RIMSPLITCOLOR_NOSPLIT
   - _USEADDITIONALLIGHTSDIFFUSE_ON
+  - _USEBACKLIGHT_ON
   - _USEHATCHINGCONSTANTSCALE_ON
   - _USELIGHTRAMP_STEP
   - _USEOUTLINE_ON
@@ -169,7 +170,7 @@ Material:
     - _MaxScaleDependingOnCamera: 1
     - _Metallic: 0
     - _Mode: 0
-    - _NormalMapStrength: 1
+    - _NormalMapStrength: 0.5
     - _OcclusionStrength: 1
     - _OutlineDynamicSpeed: 0
     - _OutlineNoiseIntesity: 1
@@ -191,9 +192,9 @@ Material:
     - _RimSplitColor: 0
     - _RimThickness: 1
     - _ShapeSmoothness: 0.2
-    - _SideShineAmount: 0.2717647
+    - _SideShineAmount: 0.107
     - _SideShineHardness: 0
-    - _SideShineIntensity: 1
+    - _SideShineIntensity: 0.5
     - _Smoothness: 0.100000024
     - _SmoothnessMultiplier: 1
     - _SmoothnessTextureChannel: 0
@@ -225,7 +226,7 @@ Material:
     - _UseAdaptiveScreenUvsWarp: 0
     - _UseAdaptiveUvsSpecular: 0
     - _UseAdditionalLightsDiffuse: 1
-    - _UseBacklight: 0
+    - _UseBacklight: 1
     - _UseDiffuseWarp: 0
     - _UseDiffuseWarpAsOverlay: 0
     - _UseDynamicOutline: 0
