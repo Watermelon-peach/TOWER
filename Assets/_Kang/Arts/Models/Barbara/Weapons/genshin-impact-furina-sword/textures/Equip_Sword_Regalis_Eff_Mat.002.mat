@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Equip_Sword_Regalis_Eff_Mat.002
-  m_Shader: {fileID: 4800000, guid: 60e29b7951f20da47b11861d166b7036, type: 3}
+  m_Shader: {fileID: 4800000, guid: eaf47be5f2989a441ba14eae560d820b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -21,6 +21,7 @@ Material:
   - _USELIGHTRAMP_STEP
   - _USEOUTLINE_ON
   - _USEPURESKETCH_ON
+  - _USERIMLIGHT_ON
   - _USESPECULAR_ON
   m_InvalidKeywords:
   - _USESHADOWS_ON
@@ -234,7 +235,7 @@ Material:
     - _UseLightRamp: 0
     - _UseOutline: 1
     - _UsePureSketch: 1
-    - _UseRimLight: 0
+    - _UseRimLight: 1
     - _UseScreenUvs: 0
     - _UseScreenUvsSpecular: 0
     - _UseScreenUvsWarp: 0
@@ -253,7 +254,7 @@ Material:
     - _HalftoneColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 0, g: 0.003921569, b: 0.007843138, a: 0}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 0}
+    - _RimColor: {r: 0.09803922, g: 0.10980392, b: 0.6039216, a: 0}
     - _RimShadowColor: {r: 0, g: 0.055514283, b: 0.9622641, a: 0}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

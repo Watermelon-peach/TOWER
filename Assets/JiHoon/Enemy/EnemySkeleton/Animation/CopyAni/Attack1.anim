@@ -75473,7 +75473,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.3
+  - time: 0.43333334
     functionName: FindPlayerTag
     data: 
     objectReferenceParameter: {fileID: 0}

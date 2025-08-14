@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Material_Face
-  m_Shader: {fileID: 4800000, guid: 60e29b7951f20da47b11861d166b7036, type: 3}
+  m_Shader: {fileID: 4800000, guid: eaf47be5f2989a441ba14eae560d820b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -17,10 +17,12 @@ Material:
   - _OVERLAYMODE_NONE
   - _RIMSPLITCOLOR_NOSPLIT
   - _USEADDITIONALLIGHTSDIFFUSE_ON
+  - _USEBACKLIGHT_ON
   - _USEHATCHINGCONSTANTSCALE_ON
   - _USELIGHTRAMP_STEP
   - _USEOUTLINE_ON
   - _USEPURESKETCH_ON
+  - _USERIMLIGHT_ON
   - _USESPECULAR_ON
   m_InvalidKeywords:
   - _USESHADOWS_ON
@@ -130,7 +132,7 @@ Material:
     - _AlphaClip: 0
     - _AlphaCutoff: 0.5
     - _AlphaToMask: 0
-    - _BacklightAmount: 0.5
+    - _BacklightAmount: 0.325
     - _BacklightHardness: 0
     - _BacklightIntensity: 1
     - _Blend: 0
@@ -190,7 +192,7 @@ Material:
     - _RimSplitColor: 0
     - _RimThickness: 1
     - _ShapeSmoothness: 0.2
-    - _SideShineAmount: 0.2717647
+    - _SideShineAmount: 0.18
     - _SideShineHardness: 0
     - _SideShineIntensity: 1
     - _Smoothness: 0.100000024
@@ -224,7 +226,7 @@ Material:
     - _UseAdaptiveScreenUvsWarp: 0
     - _UseAdaptiveUvsSpecular: 0
     - _UseAdditionalLightsDiffuse: 1
-    - _UseBacklight: 0
+    - _UseBacklight: 1
     - _UseDiffuseWarp: 0
     - _UseDiffuseWarpAsOverlay: 0
     - _UseDynamicOutline: 0
@@ -234,7 +236,7 @@ Material:
     - _UseLightRamp: 0
     - _UseOutline: 1
     - _UsePureSketch: 1
-    - _UseRimLight: 0
+    - _UseRimLight: 1
     - _UseScreenUvs: 0
     - _UseScreenUvsSpecular: 0
     - _UseScreenUvsWarp: 0
@@ -253,7 +255,7 @@ Material:
     - _HalftoneColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 0.03773582, g: 0.0011436034, b: 0, a: 0}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 0}
+    - _RimColor: {r: 0.7735849, g: 0.054734774, b: 0.054734774, a: 0}
     - _RimShadowColor: {r: 0, g: 0.05714321, b: 1, a: 0}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0, g: 0, b: 0, a: 1}
