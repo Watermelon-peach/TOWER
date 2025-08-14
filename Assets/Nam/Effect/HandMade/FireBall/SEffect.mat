@@ -48,7 +48,7 @@ Material:
     - _CastShadows: 0
     - _Cull: 2
     - _DstBlend: 10
-    - _Particle_Size: 0.5
+    - _Particle_Size: 0.921
     - _QueueControl: 0
     - _QueueOffset: 0
     - _SrcBlend: 5

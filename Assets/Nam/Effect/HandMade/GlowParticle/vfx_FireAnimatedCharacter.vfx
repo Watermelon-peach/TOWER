@@ -121,8 +121,8 @@ MonoBehaviour:
     serializedVersion: 2
     x: 295
     y: -1442
-    width: 3851
-    height: 2665
+    width: 3849
+    height: 2635
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -195,7 +195,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.SkinnedMeshRenderer, UnityEngine.CoreModule,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":13700002,"guid":"a5674d01884853d4e8f2386a171e14d9","type":3}}'
+      m_SerializableObject: 
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -1597,7 +1597,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.SkinnedMeshRenderer, UnityEngine.CoreModule,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":13700002,"guid":"a5674d01884853d4e8f2386a171e14d9","type":3}}'
+      m_SerializableObject: 
     m_Space: -1
   m_Property:
     name: skinnedMesh
@@ -2099,7 +2099,7 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
+  m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots: []
   m_OutputSlots:
@@ -2170,7 +2170,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.SkinnedMeshRenderer, UnityEngine.CoreModule,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":13700002,"guid":"a5674d01884853d4e8f2386a171e14d9","type":3}}'
+      m_SerializableObject: 
     m_Space: -1
   m_Property:
     name: o
@@ -5343,7 +5343,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.SkinnedMeshRenderer, UnityEngine.CoreModule,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":13700002,"guid":"a5674d01884853d4e8f2386a171e14d9","type":3}}'
+      m_SerializableObject: 
     m_Space: -1
   m_Property:
     name: skinnedMesh
@@ -9054,7 +9054,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.SkinnedMeshRenderer, UnityEngine.CoreModule,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":13700002,"guid":"a5674d01884853d4e8f2386a171e14d9","type":3}}'
+      m_SerializableObject: 
     m_Space: -1
   m_Property:
     name: skinnedMesh
