@@ -344,6 +344,10 @@ namespace Tower.Game
         void OnMapCleared()
         {
             Debug.Log($"Map {mapID} cleared!");
+
+            
+
+            // 기존 MapSpawnManager도 유지 (필요시)
             MapSpawnManager.Instance?.OnMapCleared(mapID);
         }
 
