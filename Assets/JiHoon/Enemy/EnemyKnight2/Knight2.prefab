@@ -1061,7 +1061,7 @@ MonoBehaviour:
   attackRadius: 2
   targetLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 512
   parryingTime: 0.5
   jigumiya: {fileID: 5179750918234598341}
 --- !u!1 &3736470314243668643

@@ -32,7 +32,7 @@ namespace Tower.Player
         [SerializeField] private float strAtkMultiplier = 3f;
         [SerializeField] private int strAtkGP = 30;
         [SerializeField] private float strAtkDuration;
-        [SerializeField] private float jumpHeight = 2f;
+        //[SerializeField] private float jumpHeight = 2f;
         [SerializeField] private float distance = 5f;
         #endregion
 
