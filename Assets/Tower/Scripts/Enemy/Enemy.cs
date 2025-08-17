@@ -4,7 +4,7 @@ using Tower.Enemy.Data;
 using Tower.Game;
 using System.Collections;
 using Tower.Player;
-using Unity.VisualScripting;
+using TMPro;
 
 namespace Tower.Enemy
 {
@@ -18,7 +18,11 @@ namespace Tower.Enemy
         public CanvasGroup statBar; //스탯 바 뭉탱이
         public Image hpGauge;
         public Image gpGauge;
+        public GameObject groggyIcon;    //그로기 상태 시 표시할 아이콘
+        public TextMeshProUGUI gpText;
+        public Image groggyTimerImage;
 
+        private Image gpFill;
         private float currentHP;    //현재 체력
         private float maxHP;        //최대 체력 (db 기반)
         private int currentGP;    //현재 그로기 포인트
@@ -34,7 +38,7 @@ namespace Tower.Enemy
         private float lastDamageTime;
         private Color startGpColor;
 
-        public Animator animator;
+        [HideInInspector]public Animator animator;
 
         //Enemy 공격애니메이션 이벤트 메서드
         //[SerializeField] private Transform attackPoint; // 공격 지점
@@ -57,6 +61,7 @@ namespace Tower.Enemy
         {
             //참조
             animator = GetComponent<Animator>();
+            gpFill = gpGauge.transform.Find("Fill").GetComponent<Image>();
             //값 설정
             maxHP = data.maxHp;
             maxGP = data.maxGp;
@@ -68,7 +73,9 @@ namespace Tower.Enemy
             currentHP = maxHP;
             currentGP = 0;
             HideStatBar();
-            startGpColor = gpGauge.color;
+            startGpColor = gpFill.color;
+            gpText.text = currentGP.ToString();
+            groggyIcon.SetActive(false);
         }
 
         private void Update()
@@ -94,6 +101,7 @@ namespace Tower.Enemy
             if(!isGroggy)
             {
                 currentGP += groggyAmount;
+
                 if (currentGP >= maxGP)
                 {
                     currentGP = maxGP;
@@ -124,20 +132,25 @@ namespace Tower.Enemy
         {
             //그로기 연출
             animator.SetTrigger(AnimHash.groggy);
-            //...
-            gpGauge.color = Color.red;
+            //상태 표시
+            groggyIcon.SetActive(true);
+
+            gpFill.color = Color.red;
+
+            groggyTimerImage.fillAmount = 1f;
             float groggyCount = groggyDuration;
 
             while (groggyCount >= 0)
             {
                 groggyCount -= Time.deltaTime;
                 //타이머 UI 표시
-                //groggyTimerImage.fillamount = groggyCount / groggyDuration;
+                groggyTimerImage.fillAmount = groggyCount / groggyDuration;
                 yield return null;
             }
             //그로기 끝, 상태 초기화
+            groggyIcon.SetActive(false);
             currentGP = 0;
-            gpGauge.color = startGpColor;
+            gpFill.color = startGpColor;
             isGroggy = false;
             animator.SetTrigger(AnimHash.endGroggy);
             ShowStatBar();
@@ -190,6 +203,9 @@ namespace Tower.Enemy
             //게이지 업데이트
             hpGauge.fillAmount = currentHP / maxHP;
             gpGauge.fillAmount = (float)currentGP / maxGP;
+
+            //gp 카운트(%) 업데이트
+            gpText.text = isGroggy? "" : ((float)currentGP / maxGP * 100).ToString("F0");
 
             // 이미 코루틴이 실행 중이면 중복 실행 방지
             if (hideCoroutine == null)
