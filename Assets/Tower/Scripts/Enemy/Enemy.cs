@@ -48,6 +48,9 @@ namespace Tower.Enemy
         [Header("패링")]
         [SerializeField] private float parryingTime = 0.5f;  //패링허용 시간(임시0.5s)
         [SerializeField] private GameObject jigumiya;
+
+        [Header("이펙트")]
+        [SerializeField] private ParticleSystem hitVfx;
         #endregion
 
         #region Property
@@ -119,7 +122,9 @@ namespace Tower.Enemy
 
             currentHP = Mathf.Max(currentHP - damage, 0);
 
+            //UI, 이펙트
             ShowStatBar();
+            hitVfx.Play();
 
             if (IsDead)
             {
