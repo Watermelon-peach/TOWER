@@ -108,6 +108,7 @@ namespace Tower.Player
             if (IsDead)
             {
                 //Debug.Log("이미 죽어있는뎁쇼?");
+                PlayerStatsInfo.Instance.UpdateCurrentHPInfo();
                 return;
             }
 
@@ -148,6 +149,7 @@ namespace Tower.Player
 
         public void ManaRecover(float amount)
         {
+            if (IsDead) return;
             currentMP = Mathf.Min(currentMP + amount, maxMP);
         }
         #endregion
@@ -160,6 +162,7 @@ namespace Tower.Player
             animator.SetBool(AnimHash.isDead, true);
             //마나도 0
             currentMP = 0f;
+            PlayerStatsInfo.Instance.UpdateCurrentHPInfo();
             //다음 캐릭터로 넘어가게
             //...
         }
@@ -168,8 +171,10 @@ namespace Tower.Player
         {
             //TODO: 캐릭터 활성화
             //...
-            Heal(maxHP);
-            ManaRecover(maxMP);
+            //Heal(maxHP);
+            //ManaRecover(maxMP);
+            UpdateStats();
+            PlayerStatsInfo.Instance.SwitchCharatersInfo();
         }
 
         public int GetHPForUI()
