@@ -202,7 +202,7 @@ GameObject:
   - component: {fileID: 7198463504226212790}
   - component: {fileID: 5252975964230592090}
   - component: {fileID: 736114552953767762}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: ParryWarning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -217,15 +217,15 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 988806314049386672}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.0475}
-  m_LocalScale: {x: 0.050000004, y: 0.050000004, z: 0.050000004}
+  m_LocalPosition: {x: 0, y: 0, z: 0.0821}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 8948148683554521255}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.001, y: 0.26600006}
+  m_AnchoredPosition: {x: 0.0151, y: 0.15}
   m_SizeDelta: {x: 5, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &5252975964230592090
