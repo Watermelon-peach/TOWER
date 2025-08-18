@@ -17,7 +17,7 @@ MonoBehaviour:
   maxHp: 500
   maxMp: 100
   characterType: 0
-  characterIcon: {fileID: 0}
+  characterIcon: {fileID: 21300000, guid: be759d88453cd894799becc0bd4314a3, type: 3}
   skillIcon: {fileID: 0}
   manaCost: 0
   coolDown: 0

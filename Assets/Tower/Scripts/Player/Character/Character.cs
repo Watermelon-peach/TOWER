@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Tower.Game;
 using Tower.Player.Data;
-
+using Tower.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -34,6 +34,8 @@ namespace Tower.Player
         public bool IsDead => currentHP <= 0;
         public float Atk => characterBase.atk;
         public float AtkBuff { get; set; } = 1f;
+        public float CurrentHP => currentHP;
+        public float CurrentMP => currentMP;
         #endregion
 
         #region Unity Event Method
@@ -116,6 +118,7 @@ namespace Tower.Player
             Debug.Log("방어력 적용 대미지: " + damage);
             //Debug.Log("아야");
             currentHP = Mathf.Max(currentHP - damage, 0);
+            PlayerStatsInfo.Instance.UpdateCurrentHPInfo();
             if (IsDead)
             {
                 Die();

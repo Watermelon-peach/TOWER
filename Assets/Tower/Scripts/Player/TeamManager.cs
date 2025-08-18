@@ -1,6 +1,6 @@
 using UnityEngine;
 using Tower.Util;
-using Unity.Cinemachine;
+using Tower.UI;
 
 namespace Tower.Player
 {
@@ -102,6 +102,7 @@ namespace Tower.Player
             }
 
             cam.LookAtCharacter(index);
+            PlayerStatsInfo.Instance.SwitchCharatersInfo();
             Debug.Log($"{index}번 캐릭터 등장");
         }
 
