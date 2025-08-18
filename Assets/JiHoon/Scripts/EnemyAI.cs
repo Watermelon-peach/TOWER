@@ -31,11 +31,15 @@ namespace Tower.Enemy
         // 스폰 시스템 참조
         private MapSpawnArea spawnArea;
 
+        // Behaviour Graph 에이전트 참조
+        private BehaviorGraphAgent behaviorAgent;
+
         void Start()
         {
             agent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
             rb = GetComponent<Rigidbody>();
+            behaviorAgent = GetComponent<BehaviorGraphAgent>();
 
             // 플레이어 찾기
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -68,7 +72,53 @@ namespace Tower.Enemy
 
             // 애니메이션만 업데이트
             UpdateAnimations();
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                 Debug.Log("스페이스바 눌림!");
+                 StartCoroutine(RestartBehaviorGraph());
+            }
+
         }
+
+        
+
+        IEnumerator RestartBehaviorGraph()
+        {
+            // Behaviour Graph 끄기
+            if (behaviorAgent != null)
+            {
+                behaviorAgent.enabled = false;
+            }
+
+            // NavMeshAgent도 잠시 정지
+            if (agent != null)
+            {
+                agent.isStopped = true;
+            }
+
+            // 한 프레임 대기
+            yield return null;
+
+            // 새 플레이어 찾기
+            FindPlayerTag();
+
+            // 한 프레임 대기
+            yield return new WaitForSeconds(0.2f) ;
+
+            // Behaviour Graph 켜기
+            if (behaviorAgent != null)
+            {
+                behaviorAgent.enabled = true;
+            }
+
+            // NavMeshAgent 재개
+            if (agent != null)
+            {
+                agent.isStopped = false;
+            }
+        }
+
 
         public void StopMoving()
         {
@@ -78,6 +128,7 @@ namespace Tower.Enemy
             agent.ResetPath();
             agent.updatePosition = false;
             agent.updateRotation = false;
+            isAttacking = true;
 
             // 타겟을 즉시 바라보기
             if (target != null)
@@ -107,6 +158,7 @@ namespace Tower.Enemy
             agent.updatePosition = true;
             agent.updateRotation = true;
             agent.isStopped = false;
+            isAttacking = false;
 
             // 목표 위치 재설정
             if (target != null)

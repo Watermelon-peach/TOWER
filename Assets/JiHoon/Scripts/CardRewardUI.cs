@@ -297,7 +297,7 @@ namespace Tower.UI
         }
 
         // 확인 버튼 클릭
-        void OnConfirmClicked()
+        public void OnConfirmClicked()
         {
             // 자동 종료 중지
             if (autoCloseCoroutine != null)
