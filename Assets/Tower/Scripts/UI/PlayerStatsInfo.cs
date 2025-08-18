@@ -39,8 +39,9 @@ namespace Tower.UI
                 //캐릭터 인덱스에 맞는 UI 슬롯 할당
                 int characterIndex = (TeamManager.Instance.CurrentIndex + i) % 3;
                 Character character = TeamManager.Instance.characters[characterIndex];
-
                 infoUIs[i].characterIcon.sprite = character.characterBase.characterIcon;
+                //사망한 캐릭터 아이콘 색상 처리
+                infoUIs[i].characterIcon.color = character.IsDead? new Color32(80, 80, 80, 255) : Color.white;
                 infoUIs[i].HPGauge.fillAmount = character.CurrentHP / character.characterBase.maxHp;
                 infoUIs[i].MPGauge.fillAmount = character.CurrentMP / character.characterBase.maxMp;
             }
@@ -50,6 +51,7 @@ namespace Tower.UI
         public void UpdateCurrentHPInfo()
         {
             infoUIs[0].HPGauge.fillAmount = currentCharacter.CurrentHP / currentCharacter.characterBase.maxHp;
+            infoUIs[0].characterIcon.color = currentCharacter.IsDead ? new Color32(80, 80, 80, 255) : Color.white;
         }
 
         //현재 선택한 캐릭터 MP정보 업데이트

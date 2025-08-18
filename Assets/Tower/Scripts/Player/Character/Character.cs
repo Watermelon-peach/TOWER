@@ -148,6 +148,7 @@ namespace Tower.Player
 
         public void ManaRecover(float amount)
         {
+            if (IsDead) return;
             currentMP = Mathf.Min(currentMP + amount, maxMP);
         }
         #endregion
@@ -168,8 +169,9 @@ namespace Tower.Player
         {
             //TODO: 캐릭터 활성화
             //...
-            Heal(maxHP);
-            ManaRecover(maxMP);
+            //Heal(maxHP);
+            //ManaRecover(maxMP);
+            UpdateStats();
         }
 
         public int GetHPForUI()
