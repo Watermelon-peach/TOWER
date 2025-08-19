@@ -224,9 +224,9 @@ namespace Tower.Game
 
                 if (gameOverText != null)
                 {
-                    gameOverText.text = $"시간 초과!\n\n" +
-                                       $"도달 스테이지: {currentStageID + 1}층\n" +
-                                       $"최고 기록: {bestStage + 1}층";
+                    gameOverText.text = $"Time Over!\n\n" +
+                                       $"Stage : {currentStageID + 1}\n" +
+                                       $"Best Stage: {bestStage + 1}";
                 }
             }
         }
@@ -236,19 +236,35 @@ namespace Tower.Game
         {
             Time.timeScale = 1f;
             isGameOver = false;
-
             if (gameOverPanel != null)
                 gameOverPanel.SetActive(false);
-
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+
+            // 비활성화된 오브젝트도 포함해서 찾기
+            Tower.Player.Character[] allCharacters = FindObjectsOfType<Tower.Player.Character>(true);
+            foreach (Tower.Player.Character character in allCharacters)
+            {
+                if (character != null)
+                {
+                    character.Revibe();
+                    Debug.Log($"Revived: {character.gameObject.name}");
+                }
+            }
+
+            if (MastManager.Instance != null)
+            {
+                // 첫 번째 마스트 다시 로드 (위치도 자동 설정됨)
+                MastManager.Instance.ResetToFirstMast();
+                StartStageTimer(0);
+                return;  // 여기서 끝!
+            }
 
             // 게임 리셋 (MapSpawnManager가 처리)
             if (MapSpawnManager.Instance != null)
             {
                 MapSpawnManager.Instance.ResetGame();
             }
-
             // 1층부터 다시 시작
             StartStageTimer(0);
             TeamManager.Instance.MoveFormation(spawnPoint.position, spawnPoint.rotation);
