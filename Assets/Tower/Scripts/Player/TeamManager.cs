@@ -25,6 +25,24 @@ namespace Tower.Player
 
         #region Property
         public int CurrentIndex => currentIndex;
+        public Character NextCharacter
+        {
+            get
+            {
+                Character next = characters[(currentIndex + 1) % 3];
+                if(next.IsDead)
+                {
+                    next = characters[(currentIndex + 2) % 3];
+                    if(next.IsDead)
+                    {
+                        return null;
+                    }
+                }
+                return next;
+            }
+        }
+
+        public bool SwitchComboSignal { get; set; }
         #endregion
 
         #region Unity Event Method
@@ -49,12 +67,12 @@ namespace Tower.Player
         {
             if (InputManager.Instance.SwapPressed)
             {
-                Debug.Log("SPACE");
-
-                for (int i = 0; i < characters.Length; i++)
-                {
-                    Debug.Log(i.ToString() + characters[i].IsDead);
-                }
+                //Debug.Log("SPACE");
+                
+                //for (int i = 0; i < characters.Length; i++)
+                //{
+                //    Debug.Log(i.ToString() + characters[i].IsDead);
+                //}
 
                 // 모든 캐릭터가 죽었는지 먼저 체크
                 bool allDead = true;
@@ -103,6 +121,12 @@ namespace Tower.Player
 
             cam.LookAtCharacter(index);
             PlayerStatsInfo.Instance.SwitchCharatersInfo();
+
+            //교체공격
+            if (SwitchComboSignal)
+            {
+                characters[currentIndex].SwitchCombo();
+            }
             Debug.Log($"{index}번 캐릭터 등장");
         }
 

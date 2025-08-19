@@ -2,7 +2,7 @@ using UnityEngine;
 using Tower.Util;
 using EnemyClass = Tower.Enemy.Enemy;
 using System.Collections;
-
+using UnityEngine.UI;
 
 namespace Tower.Player
 {
@@ -36,8 +36,13 @@ namespace Tower.Player
         [SerializeField] private float distance = 5f;
         #endregion
 
+        [Header("UI")]
+        [SerializeField] private CanvasGroup group;
+        [SerializeField] private Image[] timeBars = new Image[2];
+        [SerializeField] private Image nextCharacterIcon;
+
         #region Property
-        public bool IsParrying { get; private set; }
+        public bool IsParrying { get; set; }
         #endregion
 
         #region Unity Event Method
@@ -76,15 +81,29 @@ namespace Tower.Player
             //Debug.Log("패리중!");    
             float timeLeft = parryDuration;
 
-            //슬로우모션, 흑백 연출
+            //슬로우모션, 흑백 연출, 패링 UI 활성화
             Effects(true);
             animator.SetBool(AnimHash.isParrying, true);
 
-            while (timeLeft > 0)
+            while (timeLeft > 0 && IsParrying)
             {
                 timeLeft -= Time.unscaledDeltaTime;
+                //UI처리
+                foreach (Image bar in timeBars)
+                {
+                    bar.fillAmount = timeLeft / parryDuration;
+                }
+
                 if (InputManager.Instance.AttackPressed)
                     StartCoroutine(StrongAttack(enemy));
+                else if (InputManager.Instance.SwapPressed)
+                {
+                    TeamManager.Instance.SwitchComboSignal = true;
+                    animator.SetBool(AnimHash.isParrying, false);
+                    Effects(false);
+                    yield break;
+                }
+
                 yield return null;
             }
 
@@ -95,11 +114,11 @@ namespace Tower.Player
             //Debug.Log("패리 끝!");
         }
 
-        private IEnumerator StrongAttack(EnemyClass enemy)
+        public IEnumerator StrongAttack(EnemyClass enemy)
         {
             Effects(false);
             //테스트용 대미지
-            enemy.TakeDamage(character.Atk * character.AtkBuff * strAtkMultiplier, strAtkGP); //Animator쪽으로 옮겨야 할듯
+            //enemy.TakeDamage(character.Atk * character.AtkBuff * strAtkMultiplier, strAtkGP); //Animator쪽으로 옮겨야 할듯
             Vector3 direction = (enemy.transform.position - transform.position).normalized;
             transform.forward = direction;
             //이펙트는 그로기로
@@ -129,8 +148,10 @@ namespace Tower.Player
         private void Effects(bool enable)
         {
             grayEffect.SetGrayscale(enable);
+            nextCharacterIcon.sprite = TeamManager.Instance.NextCharacter.characterBase.characterIcon;
             Time.timeScale = (enable) ? 0.3f : 1f;
             Time.fixedDeltaTime = 0.02f * Time.timeScale;
+            group.alpha = enable ? 1 : 0;
         }
         #endregion
     }

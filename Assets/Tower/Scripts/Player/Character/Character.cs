@@ -154,6 +154,11 @@ namespace Tower.Player
         }
         #endregion
 
+        public void SwitchCombo()
+        {
+            TeamManager.Instance.SwitchComboSignal = false;
+        }
+
         private void Die()
         {
             //사망처리
