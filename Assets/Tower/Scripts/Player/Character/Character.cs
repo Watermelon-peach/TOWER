@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 using Tower.Game;
 using Tower.Player.Data;
 using Tower.UI;
+using System.Collections;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -28,6 +30,11 @@ namespace Tower.Player
         protected Animator animator;
 
         private Parrying parrying;
+        [Header("강공")]
+        [SerializeField] protected float strongAtackMultiplier;
+        [SerializeField] protected LayerMask enemyLayer;
+        [SerializeField] protected float range;
+        [SerializeField] protected ParticleSystem strongAtkVfx;
         #endregion
 
         #region Property
@@ -99,8 +106,9 @@ namespace Tower.Player
         #region HP
         public void TakeDamage(float damage, int groggyAmount = 0)
         {
-            //패링중 무적, 비활성화 상태시 무적
-            if (parrying.IsParrying || !gameObject.activeSelf)
+            Debug.Log("호출");
+            //패링중 무적, 비활성화 상태시 무적, 강공격 모션 중 무적
+            if (parrying.IsParrying || !gameObject.activeSelf ||animator.GetBool(AnimHash.isParrying))
                 return;
 
             Debug.Log(currentHP);
@@ -153,9 +161,29 @@ namespace Tower.Player
             currentMP = Mathf.Min(currentMP + amount, maxMP);
         }
         #endregion
-
-        public void SwitchCombo()
+        
+        //부활 (체력, MP회복)
+        public void Revibe()
         {
+            //TODO: 캐릭터 활성화
+            //...
+            //Heal(maxHP);
+            //ManaRecover(maxMP);
+            currentHP = maxHP;
+            currentMP = maxMP;
+
+            //UI 새로고침
+            PlayerStatsInfo.Instance.SwitchCharatersInfo();
+        }
+
+        public virtual void OnStrongAttack()
+        {
+            //상속 받은 클래스에서 세부내용 구현
+        }
+
+        public virtual void SwitchCombo()
+        {
+            //상속 받은 클래스에서 세부내용 구현
             TeamManager.Instance.SwitchComboSignal = false;
         }
 
@@ -169,18 +197,24 @@ namespace Tower.Player
             currentMP = 0f;
             PlayerStatsInfo.Instance.UpdateCurrentHPInfo();
             //다음 캐릭터로 넘어가게
+            StartCoroutine(AfterDeath());
+            
             //...
         }
 
-        public void Revibe()
+        private IEnumerator AfterDeath()
         {
-            //TODO: 캐릭터 활성화
-            //...
-            //Heal(maxHP);
-            //ManaRecover(maxMP);
-            currentHP = maxHP;
-            currentMP = maxMP;
-            PlayerStatsInfo.Instance.SwitchCharatersInfo();
+            float timer = 0;
+            while (timer < 3f)
+            {
+                if (!gameObject.activeSelf) //중간에 교체하면
+                    yield break;             // 바로 종료
+
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            TeamManager.Instance.SwitchToNextCharacter(); //3초가 지나면 자동으로 넘어가게
         }
 
         public int GetHPForUI()

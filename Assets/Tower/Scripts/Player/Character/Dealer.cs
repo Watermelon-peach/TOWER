@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using EnemyClass = Tower.Enemy.Enemy;
 
@@ -22,7 +23,7 @@ namespace Tower.Player
         private float verticalVelocity;
 
         public float SkillCoolRemain => skillCoolRemain;
-
+        
         protected override void Awake()
         {
             base.Awake();
@@ -86,6 +87,27 @@ namespace Tower.Player
         {
             isAttacking = false; // 공격 끝나면 회전 고정 해제
             currentTarget = null;
+        }
+
+        //강공격 구현
+        public override void OnStrongAttack()
+        {
+            base.OnStrongAttack();
+
+            foreach (var enemy in detector.detectedEnemies)
+            {
+                if (enemy == null) continue;
+                enemy.TakeDamage(Atk * normalAttackRatio * AtkBuff * strongAtackMultiplier, normalGroggyAmount);
+                strongAtkVfx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                strongAtkVfx.Play();
+            }
+        }
+
+
+        //교체공격 구현
+        public override void SwitchCombo()
+        {
+            base.SwitchCombo();
         }
 
         private void UpdateTargetDirection()

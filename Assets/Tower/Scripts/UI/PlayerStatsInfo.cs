@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Tower.Player;
 using Tower.Util;
+using TMPro;
 
 namespace Tower.UI
 {
@@ -17,6 +18,7 @@ namespace Tower.UI
     {
         #region Variables
         public CharacterInfoUI[] infoUIs = new CharacterInfoUI[3];
+        public TextMeshProUGUI currenHPText;
 
         private Character currentCharacter;
         #endregion
@@ -44,6 +46,8 @@ namespace Tower.UI
                 infoUIs[i].characterIcon.color = character.IsDead? new Color32(80, 80, 80, 255) : Color.white;
                 infoUIs[i].HPGauge.fillAmount = character.CurrentHP / character.characterBase.maxHp;
                 infoUIs[i].MPGauge.fillAmount = character.CurrentMP / character.characterBase.maxMp;
+
+                currenHPText.text = currentCharacter.GetHPForUI().ToString() + "/" + Mathf.CeilToInt(currentCharacter.characterBase.maxHp);
             }
         }
 
@@ -52,6 +56,8 @@ namespace Tower.UI
         {
             infoUIs[0].HPGauge.fillAmount = currentCharacter.CurrentHP / currentCharacter.characterBase.maxHp;
             infoUIs[0].characterIcon.color = currentCharacter.IsDead ? new Color32(80, 80, 80, 255) : Color.white;
+
+            currenHPText.text = currentCharacter.GetHPForUI().ToString() + "/" + Mathf.CeilToInt(currentCharacter.characterBase.maxHp);
         }
 
         //현재 선택한 캐릭터 MP정보 업데이트

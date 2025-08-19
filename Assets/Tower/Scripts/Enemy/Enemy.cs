@@ -115,7 +115,7 @@ namespace Tower.Enemy
             if (!isGroggy)
                 animator.SetTrigger(AnimHash.hit);
 
-            Debug.Log("현재 GP: " + currentGP);
+            //Debug.Log("현재 GP: " + currentGP);
             //그로기 약체화 배율 처리
             if (isGroggy)
                 damage *= 1.5f;

@@ -68,53 +68,61 @@ namespace Tower.Player
             if (InputManager.Instance.SwapPressed)
             {
                 //Debug.Log("SPACE");
-                
+
                 //for (int i = 0; i < characters.Length; i++)
                 //{
                 //    Debug.Log(i.ToString() + characters[i].IsDead);
                 //}
-
-                // 모든 캐릭터가 죽었는지 먼저 체크
-                bool allDead = true;
-                for (int i = 0; i < characters.Length; i++)
-                {
-                    if (!characters[i].IsDead)
-                    {
-                        allDead = false;
-                        break;
-                    }
-                }
-
-                if (allDead)
-                {
-                    GameOver();
-                    return;
-                }
-
-                // 다음 살아있는 캐릭터로 이동
-                int startIndex = currentIndex;
-
-                do
-                {
-                    currentIndex++;
-                    if (currentIndex >= characters.Length)
-                        currentIndex = 0;
-
-                    //Debug.Log("ㅂㅂㅁ");
-                } while (characters[currentIndex].IsDead);
-
-                SelectCharacter(currentIndex);
+                SwitchToNextCharacter();
             }
         }
 
         #endregion
 
         #region Custom Method
+
+        public void SwitchToNextCharacter()
+        {
+            // 모든 캐릭터가 죽었는지 먼저 체크
+            bool allDead = true;
+            for (int i = 0; i < characters.Length; i++)
+            {
+                if (!characters[i].IsDead)
+                {
+                    allDead = false;
+                    break;
+                }
+            }
+
+            if (allDead)
+            {
+                GameOver();
+                return;
+            }
+
+            // 다음 살아있는 캐릭터로 이동
+            int startIndex = currentIndex;
+
+            do
+            {
+                currentIndex++;
+                if (currentIndex >= characters.Length)
+                    currentIndex = 0;
+
+                //Debug.Log("ㅂㅂㅁ");
+            } while (characters[currentIndex].IsDead);
+
+            SelectCharacter(currentIndex);
+        }
+
         public void SelectCharacter(int index)
         {
             //선택한 캐릭터만 활성화, 나머지 정령화
             for (int i = 0; i < characters.Length; i++)
             {
+                //한번씩 껐다 켜줘서 정령 위치 업데이트 (살아있는 애들만)
+                if (!characters[i].IsDead)
+                    characters[i].gameObject.SetActive(true);
                 characters[i].gameObject.SetActive(i==index);
                 characters[i].gameObject.tag = (characters[i].gameObject.activeSelf) ? "Player" : "Fairy";
             }
@@ -178,6 +186,7 @@ namespace Tower.Player
             }
 
             SelectCharacter(currentIndex);
+
             Debug.Log("포메이션 이동");
         }
         #endregion

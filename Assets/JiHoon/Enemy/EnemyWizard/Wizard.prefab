@@ -1045,7 +1045,7 @@ GameObject:
   - component: {fileID: 2780100806736465245}
   - component: {fileID: 8606584630075582369}
   - component: {fileID: -6447195213118184049}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wizard
   m_TagString: Enemy
   m_Icon: {fileID: 0}

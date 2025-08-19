@@ -1822,7 +1822,7 @@ GameObject:
   - component: {fileID: 870966341741578348}
   - component: {fileID: 5189206786267158365}
   - component: {fileID: 8026057015310290429}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Knight3
   m_TagString: Enemy
   m_Icon: {fileID: 0}

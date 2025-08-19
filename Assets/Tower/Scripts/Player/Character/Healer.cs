@@ -166,6 +166,18 @@ namespace Tower.Player
             currentTarget = null;
         }
 
+        //강공격 구현
+        public override void OnStrongAttack()
+        {
+            base.OnStrongAttack();
+        }
+
+        //교체공격 구현
+        public override void SwitchCombo()
+        {
+            base.SwitchCombo();
+        }
+
         private void UpdateTargetDirection()
         {
             currentTarget = GetClosestEnemy();

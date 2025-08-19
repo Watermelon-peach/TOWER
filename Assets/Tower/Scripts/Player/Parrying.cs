@@ -29,8 +29,8 @@ namespace Tower.Player
         private Animator animator;
         private CharacterController controller;
 
-        [SerializeField] private float strAtkMultiplier = 3f;
-        [SerializeField] private int strAtkGP = 30;
+        //[SerializeField] private float strAtkMultiplier = 3f;
+        //[SerializeField] private int strAtkGP = 30;
         [SerializeField] private float strAtkDuration;
         //[SerializeField] private float jumpHeight = 2f;
         [SerializeField] private float distance = 5f;
@@ -95,7 +95,11 @@ namespace Tower.Player
                 }
 
                 if (InputManager.Instance.AttackPressed)
+                {
                     StartCoroutine(StrongAttack(enemy));
+                    yield break;
+                }
+                    
                 else if (InputManager.Instance.SwapPressed)
                 {
                     TeamManager.Instance.SwitchComboSignal = true;
@@ -116,6 +120,8 @@ namespace Tower.Player
 
         public IEnumerator StrongAttack(EnemyClass enemy)
         {
+            //: 강공격 구현 부분은 애니메이터쪽으로 옮겼음, 돌진 로직만 남겨둠
+
             Effects(false);
             //테스트용 대미지
             //enemy.TakeDamage(character.Atk * character.AtkBuff * strAtkMultiplier, strAtkGP); //Animator쪽으로 옮겨야 할듯

@@ -88,6 +88,27 @@ namespace Tower.Player
             currentTarget = null;
         }
 
+        //강공격 구현
+        public override void OnStrongAttack()
+        {
+            base.OnStrongAttack();
+
+            strongAtkVfx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            strongAtkVfx.Play();
+
+            Collider[] enemies = Physics.OverlapSphere(strongAtkVfx.transform.position, 5f, enemyLayer);
+            foreach (var enemy in enemies)
+            {
+                enemy.GetComponent<Rigidbody>().AddForce(Vector3.up * 3, ForceMode.Impulse);
+            }
+        }
+
+        //교체공격 구현
+        public override void SwitchCombo()
+        {
+            base.SwitchCombo();
+        }
+
         private void UpdateTargetDirection()
         {
             currentTarget = GetClosestEnemy();
