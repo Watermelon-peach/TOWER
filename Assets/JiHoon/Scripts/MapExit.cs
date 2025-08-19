@@ -6,43 +6,71 @@ using Tower.Player;
 
 public class MapExit : MonoBehaviour
 {
+    public enum ExitType
+    {
+        Normal,           // 일반 층 → 층 (1→2, 2→3 등)
+        ToSafetyZone,    // 마스트 마지막 층 → SafetyZone
+    }
+
+
     [Header("Map Settings")]
     [SerializeField] private int currentMapID = 0;
+    [SerializeField] private ExitType exitType = ExitType.Normal;
     [SerializeField] private Transform nextMapStartTransform;
 
+    [Header("State")]
     private bool isTransitioning = false;
     private bool isActive = false;
+    private bool canCheck = false;
     private MapSpawnArea mapArea;
     private GameObject currentPlayer;
-    private bool canCheck = false; // 체크 가능 여부
-
 
     public int CurrentMapID => currentMapID;
-    private void Awake()
+
+    // ==================== 초기화 ====================
+
+    void Awake()
     {
-        // 첫 번째 맵인 경우 타이머 시작
-        if (currentMapID == 0)
-        {
-            if (CardRewardUI.Instance != null)
-            {
-                CardRewardUI.Instance.OnMapStart(0);
-                Debug.Log($"[MapExit] First map (ID: 0) timer started in Awake");
-            }
-
-            if (StageTimer.Instance != null)
-            {
-                StageTimer.Instance.StartStageTimer(0);
-                Debug.Log($"[MapExit] Stage timer started for first map");
-            }
-        }
-
-        // 모든 Exit는 초기에 비활성화
         SetTriggerActive(false);
     }
 
     void Start()
     {
-        // 이 맵의 MapSpawnArea 찾기
+        if (exitType == ExitType.ToSafetyZone && nextMapStartTransform == null)
+        {
+            FindSafetyZoneStartPoint();
+        }
+
+        FindMapSpawnArea();
+        StartCoroutine(DelayedStart());
+    }
+
+
+    void FindSafetyZoneStartPoint()
+    {
+        // Scene에서 SafetyZone 찾기
+        GameObject safetyZone = GameObject.Find("SafetyZone");
+        if (safetyZone != null)
+        {
+            // StartPoint 찾기
+            Transform startPoint = safetyZone.transform.Find("SafetyStartPoint");
+            if (startPoint == null)
+            {
+                // StartPoint가 없으면 SafetyZone 자체 위치 사용
+                startPoint = safetyZone.transform;
+            }
+
+            nextMapStartTransform = startPoint;
+            Debug.Log($"[MapExit] Auto-connected to SafetyZone StartPoint for map {currentMapID}");
+        }
+        else
+        {
+            Debug.LogWarning($"[MapExit] SafetyZone not found in scene for map {currentMapID}!");
+        }
+    }
+
+    void FindMapSpawnArea()
+    {
         MapSpawnArea[] areas = FindObjectsOfType<MapSpawnArea>();
         foreach (var area in areas)
         {
@@ -50,56 +78,30 @@ public class MapExit : MonoBehaviour
             {
                 mapArea = area;
                 Debug.Log($"[MapExit] Found MapSpawnArea for map {currentMapID}");
-                break;
+                return;
             }
         }
-
-        // mapArea를 못 찾은 경우 경고
-        if (mapArea == null)
-        {
-            Debug.LogWarning($"[MapExit] No MapSpawnArea found for map {currentMapID}!");
-        }
-
-        // 첫 프레임에 체크하지 않도록 딜레이 추가
-        StartCoroutine(DelayedStart());
+        Debug.LogWarning($"[MapExit] No MapSpawnArea found for map {currentMapID}!");
     }
 
     IEnumerator DelayedStart()
     {
-        // 2초 대기 (몬스터 스폰 시간 확보)
         yield return new WaitForSeconds(2f);
         canCheck = true;
         Debug.Log($"[MapExit] Map {currentMapID} exit check enabled");
     }
 
-    void Update()
-    {
-        
-    }
+    // ==================== 출구 활성화 ====================
 
     public void ActivateExit()
     {
-        if (!isActive && mapArea != null)
+        if (!isActive && mapArea != null && canCheck && !isTransitioning)
         {
-            if (isTransitioning) return;
-            if (Time.time < 1f) return;
-
-            // canCheck 추가!
-            if (!canCheck) return;  
-
-            // SafetyZone 체크 (spawnConfig이 없으면 SafetyZone)
-            if (mapArea.spawnConfig == null)
+            // SafetyZone이거나 몬스터 모두 처치 시 활성화
+            if (mapArea.spawnConfig == null ||
+                (mapArea.GetActiveMonsterCount() == 0 && mapArea.IsAllMonstersSpawned()))
             {
-                Debug.Log($"[MapExit] SafetyZone exit activated after delay");
-            }
-
-            else
-            {
-                // 일반 맵은 몬스터 체크
-                if (mapArea.GetActiveMonsterCount() == 0 && mapArea.IsAllMonstersSpawned())
-                {
-                    SetTriggerActive(true);
-                }
+                SetTriggerActive(true);
             }
         }
     }
@@ -107,15 +109,15 @@ public class MapExit : MonoBehaviour
     void SetTriggerActive(bool active)
     {
         isActive = active;
-
         Collider col = GetComponent<Collider>();
         if (col != null)
         {
             col.enabled = active;
         }
-
-        Debug.Log($"Map {currentMapID} exit trigger is now {(active ? "ACTIVE" : "INACTIVE")}!");
+        Debug.Log($"[MapExit] Map {currentMapID} exit is now {(active ? "ACTIVE" : "INACTIVE")}!");
     }
+
+    // ==================== 플레이어 진입 처리 ====================
 
     void OnTriggerEnter(Collider other)
     {
@@ -123,23 +125,24 @@ public class MapExit : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            Debug.Log($"Player entered exit trigger for map {currentMapID}!");
+            Debug.Log($"[MapExit] Player entered exit for map {currentMapID} (Type: {exitType})");
             currentPlayer = other.gameObject;
 
-            // Config이 없는 맵은 보상 없이 바로 이동
-            if (mapArea != null && mapArea.spawnConfig == null)
+            // SafetyZone이나 FromSafetyZone은 보상 없음
+            if (mapArea?.spawnConfig == null)
             {
                 HandleDirectTransition();
             }
             else
             {
-                // 일반 맵은 보상 후 이동
                 StartCoroutine(HandleRewardAndTransition());
             }
         }
     }
 
-    // 보상 없이 바로 이동 (SafetyZone 등)
+    // ==================== 전환 처리 ====================
+
+    // 보상 없이 바로 이동
     void HandleDirectTransition()
     {
         if (isTransitioning) return;
@@ -147,15 +150,12 @@ public class MapExit : MonoBehaviour
         isTransitioning = true;
         isActive = false;
 
-        Debug.Log($"[MapExit] Direct transition from map {currentMapID} to {currentMapID + 1}");
-
-        // 다음 맵으로 이동
-        MovePlayerToNextMap();
+        MoveToNextArea();
 
         isTransitioning = false;
     }
 
-    // 일반 맵 전환 처리 (보상 포함)
+    // 보상 후 이동
     IEnumerator HandleRewardAndTransition()
     {
         isTransitioning = true;
@@ -163,116 +163,130 @@ public class MapExit : MonoBehaviour
         GetComponent<Collider>().enabled = false;
 
         // 타이머 정지
-        if (StageTimer.Instance != null)
-        {
-            StageTimer.Instance.StopTimer();
-            Debug.Log($"[MapExit] Timer stopped for map {currentMapID}");
-        }
+        StageTimer.Instance?.StopTimer();
 
         // 플레이어 이동 정지
-        var playerMovement = currentPlayer.GetComponent<Sample.PlayerMovement>();
+        var playerMovement = currentPlayer?.GetComponent<Sample.PlayerMovement>();
         if (playerMovement != null)
             playerMovement.enabled = false;
 
-        //  마우스 커서 활성화 추가!
+        // 커서 표시
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        // 보상 UI 표시
+        // 보상 UI 처리
         bool rewardCompleted = false;
-
         if (CardRewardUI.Instance != null)
         {
-            Debug.Log("Showing stage reward UI");
-            CardRewardUI.Instance.ShowReward(currentMapID, () =>
-            {
-                rewardCompleted = true;
-            });
+            Debug.Log("[MapExit] Showing reward UI");
+            CardRewardUI.Instance.ShowReward(currentMapID, () => rewardCompleted = true);
         }
         else
         {
-            Debug.LogWarning("No reward UI found! Skipping reward.");
             rewardCompleted = true;
         }
 
-        // 보상 UI가 닫힐 때까지 대기
+        // 보상 완료 대기
         while (!rewardCompleted)
-        {
             yield return null;
-        }
 
-        Debug.Log("Reward UI closed!");
         yield return new WaitForSeconds(2.5f);
 
+        // 커서 숨김
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        // 플레이어 이동 및 다음 맵 시작
-        MovePlayerToNextMap();
+        // 이동 처리
+        MoveToNextArea();
         isTransitioning = false;
     }
 
-    void MovePlayerToNextMap()
-    {
-        Debug.Log($"MovePlayerToNextMap - Current MapID: {currentMapID}, Moving to next map");
+    // ==================== 실제 이동 처리 ====================
 
-        // ⭐ TeamManager의 MoveFormation 사용하여 모든 캐릭터 이동!
+    void MoveToNextArea()
+    {
+        Debug.Log($"[MapExit] Moving from map {currentMapID} (Type: {exitType})");
+
+        switch (exitType)
+        {
+            
+            case ExitType.ToSafetyZone:
+                // 마지막 층 → SafetyZone
+                HandleSafetyZoneTransition();
+                break;
+
+            case ExitType.Normal:
+            default:
+                // 일반 층 이동
+                HandleNormalTransition();
+                break;
+        }
+    }
+
+    // 다음 마스트로 전환
+    void HandleNextMastTransition()
+    {
+        Debug.Log("[MapExit] Loading next mast!");
+        MastManager.Instance?.LoadNextMast();
+    }
+
+    // SafetyZone으로 이동
+    void HandleSafetyZoneTransition()
+    {
+        Debug.Log("[MapExit] Moving to SafetyZone");
+
         if (nextMapStartTransform != null && TeamManager.Instance != null)
         {
-            // TeamManager를 통해 모든 캐릭터를 다음 맵 시작 위치로 이동
             TeamManager.Instance.MoveFormation(
                 nextMapStartTransform.position,
                 nextMapStartTransform.rotation
             );
+        }
 
-            Debug.Log($"Moved all team members to: {nextMapStartTransform.position}");
+        // 플레이어 이동 재활성화
+        EnablePlayerMovement();
+    }
 
-            // 플레이어 이동 재활성화 (현재 활성 캐릭터만)
-            if (currentPlayer != null)
+    // 일반 층 이동
+    void HandleNormalTransition()
+    {
+        Debug.Log($"[MapExit] Normal transition to map {currentMapID + 1}");
+
+        // 팀 이동
+        if (nextMapStartTransform != null && TeamManager.Instance != null)
+        {
+            TeamManager.Instance.MoveFormation(
+                nextMapStartTransform.position,
+                nextMapStartTransform.rotation
+            );
+        }
+
+        // 플레이어 이동 재활성화
+        EnablePlayerMovement();
+
+        // 다음 맵 시작
+        int nextMapIndex = currentMapID + 1;
+
+        // 타이머 시작
+        StageTimer.Instance?.OnNextMap(nextMapIndex);
+
+        // 시간 기록
+        CardRewardUI.Instance?.OnMapStart(nextMapIndex);
+
+        // 몬스터 스폰
+        MapSpawnManager.Instance?.StartMap(nextMapIndex);
+    }
+
+    // 플레이어 이동 활성화
+    void EnablePlayerMovement()
+    {
+        if (currentPlayer != null)
+        {
+            var playerMovement = currentPlayer.GetComponent<Sample.PlayerMovement>();
+            if (playerMovement != null)
             {
-                var playerMovement = currentPlayer.GetComponent<Sample.PlayerMovement>();
-                if (playerMovement != null)
-                {
-                    playerMovement.enabled = true;
-                }
+                playerMovement.enabled = true;
             }
-        }
-
-        // SafetyZone 체크
-        var nextIndex = currentMapID + 1;
-        if (MapSpawnManager.Instance != null &&
-            nextIndex < MapSpawnManager.Instance.mapSpawnAreas.Length)
-        {
-            var nextArea = MapSpawnManager.Instance.mapSpawnAreas[nextIndex];
-
-            // SafetyZone이면 타이머, 스폰 등 스킵
-            if (nextArea != null && nextArea.spawnConfig == null)
-            {
-                Debug.Log($"[MapExit] Entering SafetyZone - skipping map initialization");
-                return; // 여기서 종료
-            }
-        }
-
-        // === 아래는 일반 맵일 때만 실행 ===
-
-        // 다음 맵 타이머 시작
-        if (StageTimer.Instance != null)
-        {
-            StageTimer.Instance.OnNextMap(currentMapID + 1);
-            Debug.Log($"[MapExit] Timer started for next map {currentMapID + 1}");
-        }
-
-        // 다음 맵 시작 시간 기록
-        if (CardRewardUI.Instance != null)
-        {
-            CardRewardUI.Instance.OnMapStart(currentMapID + 1);
-        }
-
-        // 다음 맵 몬스터 스폰 시작
-        if (MapSpawnManager.Instance != null)
-        {
-            Debug.Log($"Starting next map (index: {currentMapID + 1})");
-            MapSpawnManager.Instance.StartMap(currentMapID + 1);
         }
     }
 }

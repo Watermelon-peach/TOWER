@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class SafetyZoneManager : MonoBehaviour
 {
+
+    private static SafetyZoneManager instance;
+    public static SafetyZoneManager Instance => instance;
+
     [Header("Settings")]
     [SerializeField] private int nextMapIndex = 5; // 다음 맵 인덱스
     [SerializeField] private Transform exitPoint; // 나가기 위치
@@ -94,6 +98,29 @@ public class SafetyZoneManager : MonoBehaviour
     {
         Debug.Log("Exiting SafetyZone to next stage");
 
+        // 메뉴 닫기
+        if (menuUI != null)
+        {
+            menuUI.SetActive(false);
+            Time.timeScale = 1f;
+        }
+
+        // 마우스 커서 숨기기
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        // ⭐⭐⭐ 마스트 시스템 사용: 다음 마스트로 전환!
+        if (MastManager.Instance != null)
+        {
+            Debug.Log("[SafetyZone] Loading next mast via MastManager");
+            MastManager.Instance.LoadNextMast();
+            // MastManager가 알아서 플레이어 이동, 맵 스폰 등 모든 걸 처리함
+            this.enabled = false;
+            return; // 여기서 종료!
+        }
+
+        // === 아래는 MastManager가 없을 때만 실행 (기존 방식) ===
+
         // 타이머 시작
         if (StageTimer.Instance != null)
         {
@@ -107,45 +134,11 @@ public class SafetyZoneManager : MonoBehaviour
             return;
         }
 
-        // ⭐ TeamManager로 3명 모두 이동
+        // TeamManager로 3명 모두 이동
         if (TeamManager.Instance != null)
         {
             TeamManager.Instance.MoveFormation(exitPoint.position, exitPoint.rotation);
             Debug.Log("Moved all 3 characters using TeamManager");
-        }
-        else
-        {
-            // TeamManager 없으면 모든 플레이어 개별 이동
-            GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
-
-            foreach (var player in allPlayers)
-            {
-                CharacterController controller = player.GetComponent<CharacterController>();
-                if (controller != null)
-                {
-                    controller.enabled = false;
-                }
-
-                player.transform.position = exitPoint.position;
-                player.transform.rotation = exitPoint.rotation;
-
-                if (controller != null)
-                {
-                    controller.enabled = true;
-                }
-
-                Debug.Log($"Moved {player.name} to exit point");
-            }
-
-            // 첫 번째 플레이어의 Movement만 활성화
-            if (allPlayers.Length > 0)
-            {
-                var playerMovement = allPlayers[0].GetComponent<Sample.PlayerMovement>();
-                if (playerMovement != null)
-                {
-                    playerMovement.enabled = true;
-                }
-            }
         }
 
         // 다음 맵 시작
@@ -160,17 +153,6 @@ public class SafetyZoneManager : MonoBehaviour
             CheckpointManager.Instance.OnStageEnter(5);
         }
 
-        // 메뉴 닫기
-        if (menuUI != null)
-        {
-            menuUI.SetActive(false);
-            Time.timeScale = 1f;
-        }
-
-        // ⭐ 마우스 커서 숨기기
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
         this.enabled = false;
-
     }
 }

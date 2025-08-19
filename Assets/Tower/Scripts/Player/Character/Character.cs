@@ -173,7 +173,8 @@ namespace Tower.Player
             //...
             //Heal(maxHP);
             //ManaRecover(maxMP);
-            UpdateStats();
+            currentHP = maxHP;
+            currentMP = maxMP;
             PlayerStatsInfo.Instance.SwitchCharatersInfo();
         }
 
@@ -193,6 +194,8 @@ namespace Tower.Player
         {
             isSceneUnloading = true;
         }
+
+       
         #endregion
 
 

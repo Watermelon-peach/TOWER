@@ -30,7 +30,7 @@ namespace Tower.Game
         public UnityEvent<int> onMapCleared; // 맵 클리어 시 이벤트
         public UnityEvent onAllMapsCleared; // 모든 맵 클리어 시 이벤트
 
-        private HashSet<int> clearedMaps = new HashSet<int>();
+        public HashSet<int> clearedMaps = new HashSet<int>();
         private bool isGameStarted = false;
 
         void Awake()
@@ -129,7 +129,7 @@ namespace Tower.Game
         }
 
         // 특정 맵 시작 (맵 입구에 트리거 등으로 호출)
-        public void StartMap(int mapIndex)
+        public void StartMap(int mapIndex)  // 파라미터 이름은 mapIndex지만 실제로는 mapID로 사용
         {
             // 맵 시작 시간 기록
             if (CardRewardUI.Instance != null)
@@ -138,25 +138,43 @@ namespace Tower.Game
                 Debug.Log($"[MapSpawnManager] Map {mapIndex} timer started");
             }
 
-            if (mapIndex >= 0 && mapIndex < mapSpawnAreas.Length && mapSpawnAreas[mapIndex] != null)
+            // ⭐ mapID로 MapSpawnArea 찾기 (배열 인덱스가 아님!)
+            MapSpawnArea targetArea = null;
+            int targetIndex = -1;
+
+            for (int i = 0; i < mapSpawnAreas.Length; i++)
             {
-                // SafetyZone 체크 추가
-                if (mapSpawnAreas[mapIndex].spawnConfig == null)
+                if (mapSpawnAreas[i] != null && mapSpawnAreas[i].mapID == mapIndex)
+                {
+                    targetArea = mapSpawnAreas[i];
+                    targetIndex = i;
+                    break;
+                }
+            }
+
+            if (targetArea != null)
+            {
+                // SafetyZone 체크
+                if (targetArea.spawnConfig == null)
                 {
                     Debug.Log($"Map {mapIndex} is SafetyZone, skipping spawn");
                     return;
                 }
 
-                if (!clearedMaps.Contains(mapSpawnAreas[mapIndex].mapID))
+                if (!clearedMaps.Contains(targetArea.mapID))
                 {
-                    Debug.Log($"Starting map at index {mapIndex}");
-                    currentMapIndex = mapIndex;
-                    mapSpawnAreas[mapIndex].StartSpawning();
+                    Debug.Log($"Starting map with ID {mapIndex} (array index: {targetIndex})");
+                    currentMapIndex = targetIndex;  // 배열 인덱스 저장
+                    targetArea.StartSpawning();
                 }
                 else
                 {
                     Debug.Log($"Map {mapIndex} already cleared");
                 }
+            }
+            else
+            {
+                Debug.LogWarning($"[MapSpawnManager] No map found with ID {mapIndex}!");
             }
         }
 
@@ -302,6 +320,16 @@ namespace Tower.Game
                 clearedMaps.Remove(mapID);
                 targetMap.StartSpawning();
             }
+        }
+
+        public void StartFirstMapOfCurrentMast()
+        {
+            if (mapSpawnAreas == null || mapSpawnAreas.Length == 0) return;
+
+            // ⭐ 배열의 첫 번째 MapSpawnArea를 시작 (ID와 무관하게!)
+            mapSpawnAreas[0].StartSpawning();
+
+            Debug.Log($"Started first map: ID {mapSpawnAreas[0].mapID}");
         }
     }
 }
