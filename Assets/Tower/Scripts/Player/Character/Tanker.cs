@@ -1,4 +1,7 @@
+using System.Collections;
+using Unity.AppUI.Core;
 using UnityEngine;
+using UnityEngine.AI;
 using EnemyClass = Tower.Enemy.Enemy;
 
 namespace Tower.Player
@@ -23,6 +26,9 @@ namespace Tower.Player
 
         public float SkillCoolRemain => skillCoolRemain;
 
+        [Header("넉백")]
+        [SerializeField] private float power = 5;
+        [SerializeField] private float duration = 1f;
         protected override void Awake()
         {
             base.Awake();
@@ -97,9 +103,13 @@ namespace Tower.Player
             strongAtkVfx.Play();
 
             Collider[] enemies = Physics.OverlapSphere(strongAtkVfx.transform.position, 5f, enemyLayer);
+            Debug.Log("피격된 적 수: " + enemies.Length);
             foreach (var enemy in enemies)
             {
-                enemy.GetComponent<Rigidbody>().AddForce(Vector3.up * 3, ForceMode.Impulse);
+                //enemy.GetComponent<EnemyClass>().TakeDamage(Atk * AtkBuff * strongAtackMultiplier, normalGroggyAmount * 3);
+                EnemyClass _enemy = enemy.GetComponent<EnemyClass>();
+                Vector3 dir = (enemy.transform.position - strongAtkVfx.transform.position).normalized;
+                StartCoroutine(_enemy.Knockback(dir, power, duration));
             }
         }
 

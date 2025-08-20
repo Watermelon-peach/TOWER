@@ -5,6 +5,7 @@ using Tower.Game;
 using System.Collections;
 using Tower.Player;
 using TMPro;
+using UnityEngine.AI;
 
 namespace Tower.Enemy
 {
@@ -51,6 +52,9 @@ namespace Tower.Enemy
 
         [Header("이펙트")]
         [SerializeField] private ParticleSystem hitVfx;
+
+        private NavMeshAgent agent;
+        private Rigidbody rb;
         #endregion
 
         #region Property
@@ -65,6 +69,8 @@ namespace Tower.Enemy
             //참조
             animator = GetComponent<Animator>();
             gpFill = gpGauge.transform.Find("Fill").GetComponent<Image>();
+            agent = GetComponent<NavMeshAgent>();
+            rb = GetComponent<Rigidbody>();
             //값 설정
             maxHP = data.maxHp;
             maxGP = data.maxGp;
@@ -177,6 +183,17 @@ namespace Tower.Enemy
             CanParry = false;
         }
 
+        public IEnumerator Knockback(Vector3 dir, float power, float duration)
+        {
+            agent.enabled = false; //NavMeshAgent 꺼버림
+            rb.AddForce(dir.normalized * power, ForceMode.Impulse);
+
+            yield return new WaitForSeconds(duration);
+
+            rb.linearVelocity = Vector3.zero; //멈춰주고
+            agent.enabled = true;       //다시 Agent 켜기
+        }
+
         public void DealDamage()
         {
             //Debug.Log("호출 됨");
@@ -189,7 +206,7 @@ namespace Tower.Enemy
             foreach (Collider hitBox in hitBoxes)
             {
                 Character character = hitBox.transform.parent.GetComponent<Character>();
-                Debug.Log($"검출된 히트박스: {hitBox.name} / 부모: {hitBox.transform.parent.name}");
+                //Debug.Log($"검출된 히트박스: {hitBox.name} / 부모: {hitBox.transform.parent.name}");
                 if (character != null)
                 {
                     character.TakeDamage(data.atk);
