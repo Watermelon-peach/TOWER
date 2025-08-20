@@ -4356,7 +4356,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterBase: {fileID: 11400000, guid: 70b76c457aa3587428c5ecb935707725, type: 2}
   fairyForm: {fileID: 2385563987282660994, guid: c31b41fdfe9c23b45b5ac8ed84eec6d4, type: 3}
-  input: {fileID: 6703232784947556341}
+  strongAtackMultiplier: 0
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  range: 0
+  strongAtkVfx: {fileID: 0}
   detector: {fileID: 6990405966599419226}
   normalGroggyAmount: 3
   rotationSpeed: 10
@@ -8363,7 +8368,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterBase: {fileID: 11400000, guid: 70b76c457aa3587428c5ecb935707725, type: 2}
   fairyForm: {fileID: 2385563987282660994, guid: c31b41fdfe9c23b45b5ac8ed84eec6d4, type: 3}
-  input: {fileID: 6703232784947556341}
+  strongAtackMultiplier: 0
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  range: 0
+  strongAtkVfx: {fileID: 0}
   detector: {fileID: 8020993113245968400}
   normalGroggyAmount: 3
   rotationSpeed: 10
@@ -9088,7 +9098,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4721911934928435345
 Transform:
   m_ObjectHideFlags: 0
@@ -10184,7 +10194,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterBase: {fileID: 11400000, guid: 70b76c457aa3587428c5ecb935707725, type: 2}
   fairyForm: {fileID: 2385563987282660994, guid: c31b41fdfe9c23b45b5ac8ed84eec6d4, type: 3}
-  input: {fileID: 6703232784947556341}
+  strongAtackMultiplier: 0
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  range: 0
+  strongAtkVfx: {fileID: 0}
   detector: {fileID: 8941772113981878649}
   normalGroggyAmount: 20
   rotationSpeed: 10

@@ -8587,7 +8587,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.3
-  m_Height: 1.8
+  m_Height: 4
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!195 &2597589116464847900
@@ -8693,6 +8693,8 @@ MonoBehaviour:
   parryingTime: 0.5
   jigumiya: {fileID: 5917617117106181799}
   hitVfx: {fileID: 7014932438556080769}
+  distance: 2
+  height: 2
 --- !u!1 &7080507209267132648
 GameObject:
   m_ObjectHideFlags: 0
