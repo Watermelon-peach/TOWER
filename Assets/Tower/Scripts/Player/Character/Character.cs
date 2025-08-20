@@ -71,6 +71,7 @@ namespace Tower.Player
                 Destroy(fgo);
             }
             p_controller.enabled = true;
+            parrying.IsParrying = false;
         }
 
         private void OnDisable()
