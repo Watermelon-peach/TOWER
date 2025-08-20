@@ -33,6 +33,8 @@ namespace Tower.Game
         public HashSet<int> clearedMaps = new HashSet<int>();
         private bool isGameStarted = false;
 
+        public bool IsGameStarted { get; set; } = false; // 게임 시작 여부
+
         void Awake()
         {
             if (instance == null)

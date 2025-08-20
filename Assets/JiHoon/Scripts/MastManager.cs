@@ -2,6 +2,7 @@ using UnityEngine;
 using Tower.Game;
 using System.Collections;
 using Tower.Player;
+using Tower.UI;
 
 namespace Tower.Game
 {
@@ -15,8 +16,8 @@ namespace Tower.Game
         public GameObject currentMastInstance;
 
         [Header("SafetyZone Settings")]  // ⭐ 헤더 이름 변경
-        public GameObject safetyZoneObject;  // ⭐ Scene의 SafetyZone 참조
-        public Vector3 safetyZoneOffset = new Vector3(0, 0, 50);  // ⭐ 4층에서 떨어진 거리
+        //public GameObject safetyZoneObject;  // ⭐ Scene의 SafetyZone 참조
+       // public Vector3 safetyZoneOffset = new Vector3(0, 0, 50);  // ⭐ 4층에서 떨어진 거리
 
         [Header("Debug")]
         public bool showDebugLogs = true;
@@ -32,10 +33,10 @@ namespace Tower.Game
                 Destroy(gameObject);
 
             // ⭐ Scene에서 SafetyZone 자동 찾기
-            if (safetyZoneObject == null)
-            {
-                safetyZoneObject = GameObject.Find("SafetyZone");
-            }
+            //if (safetyZoneObject == null)
+            //{
+            //    safetyZoneObject = GameObject.Find("SafetyZone");
+            //}
         }
 
         void Start()
@@ -98,19 +99,19 @@ namespace Tower.Game
         /// <summary>
         /// ⭐ SafetyZone으로 팀 이동 (4층 클리어 후 호출)
         /// </summary>
-        public void MoveTeamToSafetyZone()
-        {
-            if (safetyZoneObject == null || TeamManager.Instance == null) return;
+        //public void MoveTeamToSafetyZone()
+        //{
+        //    if (safetyZoneObject == null || TeamManager.Instance == null) return;
 
-            Transform safetyStart = safetyZoneObject.transform.Find("StartPoint");
-            if (safetyStart == null)
-                safetyStart = safetyZoneObject.transform;
+        //    Transform safetyStart = safetyZoneObject.transform.Find("StartPoint");
+        //    if (safetyStart == null)
+        //        safetyStart = safetyZoneObject.transform;
 
-            TeamManager.Instance.MoveFormation(safetyStart.position, safetyStart.rotation);
+        //    TeamManager.Instance.MoveFormation(safetyStart.position, safetyStart.rotation);
 
-            if (showDebugLogs)
-                Debug.Log("[MastManager] Moved team to SafetyZone");
-        }
+        //    if (showDebugLogs)
+        //        Debug.Log("[MastManager] Moved team to SafetyZone");
+        //}
 
         // ... 나머지 기존 메서드들은 그대로 ...
 
@@ -127,13 +128,14 @@ namespace Tower.Game
 
             // MapSpawnManager에 등록
             MapSpawnManager.Instance.mapSpawnAreas = areas;
-
-            // MapSpawnManager 초기화
+            MapSpawnManager.Instance.IsGameStarted = false;
             MapSpawnManager.Instance.clearedMaps.Clear();
             MapSpawnManager.Instance.currentMapIndex = 0;
 
             if (showDebugLogs)
-                Debug.Log($"[MastManager] Registered {areas.Length} spawn areas");
+                Debug.Log($"[MastManager] Registered {areas.Length} spawn areas and reset game state");
+
+            // ⭐ 여기서 직접 시작하지 않음!
         }
 
         private void MoveTeamToMastStart()
@@ -208,16 +210,25 @@ namespace Tower.Game
         {
             yield return new WaitForSeconds(0.5f);
 
-            if (MapSpawnManager.Instance != null)
+            Debug.Log($"[MastManager] DelayedStartFirstMap for mast {currentMastIndex}");
+
+            if (MapSpawnManager.Instance != null && MapSpawnManager.Instance.mapSpawnAreas.Length > 0)
             {
-                MapSpawnManager.Instance.StartFirstMap();
+                // ⭐ StartFirstMap() 대신 직접 스폰!
+                Debug.Log($"[MastManager] Direct spawning for mast {currentMastIndex}");
+                MapSpawnManager.Instance.mapSpawnAreas[0].StartSpawning();
+
+                // CardRewardUI 시작
+                if (CardRewardUI.Instance != null)
+                {
+                    CardRewardUI.Instance.OnMapStart(0);
+                }
             }
 
-            // ⭐ 첫 번째 마스트일 때만 타이머 시작
+            // 타이머는 첫 번째 마스트일 때만
             if (currentMastIndex == 0 && StageTimer.Instance != null)
             {
                 StageTimer.Instance.StartStageTimer(0);
-                //Debug.Log("[MastManager] Started stage timer for first mast");
             }
         }
 

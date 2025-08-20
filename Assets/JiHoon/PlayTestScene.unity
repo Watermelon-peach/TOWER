@@ -1614,7 +1614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b40c2fd48c876574097e5b21d7998136, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeLimit: 10
+  timeLimit: 30
   timerPanel: {fileID: 205610435}
   timerText: {fileID: 1086793777}
   timerFillBar: {fileID: 383832538}
@@ -2050,6 +2050,7 @@ MonoBehaviour:
   - characterIcon: {fileID: 66927616}
     HPGauge: {fileID: 5644728505591551293}
     MPGauge: {fileID: 3019699080895290092}
+  currenHPText: {fileID: 2220059437914121109}
 --- !u!1 &1019927097
 GameObject:
   m_ObjectHideFlags: 0
@@ -2734,11 +2735,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1175506702}
   m_CullTransparentMesh: 1
---- !u!1 &1265308886 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1195002434127887309, guid: 7229840b5d27a19478b5e3b4ac870ca4, type: 3}
-  m_PrefabInstance: {fileID: 2102793186}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1265308887 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6402289746097957441, guid: 7229840b5d27a19478b5e3b4ac870ca4, type: 3}
@@ -3997,8 +3993,6 @@ MonoBehaviour:
   dungeonData: {fileID: 11400000, guid: 7cc01871dcfe18d47b154ba6589adc9b, type: 2}
   currentMastIndex: 0
   currentMastInstance: {fileID: 0}
-  safetyZoneObject: {fileID: 1265308886}
-  safetyZoneOffset: {x: 0, y: 0, z: 50}
   showDebugLogs: 1
 --- !u!1 &1760399005
 GameObject:

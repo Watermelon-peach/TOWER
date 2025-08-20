@@ -58,6 +58,7 @@ public class SafetyZoneManager : MonoBehaviour
     // 플레이어가 SafetyZone에 들어왔을 때
     void OnTriggerEnter(Collider other)
     {
+        this.enabled = true;
         if (other.CompareTag("Player"))
         {
             isPlayerInZone = true;
