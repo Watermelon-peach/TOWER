@@ -112,7 +112,7 @@ namespace Tower.Player
             if (parrying.IsParrying || !gameObject.activeSelf ||animator.GetBool(AnimHash.isParrying))
                 return;
 
-            Debug.Log(currentHP);
+            //Debug.Log(currentHP);
 
             if (IsDead)
             {
@@ -125,7 +125,7 @@ namespace Tower.Player
             animator.SetTrigger(AnimHash.hit);
 
             damage = Mathf.Max(damage * (100f / (100f +characterBase.def)),1f);
-            Debug.Log("방어력 적용 대미지: " + damage);
+            //Debug.Log("방어력 적용 대미지: " + damage);
             //Debug.Log("아야");
             currentHP = Mathf.Max(currentHP - damage, 0);
             PlayerStatsInfo.Instance.UpdateCurrentHPInfo();
@@ -142,6 +142,7 @@ namespace Tower.Player
             //TODO: 이펙트 추가
             //...
             currentHP = Mathf.Min(currentHP + amount, maxHP);
+            PlayerStatsInfo.Instance.UpdateCurrentHPInfo();
         }
         #endregion
 

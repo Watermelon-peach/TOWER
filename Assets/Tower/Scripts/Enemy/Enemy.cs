@@ -6,6 +6,7 @@ using System.Collections;
 using Tower.Player;
 using TMPro;
 using UnityEngine.AI;
+using Unity.Behavior;
 
 namespace Tower.Enemy
 {
@@ -53,8 +54,14 @@ namespace Tower.Enemy
         [Header("이펙트")]
         [SerializeField] private ParticleSystem hitVfx;
 
+        [Header("넉백")]
+        [SerializeField] private float distance = 2f;
+        [SerializeField] private float height = 2f;
+
         private NavMeshAgent agent;
-        private Rigidbody rb;
+        //private Rigidbody rb;
+        private BehaviorGraphAgent bgAgent;
+        private EnemyAI enemyAI;
         #endregion
 
         #region Property
@@ -70,7 +77,11 @@ namespace Tower.Enemy
             animator = GetComponent<Animator>();
             gpFill = gpGauge.transform.Find("Fill").GetComponent<Image>();
             agent = GetComponent<NavMeshAgent>();
-            rb = GetComponent<Rigidbody>();
+            //rb = GetComponent<Rigidbody>();
+            bgAgent = GetComponent<BehaviorGraphAgent>();
+            enemyAI = GetComponent<EnemyAI>();
+
+
             //값 설정
             maxHP = data.maxHp;
             maxGP = data.maxGp;
@@ -183,15 +194,34 @@ namespace Tower.Enemy
             CanParry = false;
         }
 
-        public IEnumerator Knockback(Vector3 dir, float power, float duration)
+        public IEnumerator Knockback(Vector3 dir, float duration)
         {
-            agent.enabled = false; //NavMeshAgent 꺼버림
-            rb.AddForce(dir.normalized * power, ForceMode.Impulse);
+            EnablePhysics(false);
+            Vector3 start = transform.position;
+            Vector3 end = start + dir.normalized * distance;
+            float time = 0f;
 
-            yield return new WaitForSeconds(duration);
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                float t = time / duration;
 
-            rb.linearVelocity = Vector3.zero; //멈춰주고
-            agent.enabled = true;       //다시 Agent 켜기
+                // 패러볼라 곡선 (에어본 연출)
+                float yOffset = height * (1 - (2 * t - 1) * (2 * t - 1));
+
+                transform.position = Vector3.Lerp(start, end, t) + Vector3.up * yOffset;
+                yield return null;
+            }
+            EnablePhysics(true);
+        }
+
+        private void EnablePhysics(bool enabled)
+        {
+            enemyAI.CanBehave = enabled;
+            enemyAI.enabled = enabled;
+            bgAgent.enabled = enabled;
+            agent.enabled = enabled;
+            Debug.Log(enabled);
         }
 
         public void DealDamage()

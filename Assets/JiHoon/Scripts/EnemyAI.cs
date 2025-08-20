@@ -34,8 +34,10 @@ namespace Tower.Enemy
         // Behaviour Graph 에이전트 참조
         private BehaviorGraphAgent behaviorAgent;
 
+        public bool CanBehave { get; set; }
         void Start()
         {
+            CanBehave = true;
             agent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
             rb = GetComponent<Rigidbody>();
@@ -61,6 +63,8 @@ namespace Tower.Enemy
 
         void Update()
         {
+            if (!CanBehave) return;
+
             if (target == null) return;
 
             // 위치가 고정되어 있으면 강제로 위치 유지
@@ -83,36 +87,38 @@ namespace Tower.Enemy
 
         
 
-        IEnumerator RestartBehaviorGraph()
+IEnumerator RestartBehaviorGraph()
         {
-            // Behaviour Graph 끄기
+            if (!CanBehave) yield break;
+
+            // Behaviour Graph 끄기  
             if (behaviorAgent != null)
             {
                 behaviorAgent.enabled = false;
             }
 
-            // NavMeshAgent도 잠시 정지
+            // NavMeshAgent도 잠시 정지  
             if (agent != null)
             {
                 agent.isStopped = true;
             }
 
-            // 한 프레임 대기
+            // 한 프레임 대기  
             yield return null;
 
-            // 새 플레이어 찾기
+            // 새 플레이어 찾기  
             FindPlayerTag();
 
-            // 한 프레임 대기
-            yield return new WaitForSeconds(0.2f) ;
+            // 한 프레임 대기  
+            yield return new WaitForSeconds(0.2f);
 
-            // Behaviour Graph 켜기
+            // Behaviour Graph 켜기  
             if (behaviorAgent != null)
             {
                 behaviorAgent.enabled = true;
             }
 
-            // NavMeshAgent 재개
+            // NavMeshAgent 재개  
             if (agent != null)
             {
                 agent.isStopped = false;
@@ -122,6 +128,7 @@ namespace Tower.Enemy
 
         public void StopMoving()
         {
+            if (!CanBehave) return;
             // NavMeshAgent 완전 정지
             agent.isStopped = true;
             agent.velocity = Vector3.zero;
@@ -148,6 +155,7 @@ namespace Tower.Enemy
 
         public void StartMoving()
         {
+            if (!CanBehave) return;
             // 위치 고정 해제
             isPositionLocked = false;
 
@@ -189,6 +197,7 @@ namespace Tower.Enemy
 
         public void LookAtTarget()
         {
+            if (!CanBehave) return;
             StartCoroutine(RotateToTarget());
         }
 

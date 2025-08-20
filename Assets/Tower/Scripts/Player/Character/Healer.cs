@@ -1,4 +1,5 @@
 using System.Collections;
+using Tower.UI;
 using UnityEngine;
 using EnemyClass = Tower.Enemy.Enemy;
 
@@ -32,6 +33,7 @@ namespace Tower.Player
         private float verticalVelocity;
 
         public float SkillCoolRemain => skillCoolRemain;
+        [SerializeField] private ParticleSystem selfHealVfx;
         #endregion
 
         #region Unity Event Method
@@ -170,6 +172,10 @@ namespace Tower.Player
         public override void OnStrongAttack()
         {
             base.OnStrongAttack();
+            //이펙트
+            selfHealVfx.Play();
+            //자힐 (공 비례)
+            Heal(Atk);
         }
 
         //교체공격 구현

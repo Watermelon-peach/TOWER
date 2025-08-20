@@ -27,7 +27,7 @@ namespace Tower.Player
         public float SkillCoolRemain => skillCoolRemain;
 
         [Header("넉백")]
-        [SerializeField] private float power = 5;
+        //[SerializeField] private float power = 5;
         [SerializeField] private float duration = 1f;
         protected override void Awake()
         {
@@ -109,7 +109,8 @@ namespace Tower.Player
                 //enemy.GetComponent<EnemyClass>().TakeDamage(Atk * AtkBuff * strongAtackMultiplier, normalGroggyAmount * 3);
                 EnemyClass _enemy = enemy.GetComponent<EnemyClass>();
                 Vector3 dir = (enemy.transform.position - strongAtkVfx.transform.position).normalized;
-                StartCoroutine(_enemy.Knockback(dir, power, duration));
+                _enemy.TakeDamage(Atk * AtkBuff * strongAtackMultiplier, normalGroggyAmount * 3);
+                StartCoroutine(_enemy.Knockback(dir, duration));
             }
         }
 

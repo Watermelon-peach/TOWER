@@ -1680,8 +1680,7 @@ MonoBehaviour:
   normalGroggyAmount: 10
   rotationSpeed: 10
   gravity: -9.81
-  power: 5
-  duration: 1
+  duration: 2
 --- !u!114 &437444192393560924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1769,7 +1768,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   grayEffect: {fileID: 433430707929589428}
-  strAtkDuration: 0
+  strAtkDuration: 1
   distance: 5
   group: {fileID: 0}
   timeBars:
