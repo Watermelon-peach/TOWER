@@ -1614,7 +1614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b40c2fd48c876574097e5b21d7998136, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeLimit: 10
+  timeLimit: 30
   timerPanel: {fileID: 205610435}
   timerText: {fileID: 1086793777}
   timerFillBar: {fileID: 383832538}

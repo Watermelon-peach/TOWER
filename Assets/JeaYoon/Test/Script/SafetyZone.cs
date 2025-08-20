@@ -13,7 +13,7 @@ namespace JeaYoon.Test.ScriScript
         private Character[] party;
         private void Awake()
         {
-            party = TeamManager.Instance.characters;
+            //party = TeamManager.Instance.characters;
         }
         private void OnTriggerEnter(Collider other)
         {
@@ -22,9 +22,15 @@ namespace JeaYoon.Test.ScriScript
 
         private IEnumerator RevibeAll()
         {
-            for (int i = 0; i < party.Length; i++)
+            // 비활성화된 오브젝트도 포함해서 찾기
+            Tower.Player.Character[] allCharacters = FindObjectsOfType<Tower.Player.Character>(true);
+            foreach (Tower.Player.Character character in allCharacters)
             {
-                party[i].Revibe();
+                if (character != null)
+                {
+                    character.Revibe();
+                    Debug.Log($"Revived: {character.gameObject.name}");
+                }
             }
             //vfx 실행
             //vfx.SetActive(true);
