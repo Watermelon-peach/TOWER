@@ -242,7 +242,7 @@ namespace Tower.Game
             Cursor.lockState = CursorLockMode.Locked;
 
             // 비활성화된 오브젝트도 포함해서 찾기
-            Tower.Player.Character[] allCharacters = FindObjectsOfType<Tower.Player.Character>(true);
+            Tower.Player.Character[] allCharacters = FindObjectsByType<Tower.Player.Character>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (Tower.Player.Character character in allCharacters)
             {
                 if (character != null)

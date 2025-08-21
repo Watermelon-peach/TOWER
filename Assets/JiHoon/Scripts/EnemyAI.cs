@@ -26,7 +26,7 @@ namespace Tower.Enemy
         private Vector3 attackPosition;
         private bool isPositionLocked = false;
 
-        private bool canAct = true;  // 행동 가능 여부
+        //private bool canAct = true;  // 행동 가능 여부
 
         // 스폰 시스템 참조
         private MapSpawnArea spawnArea;
@@ -306,7 +306,7 @@ IEnumerator RestartBehaviorGraph()
         public void OnStunnedAnimationStart()
         {
             // 모든 입력 무시
-            canAct = false;
+            //canAct = false;
             agent.isStopped = true;
 
             // Behavior Graph 일시 정지
@@ -317,7 +317,7 @@ IEnumerator RestartBehaviorGraph()
         public void OnStunnedAnimationEnd()
         {
             // 입력 재개
-            canAct = true;
+            //canAct = true;
             agent.isStopped = false;
 
             // Behavior Graph 재개
@@ -334,7 +334,7 @@ IEnumerator RestartBehaviorGraph()
         private IEnumerator DisableInputForSeconds()
         {
             // 입력 차단
-            canAct = false;
+            //canAct = false;
 
             // Behavior Graph 비활성화
             var behaviorAgent = GetComponent<BehaviorGraphAgent>();
@@ -348,7 +348,7 @@ IEnumerator RestartBehaviorGraph()
             yield return new WaitForSeconds(10f);
 
             // 입력 재개
-            canAct = true;
+            //canAct = true;
 
             // Behavior Graph 재활성화
             if (behaviorAgent != null)
@@ -384,7 +384,7 @@ IEnumerator RestartBehaviorGraph()
                 Debug.LogWarning("SpawnArea가 null입니다!");
 
                 // Fallback: spawnArea가 없으면 직접 찾기
-                MapSpawnArea[] areas = FindObjectsOfType<MapSpawnArea>();
+                MapSpawnArea[] areas = FindObjectsByType<MapSpawnArea>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 foreach (var area in areas)
                 {
                     if (area.ContainsMonster(gameObject))

@@ -311,7 +311,7 @@ namespace Tower.Game
                 Debug.Log($"[MapSpawnArea] All monsters defeated in map {mapID}!");
 
                 // MapExit 찾아서 활성화
-                MapExit[] exits = FindObjectsOfType<MapExit>();
+                MapExit[] exits = FindObjectsByType<MapExit>(FindObjectsInactive.Include, FindObjectsSortMode.None  );
                 foreach (var exit in exits)
                 {
                     if (exit.CurrentMapID == mapID)

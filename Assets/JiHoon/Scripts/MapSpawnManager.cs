@@ -55,7 +55,7 @@ namespace Tower.Game
             // 각 맵 영역 자동 찾기 (선택사항)
             if (mapSpawnAreas == null || mapSpawnAreas.Length == 0)
             {
-                mapSpawnAreas = FindObjectsOfType<MapSpawnArea>();
+                mapSpawnAreas = FindObjectsByType<MapSpawnArea>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 Debug.Log($"Auto-found {mapSpawnAreas.Length} map spawn areas");
             }
 
@@ -236,7 +236,7 @@ namespace Tower.Game
 
         void SaveInitialPlayerPositions()
         {
-            Sample.PlayerMovement[] allPlayers = FindObjectsOfType<Sample.PlayerMovement>(true);
+            Sample.PlayerMovement[] allPlayers = FindObjectsByType<Sample.PlayerMovement>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
             foreach (var player in allPlayers)
             {
@@ -275,7 +275,7 @@ namespace Tower.Game
             }
 
             // 4. 플레이어들을 초기 위치로 리셋
-            Tower.Player.PlayerMovement[] allPlayers = FindObjectsOfType<Tower.Player.PlayerMovement>(true);
+            Tower.Player.PlayerMovement[] allPlayers = FindObjectsByType<Tower.Player.PlayerMovement>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
             foreach (var player in allPlayers)
             {

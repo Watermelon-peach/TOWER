@@ -19,7 +19,7 @@ namespace Sample
 
         [Header("Ground Check")]
         [SerializeField] private float gravity = -9.81f;
-        [SerializeField] private float groundCheckDistance = 0.4f;
+        //[SerializeField] private float groundCheckDistance = 0.4f;
 
         void Start()
         {

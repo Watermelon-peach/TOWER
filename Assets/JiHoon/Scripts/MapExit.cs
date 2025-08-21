@@ -71,7 +71,7 @@ public class MapExit : MonoBehaviour
 
     void FindMapSpawnArea()
     {
-        MapSpawnArea[] areas = FindObjectsOfType<MapSpawnArea>();
+        MapSpawnArea[] areas = FindObjectsByType<MapSpawnArea>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (var area in areas)
         {
             if (area.mapID == currentMapID)
