@@ -220,7 +220,7 @@ namespace Tower.Enemy
         public IEnumerator Drag(float duration, Vector3 origin)
         {
             EnablePhysics(false);
-            Debug.Log("땡겨잇");
+            //Debug.Log("땡겨잇");
             float time = 0f;
             while (time < duration)
             {

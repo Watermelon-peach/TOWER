@@ -2498,6 +2498,10 @@ PrefabInstance:
       propertyPath: 'timeBars.Array.data[1]'
       value: 
       objectReference: {fileID: 1171296557}
+    - target: {fileID: 6981733671461841337, guid: 9f5043ed482510445b0dca10d7e19e05, type: 3}
+      propertyPath: fairyForm
+      value: 
+      objectReference: {fileID: 1735862381443527498, guid: bca0404a0d53986469dad1abc4f970d0, type: 3}
     - target: {fileID: 7958179500193291780, guid: 9f5043ed482510445b0dca10d7e19e05, type: 3}
       propertyPath: group
       value: 

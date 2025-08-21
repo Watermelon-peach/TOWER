@@ -35,34 +35,6 @@ namespace Tower.Player
             }
         }
         #endregion
-
-        #region Custom Method
-/*        public EnemyClass GetNearestEnemy()
-        {
-            if (detectedEnemies.Count <= 0)
-            {
-                Debug.Log("범위 내 적 없음");
-                return null;
-            }
-
-            EnemyClass nearestEnemy = null;
-
-            float minDistance = float.MaxValue;
-            foreach (EnemyClass enemy in detectedEnemies)
-            {
-                if (enemy == null) continue; //파괴된 적 무시
-
-                float distance = (enemy.transform.position - transform.position).magnitude;
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    nearestEnemy = enemy;
-                }
-            }
-
-            return nearestEnemy;
-        }*/
-        #endregion
     }
 
 }

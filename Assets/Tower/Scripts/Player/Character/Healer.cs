@@ -146,7 +146,7 @@ namespace Tower.Player
             while(projectile.gameObject.activeSelf)
             {
                 //날아가는 도중에 타겟이 죽으면 즉시 오브젝트 비활성화 후 반복문 종료
-                if (target == null || target.IsDead)
+                if (target == null || target.IsDead || !gameObject.activeSelf)
                 {
                     projectile.gameObject.SetActive(false);
                     yield break;
