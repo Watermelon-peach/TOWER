@@ -2115,6 +2115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentMapID: 3
+  exitType: 0
   nextMapStartTransform: {fileID: 1417238385}
 --- !u!65 &903527297
 BoxCollider:
@@ -2642,7 +2643,7 @@ MonoBehaviour:
   m_text: 00:00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1f73f23271e204541a22bc4a35d6ef6e, type: 2}
-  m_sharedMaterial: {fileID: 8837302208671996531, guid: 1f73f23271e204541a22bc4a35d6ef6e, type: 2}
+  m_sharedMaterial: {fileID: 3230116047273034085, guid: 1f73f23271e204541a22bc4a35d6ef6e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2844,6 +2845,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentMapID: 5
+  exitType: 0
   nextMapStartTransform: {fileID: 1178938615}
 --- !u!65 &1166344740
 BoxCollider:
@@ -3650,6 +3652,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterBase: {fileID: 11400000, guid: 70b76c457aa3587428c5ecb935707725, type: 2}
   fairyForm: {fileID: 2385563987282660994, guid: c31b41fdfe9c23b45b5ac8ed84eec6d4, type: 3}
+  strongAtackMultiplier: 0
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  range: 0
+  strongAtkVfx: {fileID: 0}
 --- !u!1 &1388208068
 GameObject:
   m_ObjectHideFlags: 0
@@ -5448,6 +5456,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentMapID: 6
+  exitType: 0
   nextMapStartTransform: {fileID: 1614018164}
 --- !u!65 &1792652125
 BoxCollider:
@@ -5571,6 +5580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentMapID: 2
+  exitType: 0
   nextMapStartTransform: {fileID: 1614018164}
 --- !u!65 &1794679238
 BoxCollider:
