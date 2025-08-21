@@ -43,6 +43,19 @@ namespace Tower.Player
         }
 
         public bool SwitchComboSignal { get; set; }
+
+        public bool IsSomeoneParrying
+        {
+            get
+            {
+                bool sp = false;
+                foreach  (Character character in characters)
+                {
+                    sp |= character.GetComponent<Parrying>().IsParrying;
+                }
+                return sp;
+            }
+        }
         #endregion
 
         #region Unity Event Method

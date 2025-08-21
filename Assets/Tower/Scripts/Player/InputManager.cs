@@ -18,6 +18,7 @@ namespace Tower.Player
         public bool AttackPressed { get; private set; }
         public bool DashPressed { get; private set; }
         public bool SwapPressed { get; private set; }
+        public bool PausePressed { get; private set; }
         #endregion
 
         #region Unity Event Method
@@ -27,6 +28,7 @@ namespace Tower.Player
             AttackPressed = Input.GetButtonDown("Fire1");
             DashPressed = Input.GetButtonDown("Fire2");
             SwapPressed = Input.GetButtonDown("Jump");
+            PausePressed = Input.GetButtonDown("Cancel");
             if (SwapPressed)
             {
                 Debug.Log("Jump");
