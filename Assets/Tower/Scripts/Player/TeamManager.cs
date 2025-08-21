@@ -178,7 +178,7 @@ namespace Tower.Player
             {
                 characters[currentIndex].SwitchCombo();
             }
-            Debug.Log($"{index}번 캐릭터 등장");
+            //Debug.Log($"{index}번 캐릭터 등장");
         }
 
         public void GameOver()
@@ -203,7 +203,7 @@ namespace Tower.Player
                 rotationOffsets[i] = Quaternion.Inverse(leaderRot) * characters[i].transform.rotation;
             }
 
-            Debug.Log("포메이션 저장");
+            //Debug.Log("포메이션 저장");
         }
 
         // 지정한 위치로 포메이션 이동
@@ -211,7 +211,7 @@ namespace Tower.Player
         {
             if (positionOffsets == null || rotationOffsets == null)
             {
-                Debug.LogWarning("저장 안돼있당께롱");
+                //Debug.LogWarning("저장 안돼있당께롱");
                 return;
             }
 
@@ -230,7 +230,7 @@ namespace Tower.Player
 
             SelectCharacter(currentIndex);
 
-            Debug.Log("포메이션 이동");
+            //Debug.Log("포메이션 이동");
         }
         #endregion
     }

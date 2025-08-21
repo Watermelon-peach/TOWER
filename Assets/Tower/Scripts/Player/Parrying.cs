@@ -67,7 +67,7 @@ namespace Tower.Player
                 {
                     if (enemy.CanParry)
                     {
-                        Debug.Log("패리!");
+                        //Debug.Log("패리!");
                         StartCoroutine(OnParryMode(enemy));
                     }
                 }

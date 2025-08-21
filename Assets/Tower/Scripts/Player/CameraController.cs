@@ -21,7 +21,7 @@ namespace Tower.Player
             target.TrackingTarget = characterOffsets[index];
             freelookCamera.Target = target;
             freelookCamera.UpdateTargetCache();
-            Debug.Log($"{index}번 캐릭터로 카메라 전환 !");
+            //Debug.Log($"{index}번 캐릭터로 카메라 전환 !");
         }
 
         //전투 상황 시

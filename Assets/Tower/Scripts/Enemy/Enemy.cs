@@ -115,7 +115,7 @@ namespace Tower.Enemy
             if (IsDead) return; //중첩사망처리 방지
             
             damage = Mathf.Max(damage * (100f / (100f + data.def)), 1f);
-            Debug.Log("방어력 적용 대미지: " + damage);
+            //Debug.Log("방어력 적용 대미지: " + damage);
 
             //그로기 중복 적용 방지
             if(!isGroggy)
@@ -240,7 +240,7 @@ namespace Tower.Enemy
             enemyAI.enabled = enabled;
             bgAgent.enabled = enabled;
             agent.enabled = enabled;
-            Debug.Log(enabled);
+            //Debug.Log(enabled);
         }
 
         public void DealDamage()

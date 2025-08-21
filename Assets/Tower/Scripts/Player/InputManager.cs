@@ -29,10 +29,6 @@ namespace Tower.Player
             DashPressed = Input.GetButtonDown("Fire2");
             SwapPressed = Input.GetButtonDown("Jump");
             PausePressed = Input.GetButtonDown("Cancel");
-            if (SwapPressed)
-            {
-                Debug.Log("Jump");
-            }
         }
         #endregion
     }
