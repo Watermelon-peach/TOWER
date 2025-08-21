@@ -201,8 +201,10 @@ namespace Tower.Enemy
             Vector3 end = start + dir.normalized * distance;
             float time = 0f;
 
+            //Debug.Log("부웅~");
             while (time < duration)
             {
+                if (IsDead) yield break;
                 time += Time.deltaTime;
                 float t = time / duration;
 
@@ -215,6 +217,23 @@ namespace Tower.Enemy
             EnablePhysics(true);
         }
 
+        public IEnumerator Drag(float duration, Vector3 origin)
+        {
+            EnablePhysics(false);
+            Debug.Log("땡겨잇");
+            float time = 0f;
+            while (time < duration)
+            {
+                if (IsDead) yield break;
+                time += Time.deltaTime;
+                float t = time / duration;
+
+                transform.position = Vector3.Lerp(transform.position, origin, t);
+                yield return null;
+            }
+
+            EnablePhysics(true);
+        }
         private void EnablePhysics(bool enabled)
         {
             enemyAI.CanBehave = enabled;
