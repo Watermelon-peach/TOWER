@@ -1,5 +1,6 @@
 using Tower.Player;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Tower.UI
 {
@@ -7,6 +8,7 @@ namespace Tower.UI
     {
         #region Variables
         public GameObject pauseCanvas;
+        public Volume grayscale;
         #endregion
 
         #region Unity Event Method
@@ -24,6 +26,20 @@ namespace Tower.UI
         {
             pauseCanvas.SetActive(!pauseCanvas.activeSelf);
             Time.timeScale = pauseCanvas.activeSelf ? 0 : 1;
+            grayscale.enabled = pauseCanvas.activeSelf;
+            Cursor.lockState = pauseCanvas.activeSelf ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = pauseCanvas.activeSelf;
+        }
+
+        public void OnExitButton()
+        {
+            //나가기
+            //...
+        }
+
+        public void OnResumeButton()
+        {
+            Toggle();
         }
         #endregion
 

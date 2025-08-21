@@ -100,7 +100,7 @@ namespace Tower.Player
                     yield break;
                 }
                     
-                else if (InputManager.Instance.SwapPressed)
+                else if (InputManager.Instance.SwapPressed || Time.timeScale <= 0)
                 {
                     TeamManager.Instance.SwitchComboSignal = true;
                     animator.SetBool(AnimHash.isParrying, false);
