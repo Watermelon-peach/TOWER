@@ -1,5 +1,7 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Tower.Player
 {
@@ -20,7 +22,9 @@ namespace Tower.Player
         private float dashCount = 0f;
         private bool isDashing = false;
 
-
+        [Header("UI")]
+        [SerializeField] private Image dashCoolIcon;
+        [SerializeField] private TextMeshProUGUI coolCountText;
         #endregion
 
         #region Unity Event Method
@@ -29,6 +33,13 @@ namespace Tower.Player
             controller = GetComponent<CharacterController>();
             animator = GetComponent<Animator>();
         }
+
+        private void OnEnable()
+        {
+            dashCoolIcon.fillAmount = 1f;
+            coolCountText.text = "";
+        }
+
         private void OnDisable()
         {
             //캐릭터 교체시 대시 막힘 버그 방지
@@ -84,6 +95,9 @@ namespace Tower.Player
         private IEnumerator Dash()
         {
             isDashing = true;
+            TeamManager.Instance.CanSwitch = false;
+            dashCoolIcon.fillAmount = 0f;
+
             animator.SetTrigger(AnimHash.dash);
             while (dashCount <= dashDuration)
             {
@@ -92,8 +106,18 @@ namespace Tower.Player
                 yield return null;
             }
             dashCount = 0;
+            TeamManager.Instance.CanSwitch = true;
 
-            yield return new WaitForSeconds(dashCoolDown - dashDuration);
+            //yield return new WaitForSeconds(dashCoolDown - dashDuration);
+            float coolCount = 0;
+            while(coolCount <= (dashCoolDown - dashDuration))
+            {
+                coolCount += Time.deltaTime;
+                dashCoolIcon.fillAmount = coolCount / (dashCoolDown - dashDuration);
+                coolCountText.text = $"{(dashCoolDown - dashDuration - coolCount):0.0}";
+                yield return null;
+            }
+            coolCountText.text = "";
             isDashing = false;
 
             //회피 처리 구현

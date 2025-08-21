@@ -1,6 +1,9 @@
 using UnityEngine;
 using Tower.Util;
 using Tower.UI;
+using UnityEngine.UI;
+using System.Collections;
+using TMPro;
 
 namespace Tower.Player
 {
@@ -21,6 +24,13 @@ namespace Tower.Player
         private Vector3[] positionOffsets;
         private Quaternion[] rotationOffsets;
 
+        [Header("교체 쿨")]
+        [SerializeField] private float coolTime = 3f;
+        [SerializeField] private Image switchIcon;
+        [SerializeField] private TextMeshProUGUI timeText;
+        private float currentCool;
+        private bool isCoolingDown = false;
+        
         #endregion
 
         #region Property
@@ -56,6 +66,8 @@ namespace Tower.Player
                 return sp;
             }
         }
+
+        public bool CanSwitch { get; set; }
         #endregion
 
         #region Unity Event Method
@@ -71,6 +83,8 @@ namespace Tower.Player
 
         private void Start()
         {
+            CanSwitch = true;
+            timeText.text = "";
             SaveFormation();
             currentIndex = 0; // 첫 캐릭터 선택
             SelectCharacter(currentIndex);
@@ -78,7 +92,7 @@ namespace Tower.Player
 
         private void Update()
         {
-            if (InputManager.Instance.SwapPressed)
+            if (InputManager.Instance.SwapPressed && CanSwitch)
             {
                 //Debug.Log("SPACE");
 
@@ -96,6 +110,8 @@ namespace Tower.Player
 
         public void SwitchToNextCharacter()
         {
+            if (isCoolingDown) return;
+            StartCoroutine(SwitchingCoolDown());
             // 모든 캐릭터가 죽었는지 먼저 체크
             bool allDead = true;
             for (int i = 0; i < characters.Length; i++)
@@ -128,6 +144,20 @@ namespace Tower.Player
             SelectCharacter(currentIndex);
         }
 
+        private IEnumerator SwitchingCoolDown()
+        {
+            isCoolingDown = true;
+            while(currentCool <= coolTime)
+            {
+                currentCool += Time.deltaTime;
+                switchIcon.fillAmount = currentCool / coolTime;
+                timeText.text = $"{(coolTime - currentCool): 0.0}";
+                yield return null;
+            }
+            timeText.text = "";
+            currentCool = 0f;
+            isCoolingDown = false;
+        }
         public void SelectCharacter(int index)
         {
             //선택한 캐릭터만 활성화, 나머지 정령화
