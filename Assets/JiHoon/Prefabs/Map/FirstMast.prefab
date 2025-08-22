@@ -4723,7 +4723,7 @@ Transform:
   m_GameObject: {fileID: 1406918117659901208}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 40.5, y: 0, z: 1.4}
+  m_LocalPosition: {x: -4.02, y: 0, z: -0.31}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -28366,7 +28366,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4976110674827727584, guid: 97fc764216e776f4ebfb225644dfeef2, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3234876887298929878, guid: 97fc764216e776f4ebfb225644dfeef2, type: 3}
       insertIndex: -1
@@ -28419,7 +28420,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 4b4e4ed787b311143957d91f501a8317, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: c56a49c781f026d44aaccdcac5078abb, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1001 &8893267385709705266
 PrefabInstance:

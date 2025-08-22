@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectTriggerTime: 0.326
+  effectTriggerTime: 0.511
   repeatOnLoop: 0
   primaryEffect: {fileID: 11400000, guid: 6342583563e8b8040b9f11b5d0a649a2, type: 2}
   effectObjectName: Attack5
@@ -623,7 +623,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectTriggerTime: 0.297
+  effectTriggerTime: 0.441
   repeatOnLoop: 0
   primaryEffect: {fileID: 11400000, guid: c98040637f40a7e4b8dc357650604abc, type: 2}
   effectObjectName: Attack4
@@ -849,7 +849,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectTriggerTime: 0.297
+  effectTriggerTime: 0.31
   repeatOnLoop: 0
   primaryEffect: {fileID: 11400000, guid: 2b518f99dc759ba47acce4751d1de00a, type: 2}
   effectObjectName: Attack3
@@ -1117,7 +1117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectTriggerTime: 0.279
+  effectTriggerTime: 0.401
   repeatOnLoop: 0
   primaryEffect: {fileID: 11400000, guid: 59122dfbb41face42bf32ee0552cd91e, type: 2}
   effectObjectName: Attack2
@@ -1144,7 +1144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectTriggerTime: 0.318
+  effectTriggerTime: 0.453
   repeatOnLoop: 0
   primaryEffect: {fileID: 11400000, guid: fd184d53521c1414b8b925dbb4646cf6, type: 2}
   effectObjectName: Attack1

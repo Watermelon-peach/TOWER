@@ -180,7 +180,8 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 4075505772460442601}
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: 442498182638962233}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -486,6 +487,33 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-308432030663026513
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectTriggerTime: 0.454
+  repeatOnLoop: 0
+  primaryEffect: {fileID: 11400000, guid: eb37d8fa1210e104bb0c1ddbcf7e2aa2, type: 2}
+  effectObjectName: JumpAttack
+  useMultipleEffects: 0
+  additionalEffects: []
+  overridePosition: 0
+  overrideSpawnType: 5
+  positionOffset: {x: 0, y: 1, z: 0}
+  overrideScale: 0
+  customScale: {x: 0.5, y: 0.5, z: 0.5}
+  useMultipleTriggerPoints: 0
+  additionalTriggerTimes: []
+  effectSound: {fileID: 0}
+  soundVolume: 1
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -574,6 +602,33 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!114 &442498182638962233
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectTriggerTime: 0.4
+  repeatOnLoop: 0
+  primaryEffect: {fileID: 11400000, guid: 4a2885603092ae64d8933a0ef39cea4b, type: 2}
+  effectObjectName: UpperAttack
+  useMultipleEffects: 0
+  additionalEffects: []
+  overridePosition: 0
+  overrideSpawnType: 5
+  positionOffset: {x: 0, y: 0, z: 1}
+  overrideScale: 0
+  customScale: {x: 0.5, y: 0.5, z: 0.5}
+  useMultipleTriggerPoints: 0
+  additionalTriggerTimes: []
+  effectSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1101 &1456088403310981429
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -782,7 +837,8 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -8858346343602831774}
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: -308432030663026513}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1

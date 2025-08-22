@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d856c5d9b4ac2e043ac362abf4875284, type: 3}
-  m_Name: Attack2
+  m_Name: Attack5
   m_EditorClassIdentifier: 
-  effectName: Attack2
+  effectName: Attack5
   spawnType: 0
   positionOffset: {x: 0, y: 0, z: 0}
   rotationOffset: {x: 0, y: 0, z: 0}
-  scale: {x: 0.01, y: 0.01, z: 0.01}
+  scale: {x: 0.005, y: 0.005, z: 0.005}
   lookAtTarget: 0
   followTarget: 0
   duration: 2
@@ -26,7 +26,7 @@ MonoBehaviour:
   followDelay: 0
   maxFollowDistance: 30
   stopDistance: 1
-  damageType: 2
+  damageType: 1
   damage: 10
   damageInterval: 1
   scaleCurve:

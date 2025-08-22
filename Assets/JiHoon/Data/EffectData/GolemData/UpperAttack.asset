@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d856c5d9b4ac2e043ac362abf4875284, type: 3}
-  m_Name: Attack4
+  m_Name: UpperAttack
   m_EditorClassIdentifier: 
-  effectName: Attack4
-  spawnType: 0
+  effectName: UpperAttack
+  spawnType: 5
   positionOffset: {x: 0, y: 0, z: 0}
-  rotationOffset: {x: 0, y: 0, z: 0}
-  scale: {x: 0.01, y: 0.01, z: 0.01}
+  rotationOffset: {x: 0, y: -90, z: 0}
+  scale: {x: 0.08, y: 0.08, z: 0.08}
   lookAtTarget: 0
-  followTarget: 1
+  followTarget: 0
   duration: 2
   delayBeforeSpawn: 0
   followSpeed: 3
@@ -26,7 +26,7 @@ MonoBehaviour:
   followDelay: 0
   maxFollowDistance: 30
   stopDistance: 1
-  damageType: 2
+  damageType: 1
   damage: 10
   damageInterval: 1
   scaleCurve:
