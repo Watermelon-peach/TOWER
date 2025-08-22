@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using Tower.Effects;
-
+using Tower.Enemy;
 using UnityEngine;
 
 /// <summary>
 /// Animator State에 직접 붙여서 사용하는 이펙트 시스템
-/// 각 공격 애니메이션 State에 이 Behaviour를 추가하면 자동으로 이펙트 실행
+/// 매번 실행 시 현재 활성화된 Player를 찾아서 타겟팅
 /// </summary>
 public class AnimationStateEffect : StateMachineBehaviour
 {
@@ -79,11 +79,13 @@ public class AnimationStateEffect : StateMachineBehaviour
     private bool hasTriggeredPrimary = false;
     private Dictionary<float, bool> triggerStatus = new Dictionary<float, bool>();
     private EnemyEffectSpawnManager effectManager;
-    private Transform playerTransform;
     private Transform firePoint;
     private AudioSource audioSource;
     private Transform effectPoolParent;
     private Dictionary<string, GameObject> effectPool = new Dictionary<string, GameObject>();
+
+    // EnemyAI 컴포넌트 참조 (타겟 찾기용)
+    private EnemyAI enemyAI;
 
     // State 진입 시 (애니메이션 시작)
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -140,6 +142,33 @@ public class AnimationStateEffect : StateMachineBehaviour
     }
 
     /// <summary>
+    /// 현재 활성화된 플레이어 찾기 - EnemyAI의 타겟 찾기 로직 활용
+    /// </summary>
+    private Transform GetCurrentPlayerTarget()
+    {
+        // 1. EnemyAI가 있으면 FindPlayerTag() 호출해서 최신 타겟 갱신
+        if (enemyAI != null)
+        {
+            enemyAI.FindPlayerTag();
+
+            // EnemyAI의 target 사용
+            if (enemyAI.Target!= null && enemyAI.Target.gameObject.activeInHierarchy)
+            {
+                return enemyAI.Target;
+            }
+        }
+
+        // 2. EnemyAI가 없으면 직접 찾기
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null && player.activeInHierarchy)
+        {
+            return player.transform;
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// 이펙트 실행 체크 및 트리거
     /// </summary>
     private void CheckAndTriggerEffect(Animator animator, float normalizedTime, float triggerTime, ref bool hasTriggered, bool isPrimary)
@@ -168,22 +197,31 @@ public class AnimationStateEffect : StateMachineBehaviour
     /// </summary>
     private void ExecutePrimaryEffect(Animator animator)
     {
+        // 현재 플레이어 타겟 찾기
+        Transform currentPlayer = GetCurrentPlayerTarget();
+
+        if (currentPlayer == null)
+        {
+            Debug.LogWarning($"[AnimationStateEffect] No valid player target found!");
+            return;
+        }
+
         // EnemyEffectSpawnManager를 사용하는 경우
         if (effectManager != null && primaryEffect != null)
         {
-            effectManager.SpawnEffect(primaryEffect, playerTransform);
+            effectManager.SpawnEffect(primaryEffect, currentPlayer);
             PlaySound();
         }
         // 직접 Effect Pool에서 오브젝트를 활성화하는 경우
         else if (!string.IsNullOrEmpty(effectObjectName))
         {
-            SpawnEffectDirectly(animator, effectObjectName, primaryEffect);
+            SpawnEffectDirectly(animator, effectObjectName, primaryEffect, currentPlayer);
             PlaySound();
         }
         else if (primaryEffect != null)
         {
             // effectManager가 없어도 primaryEffect의 이름으로 시도
-            SpawnEffectDirectly(animator, primaryEffect.effectName, primaryEffect);
+            SpawnEffectDirectly(animator, primaryEffect.effectName, primaryEffect, currentPlayer);
             PlaySound();
         }
 
@@ -196,11 +234,11 @@ public class AnimationStateEffect : StateMachineBehaviour
                 {
                     if (effectManager != null)
                     {
-                        effectManager.SpawnEffect(effect, playerTransform);
+                        effectManager.SpawnEffect(effect, currentPlayer);
                     }
                     else
                     {
-                        SpawnEffectDirectly(animator, effect.effectName, effect);
+                        SpawnEffectDirectly(animator, effect.effectName, effect, currentPlayer);
                     }
                 }
             }
@@ -212,15 +250,19 @@ public class AnimationStateEffect : StateMachineBehaviour
     /// </summary>
     private void ExecuteAdditionalEffects(Animator animator)
     {
+        Transform currentPlayer = GetCurrentPlayerTarget();
+
+        if (currentPlayer == null) return;
+
         if (primaryEffect != null)
         {
             if (effectManager != null)
             {
-                effectManager.SpawnEffect(primaryEffect, playerTransform);
+                effectManager.SpawnEffect(primaryEffect, currentPlayer);
             }
             else
             {
-                SpawnEffectDirectly(animator, primaryEffect.effectName, primaryEffect);
+                SpawnEffectDirectly(animator, primaryEffect.effectName, primaryEffect, currentPlayer);
             }
         }
     }
@@ -228,7 +270,7 @@ public class AnimationStateEffect : StateMachineBehaviour
     /// <summary>
     /// Effect Pool에서 직접 이펙트 스폰
     /// </summary>
-    private void SpawnEffectDirectly(Animator animator, string effectName, AttackEffectData effectData)
+    private void SpawnEffectDirectly(Animator animator, string effectName, AttackEffectData effectData, Transform targetPlayer)
     {
         if (string.IsNullOrEmpty(effectName)) return;
 
@@ -253,13 +295,13 @@ public class AnimationStateEffect : StateMachineBehaviour
         if (effectObj != null)
         {
             // 위치 계산
-            Vector3 spawnPosition = CalculateSpawnPosition(animator, effectData);
+            Vector3 spawnPosition = CalculateSpawnPosition(animator, effectData, targetPlayer);
             effectObj.transform.position = spawnPosition;
 
             // 회전 설정 (Look At Target이 true일 때만)
-            if (effectData != null && effectData.lookAtTarget && playerTransform != null)
+            if (effectData != null && effectData.lookAtTarget && targetPlayer != null)
             {
-                Vector3 direction = (playerTransform.position - spawnPosition).normalized;
+                Vector3 direction = (targetPlayer.position - spawnPosition).normalized;
                 if (direction != Vector3.zero)
                     effectObj.transform.rotation = Quaternion.LookRotation(direction);
             }
@@ -274,32 +316,20 @@ public class AnimationStateEffect : StateMachineBehaviour
                 effectObj.transform.localScale = effectData.scale;
             }
 
+            // SimpleDamageHandler가 있으면 초기화
+            var damageHandler = effectObj.GetComponent<SimpleDamageHandler>();
+            if (damageHandler != null && effectData != null)
+            {
+                damageHandler.Initialize(effectData);
+            }
+
+
             // 활성화
             effectObj.SetActive(true);
-
-            // Follow Target 처리 (ScriptableObject 설정에 따라)
-            if (effectData != null && effectData.followTarget && playerTransform != null)
-            {
-                // 기존 컨트롤러들 제거
-                var oldFollower = effectObj.GetComponent<SimpleFollowController>();
-                if (oldFollower != null)
-                {
-                    MonoBehaviour.Destroy(oldFollower);
-                }
-
-
-                var oldLocker = effectObj.GetComponent<EffectRotationLocker>();
-                if (oldLocker != null)
-                {
-                    MonoBehaviour.Destroy(oldLocker);
-                }
-
-            }
 
             // 자동 비활성화
             if (effectData != null && effectData.autoDeactivate)
             {
-                // EffectAutoDeactivator 컴포넌트 사용
                 var deactivator = effectObj.GetComponent<EffectAutoDeactivator>();
                 if (deactivator == null)
                 {
@@ -308,7 +338,7 @@ public class AnimationStateEffect : StateMachineBehaviour
                 deactivator.DeactivateAfter(effectData.duration);
             }
 
-            Debug.Log($"[Effect Spawned] {effectName} at {spawnPosition}");
+            Debug.Log($"[Effect Spawned] {effectName} targeting {targetPlayer.name} at {spawnPosition}");
         }
         else
         {
@@ -319,7 +349,7 @@ public class AnimationStateEffect : StateMachineBehaviour
     /// <summary>
     /// 스폰 위치 계산
     /// </summary>
-    private Vector3 CalculateSpawnPosition(Animator animator, AttackEffectData effectData)
+    private Vector3 CalculateSpawnPosition(Animator animator, AttackEffectData effectData, Transform targetPlayer)
     {
         Vector3 position = animator.transform.position;
         EffectSpawnType spawnType = EffectSpawnType.AtEnemyPosition;
@@ -345,22 +375,18 @@ public class AnimationStateEffect : StateMachineBehaviour
                 break;
 
             case EffectSpawnType.AtPlayer:
-                if (playerTransform != null)
-                    position = playerTransform.position;
+            case EffectSpawnType.AtTarget:
+                if (targetPlayer != null)
+                    position = targetPlayer.position;
                 break;
 
             case EffectSpawnType.InFrontOfEnemy:
                 position = animator.transform.position + animator.transform.forward * 2f;
                 break;
 
-            case EffectSpawnType.AtTarget:
-                if (playerTransform != null)
-                    position = playerTransform.position;
-                break;
-
             case EffectSpawnType.BetweenEnemyAndPlayer:
-                if (playerTransform != null)
-                    position = Vector3.Lerp(animator.transform.position, playerTransform.position, 0.5f);
+                if (targetPlayer != null)
+                    position = Vector3.Lerp(animator.transform.position, targetPlayer.position, 0.5f);
                 break;
 
             case EffectSpawnType.AtEnemyPosition:
@@ -384,19 +410,28 @@ public class AnimationStateEffect : StateMachineBehaviour
     /// </summary>
     private void CacheComponents(Animator animator)
     {
-        // EnemyEffectSpawnManager 찾기 (여러 방법 시도)
+        // EnemyAI 컴포넌트 찾기
+        if (enemyAI == null)
+        {
+            enemyAI = animator.GetComponent<EnemyAI>();
+            if (enemyAI == null)
+            {
+                enemyAI = animator.GetComponentInParent<EnemyAI>();
+            }
+            if (enemyAI == null)
+            {
+                enemyAI = animator.GetComponentInChildren<EnemyAI>();
+            }
+        }
+
+        // EnemyEffectSpawnManager 찾기
         if (effectManager == null)
         {
-            // 1. 같은 GameObject에서
             effectManager = animator.GetComponent<EnemyEffectSpawnManager>();
-
-            // 2. 부모에서
             if (effectManager == null && animator.transform.parent != null)
             {
                 effectManager = animator.transform.parent.GetComponentInChildren<EnemyEffectSpawnManager>();
             }
-
-            // 3. 자식에서
             if (effectManager == null)
             {
                 effectManager = animator.GetComponentInChildren<EnemyEffectSpawnManager>();
@@ -406,10 +441,7 @@ public class AnimationStateEffect : StateMachineBehaviour
         // FirePoint 찾기
         if (firePoint == null)
         {
-            // 직접 찾기
             firePoint = animator.transform.Find("FirePoint");
-
-            // 자식들 중에서 찾기
             if (firePoint == null)
             {
                 Transform[] children = animator.GetComponentsInChildren<Transform>();
@@ -428,10 +460,7 @@ public class AnimationStateEffect : StateMachineBehaviour
         // Effect Pool Parent 찾기
         if (effectPoolParent == null)
         {
-            // 1. Effect 폴더 직접 찾기
             effectPoolParent = animator.transform.Find("Effect");
-
-            // 2. WizardEffectManager에서 찾기
             if (effectPoolParent == null)
             {
                 Transform manager = animator.transform.Find("WizardEffectManager");
@@ -440,8 +469,6 @@ public class AnimationStateEffect : StateMachineBehaviour
                     effectPoolParent = manager.Find("Effect");
                 }
             }
-
-            // 3. 자식들 중에서 찾기
             if (effectPoolParent == null)
             {
                 foreach (Transform child in animator.transform)
@@ -451,7 +478,6 @@ public class AnimationStateEffect : StateMachineBehaviour
                         effectPoolParent = child;
                         break;
                     }
-
                     Transform effectChild = child.Find("Effect");
                     if (effectChild != null)
                     {
@@ -467,18 +493,8 @@ public class AnimationStateEffect : StateMachineBehaviour
                 foreach (Transform effect in effectPoolParent)
                 {
                     effectPool[effect.name] = effect.gameObject;
-                    effect.gameObject.SetActive(false); // 초기에는 비활성화
+                    effect.gameObject.SetActive(false);
                 }
-            }
-        }
-
-        // 플레이어 찾기
-        if (playerTransform == null)
-        {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-            {
-                playerTransform = player.transform;
             }
         }
 
@@ -493,8 +509,8 @@ public class AnimationStateEffect : StateMachineBehaviour
         }
 
         // 디버그 정보
-        Debug.Log($"[Cache Complete] EffectManager: {effectManager != null}, FirePoint: {firePoint != null}, " +
-                  $"EffectPool: {effectPoolParent != null}, Player: {playerTransform != null}");
+        Debug.Log($"[Cache Complete] EnemyAI: {enemyAI != null}, EffectManager: {effectManager != null}, " +
+                  $"FirePoint: {firePoint != null}, EffectPool: {effectPoolParent != null}");
     }
 
     /// <summary>
@@ -531,9 +547,7 @@ public class AnimationStateEffect : StateMachineBehaviour
     /// </summary>
     private void OnValidate()
     {
-        // 트리거 시간 유효성 검사
         effectTriggerTime = Mathf.Clamp01(effectTriggerTime);
-
         if (additionalTriggerTimes != null)
         {
             for (int i = 0; i < additionalTriggerTimes.Count; i++)

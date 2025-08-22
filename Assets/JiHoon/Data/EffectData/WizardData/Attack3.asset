@@ -28,7 +28,7 @@ MonoBehaviour:
   stopDistance: 1
   damageType: 2
   damage: 10
-  damageInterval: 0
+  damageInterval: 0.5
   scaleCurve:
     serializedVersion: 2
     m_Curve: []

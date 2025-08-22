@@ -27,6 +27,18 @@ namespace Tower.Enemy
         private bool isPositionLocked = false;
 
         //private bool canAct = true;  // 행동 가능 여부
+        public Transform Target         {
+            get { return target; }
+            set
+            {
+                target = value;
+                if (behaviorAgent != null && behaviorAgent.BlackboardReference != null)
+                {
+                    // Blackboard의 "Target" 변수에 새 타겟 설정
+                    behaviorAgent.BlackboardReference.SetVariableValue("Target", target.gameObject);
+                }
+            }
+        }
 
         // 스폰 시스템 참조
         private MapSpawnArea spawnArea;
