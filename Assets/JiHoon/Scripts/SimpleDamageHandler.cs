@@ -9,8 +9,10 @@ using UnityEditor;
 
 public class SimpleDamageHandler : MonoBehaviour
 {
-    // Inspector에서 수정 불가능하도록 private으로 변경
-    private AttackEffectData effectData;
+    [Header("Effect Data")]
+    [SerializeField] private AttackEffectData effectData; // Inspector에서 직접 할당 가능
+
+    // 런타임 값들
     private DamageType damageType = DamageType.None;
     private float damage = 0f;
     private float damageInterval = 1f;
@@ -21,6 +23,15 @@ public class SimpleDamageHandler : MonoBehaviour
     [SerializeField, ReadOnly] private string currentEffectName = "None";
     [SerializeField, ReadOnly] private float currentDamage = 0f;
     [SerializeField, ReadOnly] private string currentDamageType = "None";
+
+    void Start()
+    {
+        // Start에서 effectData가 있으면 자동 초기화
+        if (effectData != null)
+        {
+            Initialize(effectData);
+        }
+    }
 
     public void Initialize(AttackEffectData data)
     {
@@ -49,7 +60,12 @@ public class SimpleDamageHandler : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         // effectData가 없으면 처리하지 않음
-        if (effectData == null) return;
+        if (effectData == null)
+        {
+            Debug.LogWarning($"[SimpleDamageHandler] {gameObject.name} - effectData가 설정되지 않았습니다!");
+            return;
+        }
+
         if (damageType != DamageType.Collision) return;
         if (hasDealtDamage) return;
 
@@ -113,10 +129,28 @@ public class SimpleDamageHandler : MonoBehaviour
         return character;
     }
 
+    void OnEnable()
+    {
+        // 활성화될 때마다 초기화 (이미 effectData가 있으면)
+        if (effectData != null && damage == 0)
+        {
+            Initialize(effectData);
+        }
+    }
+
     void OnDisable()
     {
         hasDealtDamage = false;
         lastDamageTime.Clear();
+    }
+
+    // Inspector에서 effectData를 변경했을 때 자동으로 적용
+    void OnValidate()
+    {
+        if (effectData != null && Application.isPlaying)
+        {
+            Initialize(effectData);
+        }
     }
 }
 
