@@ -1100,9 +1100,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ac507388c4310428185fbb6e191f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageType: 1
-  damage: 10
-  damageInterval: 0
+  effectData: {fileID: 11400000, guid: 4a2885603092ae64d8933a0ef39cea4b, type: 2}
+  currentEffectName: None
+  currentDamage: 0
+  currentDamageType: None
 --- !u!1 &4382153305460792334
 GameObject:
   m_ObjectHideFlags: 0
@@ -1555,9 +1556,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ac507388c4310428185fbb6e191f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageType: 1
-  damage: 10
-  damageInterval: 0
+  effectData: {fileID: 0}
+  currentEffectName: None
+  currentDamage: 0
+  currentDamageType: None
 --- !u!1 &6638439131005636619
 GameObject:
   m_ObjectHideFlags: 0
@@ -2285,7 +2287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ffd14f6370f20f4eb06813f620a5fa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: ca97e9e8d520f8f4192115388aee5766, type: 2}
+  data: {fileID: 11400000, guid: d6ffbd9274a87944eb53cb118423f967, type: 2}
   statBar: {fileID: 5778295153466220602}
   hpGauge: {fileID: 8093369197986184936}
   gpGauge: {fileID: 7443526622454902460}
@@ -2385,9 +2387,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ac507388c4310428185fbb6e191f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageType: 1
-  damage: 10
-  damageInterval: 1
+  effectData: {fileID: 11400000, guid: eb37d8fa1210e104bb0c1ddbcf7e2aa2, type: 2}
+  currentEffectName: None
+  currentDamage: 0
+  currentDamageType: None
 --- !u!1 &8296655651139172670
 GameObject:
   m_ObjectHideFlags: 0

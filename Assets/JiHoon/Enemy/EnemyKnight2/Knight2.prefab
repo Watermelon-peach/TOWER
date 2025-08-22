@@ -1049,7 +1049,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ffd14f6370f20f4eb06813f620a5fa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: ca97e9e8d520f8f4192115388aee5766, type: 2}
+  data: {fileID: 11400000, guid: 96ebf5169d14b014f97acd304b30f2cd, type: 2}
   statBar: {fileID: 4211473118868740566}
   hpGauge: {fileID: 1879097019352336132}
   gpGauge: {fileID: 940742877752219472}

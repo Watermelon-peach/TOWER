@@ -289,4 +289,32 @@ public class MapExit : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// 게임 리셋 시 호출되는 public 메서드
+    /// </summary>
+    public void ResetExit()
+    {
+        Debug.Log($"[MapExit] Resetting exit for map {currentMapID}");
+
+        // 상태 초기화
+        isTransitioning = false;
+        isActive = false;
+        canCheck = false;
+        currentPlayer = null;
+
+        // 트리거 비활성화
+        Collider col = GetComponent<Collider>();
+        if (col != null)
+        {
+            col.enabled = false;
+        }
+
+        // MapSpawnArea 다시 찾기
+        FindMapSpawnArea();
+
+        // 2초 후 체크 가능하도록 설정
+        StopAllCoroutines(); // 기존 코루틴 중지
+        StartCoroutine(DelayedStart());
+    }
 }

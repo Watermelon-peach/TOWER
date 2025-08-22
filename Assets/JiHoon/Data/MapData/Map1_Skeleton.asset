@@ -16,8 +16,8 @@ MonoBehaviour:
   mapID: 0
   monsterPrefabs:
   - {fileID: 1119424025508267185, guid: af30fd265e7ece94ebb2a5cb0259ab8d, type: 3}
-  totalMonsterCount: 1
-  initialSpawnCount: 1
-  respawnCount: 1
+  totalMonsterCount: 17
+  initialSpawnCount: 5
+  respawnCount: 3
   respawnAmount: 1
   spawnWeights: []

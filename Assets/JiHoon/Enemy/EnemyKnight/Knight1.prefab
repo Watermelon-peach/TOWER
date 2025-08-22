@@ -8676,7 +8676,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ffd14f6370f20f4eb06813f620a5fa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: ca97e9e8d520f8f4192115388aee5766, type: 2}
+  data: {fileID: 11400000, guid: 3d47565234df3dd41803a884907f8170, type: 2}
   statBar: {fileID: 2614270340132682723}
   hpGauge: {fileID: 298941481371591985}
   gpGauge: {fileID: 1385940800815494501}

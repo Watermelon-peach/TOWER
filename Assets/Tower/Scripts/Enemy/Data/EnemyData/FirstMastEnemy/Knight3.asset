@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 41eb2d5436dd1534b811a96f0877f9be, type: 3}
-  m_Name: TestData
+  m_Name: Knight3
   m_EditorClassIdentifier: 
-  enemyName: Dummy
-  atk: 1
-  def: 50
-  maxHp: 100
-  maxGp: 100
+  enemyName: Knight3
+  atk: 130
+  def: 100
+  maxHp: 4500
+  maxGp: 2500

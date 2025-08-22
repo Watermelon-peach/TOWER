@@ -231,9 +231,12 @@ namespace Tower.Game
             }
         }
 
-        // 재시도 버튼
+
         void OnRetryClicked()
         {
+            Debug.Log("[StageTimer] Retry clicked - Recreating first mast");
+
+            // 1. 기본 설정 복원
             Time.timeScale = 1f;
             isGameOver = false;
             if (gameOverPanel != null)
@@ -241,39 +244,142 @@ namespace Tower.Game
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
 
-            // 비활성화된 오브젝트도 포함해서 찾기
-            Tower.Player.Character[] allCharacters = FindObjectsByType<Tower.Player.Character>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            // 2. 캐릭터 부활
+            Tower.Player.Character[] allCharacters = FindObjectsByType<Tower.Player.Character>(
+                FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var character in allCharacters)
+            {
+                if (character != null)
+                    character.Revibe();
+            }
+
+            // 3. MastManager 있는지 확인
+            if (MastManager.Instance != null)
+            {
+                // 현재 마스트 제거
+                if (MastManager.Instance.currentMastInstance != null)
+                {
+                    Debug.Log("[StageTimer] Destroying current mast");
+                    Destroy(MastManager.Instance.currentMastInstance);
+                    MastManager.Instance.currentMastInstance = null;
+                }
+
+                // 잠시 대기 후 첫 마스트 다시 생성
+                StartCoroutine(RecreateFirstMast());
+            }
+            else
+            {
+                Debug.LogError("[StageTimer] MastManager not found!");
+            }
+        }
+
+        // 첫 마스트 재생성 코루틴
+        IEnumerator RecreateFirstMast()
+        {
+            // 오브젝트 완전 제거 대기
+            yield return null;
+            yield return new WaitForSeconds(0.2f);
+
+            // 적 제거 (안전장치)
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            foreach (var enemy in enemies)
+            {
+                Destroy(enemy);
+            }
+
+            // SpawnEnemy 정리
+            GameObject spawnParent = GameObject.Find("SpawnEnemy");
+            if (spawnParent != null)
+            {
+                foreach (Transform child in spawnParent.transform)
+                {
+                    Destroy(child.gameObject);
+                }
+            }
+
+            yield return new WaitForSeconds(0.2f);
+
+            // MastManager의 LoadMast(0) 호출 - 첫 마스트 새로 생성
+            Debug.Log("[StageTimer] Creating new first mast");
+            MastManager.Instance.currentMastIndex = 0;
+            MastManager.Instance.LoadMast(0);
+
+            // 마스트 생성 완료 대기
+            yield return new WaitForSeconds(0.5f);
+
+            // 타이머 재시작
+            StartStageTimer(0);
+
+            Debug.Log("[StageTimer] First mast recreation completed!");
+        }
+
+        /// <summary>
+        /// MapExit 체크 재활성화 코루틴
+        /// </summary>
+        IEnumerator ReEnableCheck(MapExit exit)
+        {
+            yield return new WaitForSeconds(2f);
+
+            System.Reflection.FieldInfo canCheckField = exit.GetType().GetField("canCheck",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (canCheckField != null)
+            {
+                canCheckField.SetValue(exit, true);
+            }
+        }
+
+        /// <summary>
+        /// 모든 캐릭터 부활
+        /// </summary>
+        void ReviveAllCharacters()
+        {
+            Tower.Player.Character[] allCharacters = FindObjectsByType<Tower.Player.Character>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None
+            );
+
             foreach (Tower.Player.Character character in allCharacters)
             {
                 if (character != null)
                 {
                     character.Revibe();
-                    Debug.Log($"Revived: {character.gameObject.name}");
+                    Debug.Log($"[StageTimer] Revived: {character.gameObject.name}");
                 }
             }
+        }
 
-            if (MastManager.Instance != null)
+        /// <summary>
+        /// 남아있는 몬스터 제거 (안전장치)
+        /// </summary>
+        void ClearAllRemainingMonsters()
+        {
+            GameObject spawnParent = GameObject.Find("SpawnEnemy");
+            if (spawnParent != null)
             {
-                // 첫 번째 마스트 다시 로드 (위치도 자동 설정됨)
-                MastManager.Instance.ResetToFirstMast();
-                StartStageTimer(0);
-                return;  // 여기서 끝!
+                // SpawnEnemy 하위의 모든 자식 제거
+                foreach (Transform child in spawnParent.transform)
+                {
+                    Destroy(child.gameObject);
+                }
+                Debug.Log("[StageTimer] Cleared all remaining monsters from SpawnEnemy");
             }
 
-            // 게임 리셋 (MapSpawnManager가 처리)
-            if (MapSpawnManager.Instance != null)
+            // Enemy 태그를 가진 모든 오브젝트 제거 (추가 안전장치)
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            foreach (GameObject enemy in enemies)
             {
-                MapSpawnManager.Instance.ResetGame();
+                Destroy(enemy);
             }
-            // 1층부터 다시 시작
-            StartStageTimer(0);
-            TeamManager.Instance.MoveFormation(spawnPoint.position, spawnPoint.rotation);
+
+            if (enemies.Length > 0)
+            {
+                Debug.Log($"[StageTimer] Destroyed {enemies.Length} remaining enemies");
+            }
         }
 
         // 메인 메뉴로
         void OnMainMenuClicked()
         {
-
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             Time.timeScale = 1f;

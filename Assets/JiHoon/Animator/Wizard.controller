@@ -527,7 +527,8 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 8916703966782954874}
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: 5427095977534080322}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -1128,6 +1129,33 @@ MonoBehaviour:
   positionOffset: {x: 0, y: 0, z: 0}
   overrideScale: 0
   customScale: {x: 0.01, y: 0.01, z: 0.01}
+  useMultipleTriggerPoints: 0
+  additionalTriggerTimes: []
+  effectSound: {fileID: 0}
+  soundVolume: 1
+--- !u!114 &5427095977534080322
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectTriggerTime: 0.4
+  repeatOnLoop: 0
+  primaryEffect: {fileID: 11400000, guid: 889ec0e2a377c1248ad60f8dcbd771a4, type: 2}
+  effectObjectName: Spell
+  useMultipleEffects: 0
+  additionalEffects: []
+  overridePosition: 0
+  overrideSpawnType: 0
+  positionOffset: {x: 0, y: 0, z: 0}
+  overrideScale: 0
+  customScale: {x: 0.5, y: 0.5, z: 0.5}
   useMultipleTriggerPoints: 0
   additionalTriggerTimes: []
   effectSound: {fileID: 0}

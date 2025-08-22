@@ -2011,7 +2011,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ffd14f6370f20f4eb06813f620a5fa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: ca97e9e8d520f8f4192115388aee5766, type: 2}
+  data: {fileID: 11400000, guid: c449c21ba639a98468aedad38b85be27, type: 2}
   statBar: {fileID: 1542328301916012642}
   hpGauge: {fileID: 3820952299392900784}
   gpGauge: {fileID: 2457676485458988772}
@@ -2028,6 +2028,8 @@ MonoBehaviour:
   parryingTime: 0.5
   jigumiya: {fileID: 4731476929557975534}
   hitVfx: {fileID: 8140310385503783341}
+  distance: 2
+  height: 2
 --- !u!1 &4020216763379573538
 GameObject:
   m_ObjectHideFlags: 0
