@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-548959457329330882
+--- !u!114 &-8046003401740646081
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TS_body
+  m_Name: Dungeon_02_Mat.003_TS
   m_Shader: {fileID: 4800000, guid: eaf47be5f2989a441ba14eae560d820b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -34,10 +34,8 @@ Material:
   - _USELIGHTRAMP_STEP
   - _USEOUTLINE_ON
   - _USEPURESKETCH_ON
-  - _USERIMLIGHT_ON
   - _USESPECULAR_ON
   m_InvalidKeywords:
-  - _NORMALMAP
   - _USESHADOWS_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -46,18 +44,18 @@ Material:
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
-  m_LockedProperties: _BaseColor _BaseMap
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: cadc0c01185d1574fa0a55169690f067, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2ad5769c41feb7749a077e020ed56acb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 486c1b182d766804aa979b53b1778e30, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: -1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -95,7 +93,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: cadc0c01185d1574fa0a55169690f067, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2ad5769c41feb7749a077e020ed56acb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -167,7 +165,7 @@ Material:
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 1
-    - _Glossiness: 0
+    - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _HalftoneEdgeOffset: 0.1
     - _HalftoneSmoothness: 0.3
@@ -200,15 +198,15 @@ Material:
     - _QueueOffset: 0
     - _RampDiffuseTextureLoaded: 1
     - _ReceiveShadows: 1
-    - _RimPower: 10.57
+    - _RimPower: 2
     - _RimSmoothness: 0
     - _RimSplitColor: 0
-    - _RimThickness: 3
+    - _RimThickness: 1
     - _ShapeSmoothness: 0.2
     - _SideShineAmount: 0.2717647
     - _SideShineHardness: 0
     - _SideShineIntensity: 1
-    - _Smoothness: 0.58563423
+    - _Smoothness: 0.5
     - _SmoothnessMultiplier: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularFaloff: 0
@@ -224,7 +222,7 @@ Material:
     - _StepOffset: 0
     - _Strength: 0
     - _Surface: 0
-    - _Thicnkess: 0.0026
+    - _Thicnkess: 0.0053
     - _UVAnimationSpeed: 0
     - _UVAnimationSpeedSpec: 0
     - _UVAnimationSpeedWarp: 0
@@ -249,7 +247,7 @@ Material:
     - _UseLightRamp: 0
     - _UseOutline: 1
     - _UsePureSketch: 1
-    - _UseRimLight: 1
+    - _UseRimLight: 0
     - _UseScreenUvs: 0
     - _UseScreenUvsSpecular: 0
     - _UseScreenUvsWarp: 0
@@ -268,9 +266,9 @@ Material:
     - _HalftoneColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
-    - _RimColor: {r: 0.6509804, g: 0.6392157, b: 0.45490196, a: 0}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 0}
     - _RimShadowColor: {r: 0, g: 0.055514283, b: 0.9622641, a: 0}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

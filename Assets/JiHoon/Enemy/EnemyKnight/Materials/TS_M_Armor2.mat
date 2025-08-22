@@ -170,7 +170,7 @@ Material:
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 1
-    - _Glossiness: 0.5
+    - _Glossiness: 1
     - _GlossyReflections: 1
     - _HalftoneEdgeOffset: 0.1
     - _HalftoneSmoothness: 0.3
@@ -274,6 +274,6 @@ Material:
     - _RimColor: {r: 0.6514058, g: 0.637597, b: 0.45641106, a: 0}
     - _RimShadowColor: {r: 0, g: 0.055514283, b: 0.9622641, a: 0}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
