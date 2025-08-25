@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3741178653920001349}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 3.75, y: -0, z: 13.56}
   m_LocalScale: {x: 1.0869565, y: 1.2345686, z: 1}
   m_ConstrainProportionsScale: 0
@@ -116,7 +116,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.84
+      scalar: 1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
