@@ -385,7 +385,7 @@ namespace Tower.Game
             Cursor.lockState = CursorLockMode.None;
             Time.timeScale = 1f;
             // 메인 메뉴 씬으로 이동
-            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Main");
         }
 
         // 다음 맵으로 이동 시
