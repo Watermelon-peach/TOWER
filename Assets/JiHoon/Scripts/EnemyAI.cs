@@ -343,6 +343,53 @@ IEnumerator RestartBehaviorGraph()
             
         }
 
+        public void RestartBehaviorAgent()
+        {
+            StartCoroutine(RestartBehaviorAgentCoroutine());
+        }
+
+        private IEnumerator RestartBehaviorAgentCoroutine()
+        {
+            // Behaviour Agent 끄기
+            if (behaviorAgent != null)
+            {
+                behaviorAgent.enabled = false;
+                Debug.Log("[EnemyAI] Behavior Agent 비활성화");
+            }
+
+            // NavMeshAgent 정지 (비활성화하지 않음!)
+            if (agent != null && agent.enabled)
+            {
+                agent.isStopped = true;
+                agent.velocity = Vector3.zero;
+                agent.ResetPath();
+                Debug.Log("[EnemyAI] NavMeshAgent 정지");
+            }
+
+            // 3초 대기
+            yield return new WaitForSeconds(3f);
+
+            // NavMeshAgent 재시작
+            if (agent != null && agent.enabled)
+            {
+                agent.isStopped = false;
+
+                // 타겟이 있으면 다시 추적 시작
+                if (target != null)
+                {
+                    agent.SetDestination(target.position);
+                }
+                Debug.Log("[EnemyAI] NavMeshAgent 재시작");
+            }
+
+            // Behaviour Agent 다시 켜기
+            if (behaviorAgent != null)
+            {
+                behaviorAgent.enabled = true;
+                Debug.Log("[EnemyAI] Behavior Agent 재활성화");
+            }
+        }
+
         private IEnumerator DisableInputForSeconds()
         {
             // 입력 차단

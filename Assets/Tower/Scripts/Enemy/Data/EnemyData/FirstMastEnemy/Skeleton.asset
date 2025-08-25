@@ -16,4 +16,4 @@ MonoBehaviour:
   atk: 15
   def: 2
   maxHp: 80
-  maxGp: 10
+  maxGp: 12
