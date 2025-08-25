@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Tower.Util;
 
 namespace Tower.Game.Main
 {
@@ -17,6 +18,7 @@ namespace Tower.Game.Main
 
         [SerializeField] private float moveDistance = 25f;
         [SerializeField] private float moveDuration = 3f;
+        [SerializeField] private SceneFader scenFader;
 
         #endregion
 
@@ -34,6 +36,13 @@ namespace Tower.Game.Main
 
         #endregion
 
+        #region Unity Event Method
+        void Start()
+        {
+            scenFader.FadeStart(1f);
+        }
+        #endregion
+
         #region Custom Method
         public void OnStart()
         {
@@ -42,6 +51,7 @@ namespace Tower.Game.Main
             TankerAnim.SetTrigger("Walk");
 
             if (PartyPos) StartCoroutine(MovePartyForward());
+            scenFader.FadeTo("RealPlayScene");
         }
 
         private IEnumerator MovePartyForward()
