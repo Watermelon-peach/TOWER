@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wizard
   m_EditorClassIdentifier: 
   enemyName: Wizard
-  atk: 0
-  def: 200
-  maxHp: 10000
-  maxGp: 15000
+  atk: 40
+  def: 5
+  maxHp: 2200
+  maxGp: 100

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f73c43a69945186438328accd679caac, type: 3}
   m_Name: DealerData
   m_EditorClassIdentifier: 
-  atk: 100
-  def: 30
-  maxHp: 500
+  atk: 15
+  def: 3
+  maxHp: 200
   maxMp: 100
   characterType: 0
   characterIcon: {fileID: 21300000, guid: 47b5bb150ef51104e939b338bb2882c9, type: 3}

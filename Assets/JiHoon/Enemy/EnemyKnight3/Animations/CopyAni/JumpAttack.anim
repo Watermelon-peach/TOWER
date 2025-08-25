@@ -105832,21 +105832,21 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.5
+  - time: 0.33333334
     functionName: FindPlayerTag
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 1.1333333
+  - time: 1.0666667
     functionName: Jigumini
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 1.7
+  - time: 1.6
     functionName: StopMoving
     data: 
     objectReferenceParameter: {fileID: 0}

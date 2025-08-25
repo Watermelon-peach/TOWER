@@ -16,7 +16,7 @@ MonoBehaviour:
   spawnType: 0
   positionOffset: {x: 0, y: 0, z: 0}
   rotationOffset: {x: 0, y: 0, z: 0}
-  scale: {x: 0.085, y: 0.085, z: 0.085}
+  scale: {x: 0.01, y: 0.01, z: 0.01}
   lookAtTarget: 0
   followTarget: 0
   duration: 2
@@ -27,7 +27,7 @@ MonoBehaviour:
   maxFollowDistance: 30
   stopDistance: 1
   damageType: 1
-  damage: 10
+  damage: 30
   damageInterval: 1
   scaleCurve:
     serializedVersion: 2

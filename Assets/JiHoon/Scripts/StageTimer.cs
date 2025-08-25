@@ -213,7 +213,7 @@ namespace Tower.Game
         }
 
         // 게임오버 UI 표시
-        void ShowGameOverUI()
+        public void ShowGameOverUI()
         {
             if (gameOverPanel != null)
             {
@@ -266,6 +266,7 @@ namespace Tower.Game
 
                 // 잠시 대기 후 첫 마스트 다시 생성
                 StartCoroutine(RecreateFirstMast());
+                Tower.Player.TeamManager.Instance.SwitchToNextCharacter();
             }
             else
             {

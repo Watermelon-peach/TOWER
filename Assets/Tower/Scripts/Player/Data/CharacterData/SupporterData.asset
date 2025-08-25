@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f73c43a69945186438328accd679caac, type: 3}
   m_Name: SupporterData
   m_EditorClassIdentifier: 
-  atk: 50
-  def: 25
-  maxHp: 500
-  maxMp: 100
+  atk: 12
+  def: 6
+  maxHp: 150
+  maxMp: 300
   characterType: 2
   characterIcon: {fileID: 21300000, guid: 722ad6f1348db2b4dbf62b2dc71937ad, type: 3}
   skillIcon: {fileID: 0}

@@ -56,7 +56,7 @@ AnimatorStateMachine:
     m_Position: {x: 500, y: 190, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 388105934053497605}
-    m_Position: {x: 500, y: 260, z: 0}
+    m_Position: {x: 490, y: 260, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1161239382768415926}
     m_Position: {x: 490, y: 320, z: 0}
@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectTriggerTime: 0.511
+  effectTriggerTime: 0.705
   repeatOnLoop: 0
   primaryEffect: {fileID: 11400000, guid: 6342583563e8b8040b9f11b5d0a649a2, type: 2}
   effectObjectName: Attack5
@@ -624,7 +624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectTriggerTime: 0.441
+  effectTriggerTime: 0.711
   repeatOnLoop: 0
   primaryEffect: {fileID: 11400000, guid: c98040637f40a7e4b8dc357650604abc, type: 2}
   effectObjectName: Attack4
@@ -745,6 +745,12 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
+  - m_Name: PowerAttack
+    m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -850,7 +856,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectTriggerTime: 0.31
+  effectTriggerTime: 0.333
   repeatOnLoop: 0
   primaryEffect: {fileID: 11400000, guid: 2b518f99dc759ba47acce4751d1de00a, type: 2}
   effectObjectName: Attack3
@@ -946,31 +952,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1101 &2286312721913299745
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: AreaAttack2
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 388105934053497605}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0.7413793
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
 --- !u!1102 &2914432086269411561
 AnimatorState:
   serializedVersion: 6
@@ -1064,7 +1045,6 @@ AnimatorState:
   - {fileID: 8426721921081316048}
   - {fileID: -2977114307124125312}
   - {fileID: -8873064748538563930}
-  - {fileID: 2286312721913299745}
   - {fileID: 1931230631622138915}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
@@ -1118,7 +1098,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectTriggerTime: 0.401
+  effectTriggerTime: 0.707
   repeatOnLoop: 0
   primaryEffect: {fileID: 11400000, guid: 59122dfbb41face42bf32ee0552cd91e, type: 2}
   effectObjectName: Attack2
@@ -1145,7 +1125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectTriggerTime: 0.4
+  effectTriggerTime: 0.706
   repeatOnLoop: 0
   primaryEffect: {fileID: 11400000, guid: 889ec0e2a377c1248ad60f8dcbd771a4, type: 2}
   effectObjectName: Spell
@@ -1172,7 +1152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f4923d3b895d84aa46ef735a4a91f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectTriggerTime: 0.453
+  effectTriggerTime: 0.705
   repeatOnLoop: 0
   primaryEffect: {fileID: 11400000, guid: fd184d53521c1414b8b925dbb4646cf6, type: 2}
   effectObjectName: Attack1
@@ -1268,7 +1248,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Hit
+    m_ConditionEvent: PowerAttack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2796608273235448533}

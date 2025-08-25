@@ -156088,6 +156088,13 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
+  - time: 0.43333334
+    functionName: LookAtTarget
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 0.53333336
     functionName: FindPlayerTag
     data: 
@@ -156097,13 +156104,6 @@ AnimationClip:
     messageOptions: 0
   - time: 0.8333333
     functionName: Jigumini
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 1
-    functionName: LookAtTarget
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

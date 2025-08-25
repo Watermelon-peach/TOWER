@@ -4,6 +4,7 @@ using Tower.UI;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using Tower.Game;
 
 namespace Tower.Player
 {
@@ -184,8 +185,12 @@ namespace Tower.Player
         public void GameOver()
         {
             Debug.Log("Game Over!");
-            //여기에 게임오버 UI 표시 등
-            //...
+
+            // StageTimer의 ShowGameOverUI 호출
+            if (StageTimer.Instance != null)
+            {
+                StageTimer.Instance.ShowGameOverUI();
+            }
         }
 
         private void SaveFormation()

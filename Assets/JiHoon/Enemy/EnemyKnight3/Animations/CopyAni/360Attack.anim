@@ -103355,21 +103355,21 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.5
+  - time: 0.43333334
     functionName: FindPlayerTag
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.8666667
+  - time: 0.6333333
     functionName: Jigumini
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 1.0333333
+  - time: 1.2333333
     functionName: DealDamage
     data: 
     objectReferenceParameter: {fileID: 0}

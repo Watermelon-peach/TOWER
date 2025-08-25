@@ -62,7 +62,7 @@ public class SimpleDamageHandler : MonoBehaviour
         // effectData가 없으면 처리하지 않음
         if (effectData == null)
         {
-            Debug.LogWarning($"[SimpleDamageHandler] {gameObject.name} - effectData가 설정되지 않았습니다!");
+            
             return;
         }
 
