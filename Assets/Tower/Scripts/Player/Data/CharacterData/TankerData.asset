@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f73c43a69945186438328accd679caac, type: 3}
   m_Name: TankerData
   m_EditorClassIdentifier: 
-  atk: 65
-  def: 60
-  maxHp: 800
+  atk: 10
+  def: 10
+  maxHp: 300
   maxMp: 100
   characterType: 1
   characterIcon: {fileID: 21300000, guid: 0becc1d0b509afb45bf39fac39e699eb, type: 3}

@@ -174,6 +174,8 @@ namespace Tower.Player
             currentHP = maxHP;
             currentMP = maxMP;
 
+            animator.SetBool(AnimHash.isDead, false);
+
             //UI 새로고침
             PlayerStatsInfo.Instance.SwitchCharatersInfo();
         }

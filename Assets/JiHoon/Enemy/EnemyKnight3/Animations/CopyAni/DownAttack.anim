@@ -64817,14 +64817,14 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.33333334
+  - time: 0.23333333
     functionName: FindPlayerTag
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.56666666
+  - time: 0.5
     functionName: Jigumini
     data: 
     objectReferenceParameter: {fileID: 0}

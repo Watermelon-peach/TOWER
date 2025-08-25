@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Skeleton
   m_EditorClassIdentifier: 
   enemyName: Skeleton
-  atk: 50
-  def: 30
-  maxHp: 1000
-  maxGp: 1000
+  atk: 15
+  def: 2
+  maxHp: 80
+  maxGp: 12

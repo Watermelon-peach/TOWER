@@ -113874,8 +113874,15 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.8333333
+  - time: 0.53333336
     functionName: Jigumini
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 2.1666667
+    functionName: RestartBehaviorAgent
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

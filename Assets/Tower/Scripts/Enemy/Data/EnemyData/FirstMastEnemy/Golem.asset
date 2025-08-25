@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Golem
   m_EditorClassIdentifier: 
   enemyName: Golem
-  atk: 70
-  def: 100
-  maxHp: 1800
-  maxGp: 1500
+  atk: 25
+  def: 8
+  maxHp: 200
+  maxGp: 25

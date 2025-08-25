@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Knight3
   m_EditorClassIdentifier: 
   enemyName: Knight3
-  atk: 130
-  def: 100
-  maxHp: 4500
-  maxGp: 2500
+  atk: 20
+  def: 25
+  maxHp: 900
+  maxGp: 35

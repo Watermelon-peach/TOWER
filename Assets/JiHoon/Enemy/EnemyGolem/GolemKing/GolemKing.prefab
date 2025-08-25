@@ -2297,7 +2297,7 @@ MonoBehaviour:
   groggyDuration: 10
   fadeDuration: 1
   animator: {fileID: 0}
-  attackRadius: 3
+  attackRadius: 3.5
   targetLayer:
     serializedVersion: 2
     m_Bits: 512

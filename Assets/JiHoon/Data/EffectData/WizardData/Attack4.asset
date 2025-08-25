@@ -21,7 +21,7 @@ MonoBehaviour:
   followTarget: 1
   duration: 2
   delayBeforeSpawn: 0
-  followSpeed: 3
+  followSpeed: 0.5
   smoothFollow: 1
   followDelay: 0
   maxFollowDistance: 30

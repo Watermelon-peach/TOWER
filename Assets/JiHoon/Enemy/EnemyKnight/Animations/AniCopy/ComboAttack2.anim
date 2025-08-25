@@ -132893,8 +132893,15 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.6666667
+  - time: 0.4
     functionName: FindPlayerTag
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.6
+    functionName: Jigumini
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -132902,13 +132909,6 @@ AnimationClip:
     messageOptions: 0
   - time: 1
     functionName: DealDamage
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 2.3
-    functionName: Jigumini
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

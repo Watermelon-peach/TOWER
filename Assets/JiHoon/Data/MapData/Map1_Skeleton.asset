@@ -19,5 +19,5 @@ MonoBehaviour:
   totalMonsterCount: 17
   initialSpawnCount: 5
   respawnCount: 3
-  respawnAmount: 1
+  respawnAmount: 3
   spawnWeights: []
